@@ -1,10 +1,9 @@
-# Minecraft
+# Munchkin
 <center>
 
+![Capa do Munchkin](../assets/MunchkinCapa.jpeg)
 
-![Capa do Munchkin](../assets/MunchkinCapa.png)
-
-Figura 1 -
+Figura 1 - Capa do jogo
 
 </center>
 

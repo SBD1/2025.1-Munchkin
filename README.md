@@ -3,7 +3,7 @@
 <center>
 
 
-![Logo Minecraft](./assets/Minecraft-Logo.jpg)
+![Logo Minecraft](docs/assets/MunchkinIntro.png)
 
 Figura 1 - Logo do desenho
 
@@ -11,7 +11,7 @@ Figura 1 - Logo do desenho
 
 ## Sobre o projeto
 
-Projeto desenvolvido para a disciplina de Sistemas de Banco de Dados 1, sob orientação do professor Mauricio Serrano. Neste trabalho, será criado um jogo ambientado no universo de Minecraft, onde os conceitos de bancos de dados relacionais serão aplicados de forma prática.
+Projeto desenvolvido para a disciplina de Sistemas de Banco de Dados 1, sob orientação do professor Mauricio Serrano. Neste trabalho, será criado um jogo inspirado no universo de Munchkin, onde os conceitos de bancos de dados relacionais serão aplicados de forma prática.
 
 ## 📁 Entregas
 

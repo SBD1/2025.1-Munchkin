@@ -9,6 +9,25 @@ theme:
     - navigation.tabs.sticky     # as abas ficam fixas
     - navigation.top             # botão para voltar ao topo
 
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: amber    # fundo claro amarelado, puxando para o ouro
+      accent: red       # detalhes em vermelho, como no título do jogo
+      toggle:
+        icon: material/brightness-7
+        name: Mudar para o modo escuro
+
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: amber    # mantém dourado no modo escuro também
+      accent: red
+      toggle:
+        icon: material/brightness-4
+        name: Mudar para modo claro
+
+  language: pt-BR
+
 nav:
   - Início: "index.md"
   - Módulo 1:
