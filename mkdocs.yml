@@ -1,0 +1,18 @@
+site_name: Projeto Banco de Dados - Munchkin
+
+theme:
+  name: material
+  features:
+    - navigation.instant         # navegação sem recarregar
+    - navigation.tracking        # marca onde você está no menu
+    - navigation.tabs            # adiciona abas no topo
+    - navigation.tabs.sticky     # as abas ficam fixas
+    - navigation.top             # botão para voltar ao topo
+
+nav:
+  - Início: "index.md"
+  - Módulo 1:
+      - Modelo ER: "modulo01/mer.md"
+      - Diagrama ER: "modulo01/der.md"
+  - Módulo 2:
+      - DDL: "modulo02/DDL.md"
