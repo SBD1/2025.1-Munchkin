@@ -3,35 +3,41 @@ site_name: Projeto Banco de Dados - Munchkin
 theme:
   name: material
   features:
-    - navigation.instant         # navegação sem recarregar
-    - navigation.tracking        # marca onde você está no menu
-    - navigation.tabs            # adiciona abas no topo
-    - navigation.tabs.sticky     # as abas ficam fixas
-    - navigation.top             # botão para voltar ao topo
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
 
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: amber    # fundo claro amarelado, puxando para o ouro
-      accent: red       # detalhes em vermelho, como no título do jogo
+      primary: amber
+      accent: red
       toggle:
         icon: material/brightness-7
         name: Mudar para o modo escuro
 
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: amber    # mantém dourado no modo escuro também
+      primary: amber
       accent: red
       toggle:
         icon: material/brightness-4
         name: Mudar para modo claro
 
   language: pt-BR
+  navigation:
+    tabs: true
 
 nav:
   - Início: "index.md"
   - Módulo 1:
-      - Modelo ER: "modulo01/mer.md"
-      - Diagrama ER: "modulo01/der.md"
-  - Módulo 2:
-      - DDL: "modulo02/DDL.md"
+    - Modelo Entidade Relacionamento: "modulo01/mer.md"
+    - Diagrama Entidade Relacionamento: "modulo01/der.md"
+    - Modelo Lógico: "modulo01/ml.md"
+    - Dicionário de Dados: "modulo01/dicionario.md"
+
+extra:
+  version:
+    provider: mike
