@@ -1,5 +1,18 @@
 site_name: Projeto Banco de Dados - Munchkin
 
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
 theme:
   name: material
   features:
@@ -30,6 +43,7 @@ theme:
   navigation:
     tabs: true
 
+site_name: Munchkin
 nav:
   - Início: "index.md"
   - Módulo 1:
@@ -37,6 +51,9 @@ nav:
     - Diagrama Entidade Relacionamento: "modulo01/der.md"
     - Modelo Lógico: "modulo01/ml.md"
     - Dicionário de Dados: "modulo01/dicionario.md"
+
+plugins:
+   - glightbox
 
 extra:
   version:

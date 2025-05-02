@@ -15,21 +15,12 @@ Apresentar o Diagrama Entidade-Relacionamento (DER) elaborado para o projeto, pr
 
 A Figura 1 a seguir exibe a versão inicial do Diagrama Entidade-Relacionamento, desenvolvido pelo grupo:
 
-<center>
+### Figura 1 - Primeira versão do DER
 
-<details>
-  <summary> Figura 1 - Primeira versão do DER </summary>
-  <p align="center">
-    <img src="../assets/DER1.0.png" width="600">
-  </p>
-  <p><em><strong>Fonte:</strong> <a href="https://github.com/Brenofrds" target="_blank">Breno Fernandes</a></em></p>
-</details>
+![Primeira versão do DER](../assets/DER1.0.png)
 
+**Fonte:** [Breno Fernandes](https://github.com/Brenofrds)
 
-</center>
-
-
-## Referência Bibliográfica
 
 
 ## Bibliografia
