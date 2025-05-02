@@ -31,8 +31,12 @@ A Figura 1 a seguir exibe a versão inicial do Diagrama Entidade-Relacionamento,
 
 > Diagrama Entidade Relacionamento Cavaleiros do Zodiaco. Disponível em: https://github.com/SBD1/2024.2_Cavaleiros_do_Zodiaco/blob/main/docs/assets/der/DER%202.0.png. Acesso em 26 de abril de 2025.
 
-## Histórico de versão
 
-| Data       | Descrição             | Autor                                       |
-| ---------- | --------------------- | ------------------------------------------- |
-| 25/04/2025 | Criação do artefato   | [Breno Fernandes](https://github.com/Brenofrds) |
+## Histórico de Versão
+
+| Data       | Descrição                          | Autor                                                                 |
+|------------|------------------------------------|-----------------------------------------------------------------------|
+| 25/04/2025 | Criação do artefato                | [Breno Fernandes](https://github.com/Brenofrds)                      |
+| 02/05/2025 | Colaboração na construção do DER   | [Breno Fernandes](https://github.com/Brenofrds), [Maria Clara Sena](https://github.com/mclarasena), [Ana Luiza](https://github.com/luluaroeira), [Mylena Mendonça](https://github.com/MylenaTrindade) |
+
+

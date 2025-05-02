@@ -194,8 +194,9 @@ O Modelo Entidade-Relacionamento (MER) é uma descrição textual das entidades 
 - `data_ocorrido`: Data e hora em que o combate foi registrado.
 
 
-## Histórico de versão
+## Histórico de Versão
 
-| Data       | Descrição             | Autor                                       |
-| ---------- | --------------------- | ------------------------------------------- |
-| 25/04/2025 | Criação do artefato   | [Breno Fernandes](https://github.com/Brenofrds) |
+| Data       | Descrição                          | Autor                                                                 |
+|------------|------------------------------------|-----------------------------------------------------------------------|
+| 25/04/2025 | Criação do artefato                | [Breno Fernandes](https://github.com/Brenofrds)                      |
+| 02/05/2025 | Colaboração na construção do MER   | [Breno Fernandes](https://github.com/Brenofrds), [Maria Clara Sena](https://github.com/mclarasena), [Ana Luiza](https://github.com/luluaroeira), [Mylena Mendonça](https://github.com/MylenaTrindade) |
