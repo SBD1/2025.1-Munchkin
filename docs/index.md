@@ -9,14 +9,9 @@ Figura 1 - Capa do jogo
 
 ## Sobre o projeto
 
+Este projeto tem como objetivo modelar o banco de dados para uma versão solo do jogo Munchkin, utilizando técnicas de modelagem relacional. Munchkin é um jogo de cartas humorístico baseado em RPGs, onde os jogadores enfrentam monstros, coletam tesouros e sobem de nível. Tradicionalmente jogado em grupo, adaptamos sua lógica para uma experiência solo, mantendo a progressão por níveis, os combates e a gestão de cartas como pilares principais.
 
-![]()
-
-Figura 2 
-
-![]()
-
-Figura 3 - 
+A versão solo imaginada mantém os desafios estratégicos do jogo original, simulando decisões de combate, recompensas e penalidades por meio de regras automatizadas. O modelo de banco de dados dá suporte à gestão dessas regras, armazenando informações sobre jogadores, partidas, cartas e seus efeitos — organizando os dados de forma a permitir futuras integrações com lógicas de jogo ou interfaces de usuário.
 
 ## Entregas
 
@@ -33,7 +28,7 @@ Figura 3 -
 
 ## Apresentações
 
- - [Módulo 1](./apresentacao/modulo1.md)
+  - [Módulo 1 (Vídeo no YouTube)](https://www.youtube.com/watch?v=1JWhqNgmiXc)
 
 ## Membros do grupo
 
