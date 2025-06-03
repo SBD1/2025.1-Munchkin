@@ -37,26 +37,7 @@ Define o papel "user" com permissões no banco de dados e no esquema "public".
 
 </details>
 
-### V1_create_elemento_table
-
-Cria a tabela "Elemento", que armazena informações sobre elementos do jogo, incluindo fraqueza e força contra outros elementos.
-
-<details>
-    <sumary>Migrações</sumary>
-
-    ```sql
-    CREATE TABLE IF NOT EXISTS Elemento (
-        id_elemento SERIAL PRIMARY KEY,
-        nome VARCHAR UNIQUE NOT NULL,
-        descricao VARCHAR,
-        fraco_contra INTEGER,
-        forte_contra INTEGER
-    );
-    ```
-
-</details>
-
-### V2_create_core_game_tables
+### V1_create_core_game_tables
 
 Cria as tabelas principais do sistema de gerenciamento de partidas: Jogador, Partida e Carta, com seus respectivos atributos e relacionamentos via chave estrangeira.
 
@@ -92,14 +73,13 @@ Cria as tabelas principais do sistema de gerenciamento de partidas: Jogador, Par
     nome VARCHAR(255) NOT NULL,
     tipo_carta tipo_carta_enum NOT NULL,
     subtipo subtipo_carta_enum NOT NULL,
-    descricao TEXT,
     disponivel_para_virar BOOLEAN NOT NULL
     );
     ```
 
 </details>
 
-### V3_create_carta_partida_table
+### V2_create_carta_partida_table
 
 Cria a tabela CartaPartida e define o relacionamento com Carta e Partida.
 
@@ -122,7 +102,7 @@ Cria a tabela CartaPartida e define o relacionamento com Carta e Partida.
 
 </details>
 
-### V4_create_cartas_expecificas_table
+### V3_create_cartas_especificas_table
 
 Cria as tabelas especializadas CartaRaca, CartaClasse, CartaItem e CartaMonstro, relacionando cada uma delas à tabela Carta.
 
@@ -156,11 +136,12 @@ Cria as tabelas especializadas CartaRaca, CartaClasse, CartaItem e CartaMonstro,
 );
 
     CREATE TABLE carta_monstro (
+        id_carta_monstro INT PRIMARY KEY,
         id_carta INT PRIMARY KEY,
         nivel INT,
         pode_fugir BOOLEAN,
         recompensa INT,
-        tipo_monstro VARCHAR(50) CHECK (tipo_monstro IN ('morto_vivo', 'demonio', 'sem_tipo')),
+        tipo_monstro VARCHAR(50) CHECK (tipo_monstro IN ('morto_vivo', 'sem_tipo')),
 
         FOREIGN KEY (id_carta) REFERENCES carta(id_carta)
 );
@@ -170,7 +151,7 @@ Cria as tabelas especializadas CartaRaca, CartaClasse, CartaItem e CartaMonstro,
 
 </details>
 
-### V5_create_poder_raca_tables
+### V4_create_poder_raca_tables
 
 Cria a tabela PoderRaca que possui relação com a CartaRaca.
 
@@ -181,7 +162,6 @@ Cria a tabela PoderRaca que possui relação com a CartaRaca.
    CREATE TABLE poder_raca (
         id_poder_raca INT PRIMARY KEY,
         id_carta INT,
-        nome VARCHAR(20),
         descricao VARCHAR(200),
         
         FOREIGN KEY (id_carta) REFERENCES carta_raca(id_carta)
@@ -191,7 +171,7 @@ Cria a tabela PoderRaca que possui relação com a CartaRaca.
 
 </details>
 
-### V6_create_poderes_raca_especificos_table
+### V5_create_poderes_raca_especificos_table
 
 Cria as tabelas especializadas de `poder_raca`, que detalham os tipos específicos de habilidades que podem estar associadas a uma raça. Todas elas herdam o `id_poder_raca` como chave primária e estrangeira.
 
@@ -203,7 +183,7 @@ Cria as tabelas especializadas de `poder_raca`, que detalham os tipos específic
         id_poder_raca INT PRIMARY KEY,
         nova_tentativa BOOLEAN DEFAULT FALSE, 
         quantidade INT,
-        condicao_tipo VARCHAR(20) CHECK (condicao_tipo IN ('sem_condicao', 'usar_item', 'descartar_carta')),
+        condicao_tipo VARCHAR(20) CHECK (condicao_tipo IN ('sem_condicao', 'descartar_carta')),
     
         FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
 );
@@ -221,7 +201,7 @@ Cria as tabelas especializadas de `poder_raca`, que detalham os tipos específic
         id_poder_raca INT PRIMARY KEY,
         bonus_tipo VARCHAR(20) CHECK (bonus_tipo IN ('nivel', 'tesouro_extra')),
         bonus_quantidade INT,
-        condicao_tipo VARCHAR(30) CHECK (condicao_tipo IN ('nivel_menor_que_monstro', 'multi_monstros')),
+        condicao_tipo VARCHAR(30) CHECK (condicao_tipo IN ('nivel_menor_que_monstro', 'matar_monstro')),
         
         FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
 );
@@ -232,13 +212,19 @@ Cria as tabelas especializadas de `poder_raca`, que detalham os tipos específic
         
         FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
 );
+    CREATE TABLE poder_pecas_ouro (
+        id_poder_raca INT PRIMARY KEY,
+        quantidade INT,
+        
+        FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
+);
 
   ```
 
 </details>
 
 
-### V8_create_poderes_classes
+### V6_create_poder_classe
 
 Cria a tabela `poder_classe`, associada às cartas do subtipo classe, e define o relacionamento com `carta_classe`.
 
@@ -249,7 +235,6 @@ Cria a tabela `poder_classe`, associada às cartas do subtipo classe, e define o
     CREATE TABLE poder_classe (
         id_poder_classe INT PRIMARY KEY,
         id_carta_classe INT,
-        nome VARCHAR(20),
         descricao VARCHAR(200),
         
         FOREIGN KEY (id_carta_classe) REFERENCES carta_classe(id_carta)
@@ -266,32 +251,6 @@ Cria as tabelas especializadas de `poder_classe`, detalhando os tipos específic
     <sumary>Migrações</sumary>
 
     ```sql
-    CREATE TABLE poder_combate (
-        id_poder_classe INT PRIMARY KEY,
-        tipo_bonus VARCHAR(20),
-        max_cartas INT,
-        afeta VARCHAR(30),
-        bonus_por_carta INT,
-        
-        FOREIGN KEY (id_poder_classe) REFERENCES poder_classe(id_poder_classe)
-);
-
-    CREATE TABLE poder_fuga (
-        id_poder_classe INT PRIMARY KEY,
-        auto_fuga BOOLEAN DEFAULT FALSE,
-        max_descartes INT,
-  
-        FOREIGN KEY (id_poder_classe) REFERENCES poder_classe(id_poder_classe)
-);
-
-    CREATE TABLE poder_fuga_com_bonus (
-        id_poder_classe INT PRIMARY KEY,
-        bonus_por_carta VARCHAR(100),
-        max_descartes INT,
-  
-        FOREIGN KEY (id_poder_classe) REFERENCES poder_classe(id_poder_classe)
-);
-
     CREATE TABLE descarta_para_efeito (
         id_poder_classe INT PRIMARY KEY,
         efeito VARCHAR(100),
@@ -306,22 +265,11 @@ Cria as tabelas especializadas de `poder_classe`, detalhando os tipos específic
   
         FOREIGN KEY (id_poder_classe) REFERENCES poder_classe(id_poder_classe)
 );
-
-    CREATE TABLE pode_recuperar_descarte (
-        id_poder_classe INT PRIMARY KEY,
-        tipo_descarte VARCHAR(20) CHECK (tipo_descarte IN ('descarte_porta', 'descarte_tesouro')),
-        descartar_para_usar BOOLEAN DEFAULT FALSE,
-        quantidade_descarta INT,
-        permite_escolher BOOLEAN DEFAULT FALSE,
-  
-        FOREIGN KEY (id_poder_classe) REFERENCES poder_classe(id_poder_classe)
-);
-
     ```
 
 </details>
 
-### V9_create_restricao_item_table
+### V8_create_restricao_item_table
 
 Cria a tabela `restricao_item`, que define as restrições de uso dos itens com base em raça ou classe. Relaciona-se diretamente com a tabela `carta_item`.
 
@@ -341,7 +289,7 @@ Cria a tabela `restricao_item`, que define as restrições de uso dos itens com 
 
 </details>
 
-### V10_create_efeito_monstro_table
+### V9_create_efeito_monstro_table
 
 Cria a tabela `efeito_monstro`, que define os efeitos associados a cartas de monstro.
 
@@ -352,7 +300,6 @@ Cria a tabela `efeito_monstro`, que define os efeitos associados a cartas de mon
     CREATE TABLE efeito_monstro (
         id_efeito_monstro SERIAL PRIMARY KEY,
         id_carta_monstro INTEGER REFERENCES carta_monstro(id_carta),
-        nome VARCHAR(100),
         descricao TEXT
 );
 
@@ -360,7 +307,7 @@ Cria a tabela `efeito_monstro`, que define os efeitos associados a cartas de mon
 
 </details>
 
-### V11_create_efeitos_monstros_especificos_table
+### V10_create_efeitos_monstros_especificos_table
 
 Cria tabelas especializadas para os efeitos de monstro, como modificadores, penalidades e condições específicas.
 
@@ -368,23 +315,14 @@ Cria tabelas especializadas para os efeitos de monstro, como modificadores, pena
     <sumary>Migrações</sumary>
 
     ```sql
-    CREATE TABLE modificador_contra_alvo (
-        id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-        alvo_tipo VARCHAR(50) CHECK (alvo_tipo IN ('raca', 'classe', 'jogador')),
-        alvo_valor VARCHAR(50),
-        bonus_combate INT
-);
-
     CREATE TABLE penalidade_perda_nivel (
         id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-        alvo_tipo VARCHAR(50) CHECK (alvo_tipo IN ('raca', 'classe', 'jogador')),
-        alvo VARCHAR(50) CHECK (alvo_tipo IN ('nao_mago', 'qualquer')),,
-        bonus_poder INT
+        niveis INT
 );
 
     CREATE TABLE penalidade_item (
         id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-        local_item VARCHAR(50) CHECK (alvo_tipo IN ('mao', 'corpo', 'cabeca')),
+        local_item VARCHAR(50) CHECK (alvo_tipo IN ('mao', 'corpo', 'cabeca', 'todos')),
         remove_tudo BOOLEAN
 );
 
@@ -395,18 +333,16 @@ Cria tabelas especializadas para os efeitos de monstro, como modificadores, pena
         vira_humano BOOLEAN
 );
 
-    CREATE TABLE penalidade_condicional (
+    CREATE TABLE penalidade_morte (
         id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-        condicao VARCHAR(50),
-        acao VARCHAR(50),
-        valor VARCHAR(50)
+        morte BOOLEAN
 );
 
     ```
 
 </details>
 
-### V12_create_combate_table
+### V11_create_combate_table
 
 Cria a tabela `Combate`, que registra os dados dos combates entre jogadores e monstros durante as partidas.
 
@@ -442,3 +378,4 @@ Cria a tabela `Combate`, que registra os dados dos combates entre jogadores e mo
 | --- | --- | --- | --- |
 |  0.1 | 14/05/2025 | Criação do Documento | Maria Clara |
 |  1.0 | 26/05/2025 | Atualização do DDL | Maria Clara e Breno Fernandes |
+|  2.0 | 03/06/2025 | Atualização do DDL | Ana Luiza Komatsu |
