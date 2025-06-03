@@ -13,7 +13,7 @@ Este documento descreve a implementação e o uso da linguagem DDL no sistema, e
 Define o papel "user" com permissões no banco de dados e no esquema "public".
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
     CREATE ROLE "user" WITH SUPERUSER LOGIN PASSWORD 'password';
@@ -42,39 +42,35 @@ Define o papel "user" com permissões no banco de dados e no esquema "public".
 Cria as tabelas principais do sistema de gerenciamento de partidas: Jogador, Partida e Carta, com seus respectivos atributos e relacionamentos via chave estrangeira.
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
     CREATE TABLE jogador (
     id_jogador SERIAL PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL
-    );
+    nome VARCHAR(255) NOT NULL);
 
-
-    CREATE TABLE partida (
-    id_partida INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE partida (
+    id_partida SERIAL PRIMARY KEY, -- substitui AUTO_INCREMENT por SERIAL
     id_jogador INT,
-    data_inicio DATETIME NOT NULL,
+    data_inicio TIMESTAMP NOT NULL, -- substitui DATETIME
     turno_atual INT DEFAULT 1,
     estado_partida VARCHAR(20) CHECK (estado_partida IN ('em andamento', 'pausada', 'encerrada')),
     primeira_rodada BOOLEAN DEFAULT TRUE,
     finalizada BOOLEAN DEFAULT FALSE,
     vitoria BOOLEAN DEFAULT TRUE,
     nivel INT DEFAULT 1,
-    vida_restantes TINYINT CHECK (vida_restantes BETWEEN 0 AND 3),
-    FOREIGN KEY (id_jogador) REFERENCES jogador(id_jogador)
-    );
+    vida_restantes SMALLINT CHECK (vida_restantes BETWEEN 0 AND 3), -- substitui TINYINT por SMALLINT
+    FOREIGN KEY (id_jogador) REFERENCES jogador(id_jogador));
 
-    CREATE TYPE tipo_carta_enum AS ENUM ('porta', 'tesouro');
-    CREATE TYPE subtipo_carta_enum AS ENUM ('classe', 'raca', 'item', 'monstro');
+CREATE TYPE tipo_carta_enum AS ENUM ('porta', 'tesouro');
+CREATE TYPE subtipo_carta_enum AS ENUM ('classe', 'raca', 'item', 'monstro');
 
-    CREATE TABLE carta (
+CREATE TABLE carta (
     id_carta SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     tipo_carta tipo_carta_enum NOT NULL,
     subtipo subtipo_carta_enum NOT NULL,
-    disponivel_para_virar BOOLEAN NOT NULL
-    );
+    disponivel_para_virar BOOLEAN NOT NULL);
     ```
 
 </details>
@@ -84,20 +80,18 @@ Cria as tabelas principais do sistema de gerenciamento de partidas: Jogador, Par
 Cria a tabela CartaPartida e define o relacionamento com Carta e Partida.
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
-    CREATE TYPE enum_zona AS ENUM ('mao', 'equipado', 'mochila', 'descartada');
+   CREATE TYPE enum_zona AS ENUM ('mao', 'equipado', 'mochila', 'descartada');
 
-    CREATE TABLE carta_partida (
+CREATE TABLE carta_partida (
     id_carta_partida SERIAL PRIMARY KEY,
-    id_partida INTEGER NOT NULL,
-    id_carta INTEGER NOT NULL,
+    id_partida INT NOT NULL,
+    id_carta INT NOT NULL,
     zona enum_zona NOT NULL,
     FOREIGN KEY (id_partida) REFERENCES partida(id_partida),
-    FOREIGN KEY (id_carta) REFERENCES carta(id_carta)
-    );
-
+    FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
     ```
 
 </details>
@@ -107,46 +101,38 @@ Cria a tabela CartaPartida e define o relacionamento com Carta e Partida.
 Cria as tabelas especializadas CartaRaca, CartaClasse, CartaItem e CartaMonstro, relacionando cada uma delas à tabela Carta.
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
 
     CREATE TABLE carta_classe (
-        id_carta INT PRIMARY KEY,
-        nome_classe VARCHAR(20),
-        
-        FOREIGN KEY (id_carta) REFERENCES carta(id_carta)
-);
-    CREATE TABLE carta_raca (
-        id_carta INT PRIMARY KEY,
-        nome_raca VARCHAR(20),
-        descricao VARCHAR(200),
-        
-        FOREIGN KEY (id_carta) REFERENCES carta(id_carta)
-);
-    CREATE TABLE carta_item (
-        id_carta INT PRIMARY KEY,
-        bonus_combate INT,
-        valor_ouro INT,
-        tipo_item VARCHAR(20) CHECK (tipo_item IN ('arma', 'armadura', 'acessório')),
-        slot VARCHAR(20) CHECK (slot IN ('cabeca', 'pe', 'corpo', '1_mao', '2_maos', 'nenhum')),
-        ocupacao_dupla BOOLEAN DEFAULT FALSE,
-  
-        FOREIGN KEY (id_carta) REFERENCES carta(id_carta)
-);
+    id_carta INT PRIMARY KEY,
+    nome_classe VARCHAR(20) NOT NULL,
+    FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
 
-    CREATE TABLE carta_monstro (
-        id_carta_monstro INT PRIMARY KEY,
-        id_carta INT PRIMARY KEY,
-        nivel INT,
-        pode_fugir BOOLEAN,
-        recompensa INT,
-        tipo_monstro VARCHAR(50) CHECK (tipo_monstro IN ('morto_vivo', 'sem_tipo')),
+CREATE TABLE carta_raca (
+    id_carta INT PRIMARY KEY,
+    nome_raca VARCHAR(20) NOT NULL,
+    descricao VARCHAR(200),
+    FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
 
-        FOREIGN KEY (id_carta) REFERENCES carta(id_carta)
-);
+CREATE TABLE carta_item (
+    id_carta INT PRIMARY KEY,
+    bonus_combate INT,
+    valor_ouro INT,
+    tipo_item VARCHAR(20) CHECK (tipo_item IN ('arma', 'armadura', 'acessório')),
+    slot VARCHAR(20) CHECK (slot IN ('cabeca', 'pe', 'corpo', '1_mao', '2_maos', 'nenhum')),
+    ocupacao_dupla BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
 
-
+CREATE TABLE carta_monstro (
+    id_carta_monstro SERIAL PRIMARY KEY,
+    id_carta INT UNIQUE NOT NULL,
+    nivel INT,
+    pode_fugir BOOLEAN,
+    recompensa INT,
+    tipo_monstro VARCHAR(50) CHECK (tipo_monstro IN ('morto_vivo', 'sem_tipo')),
+    FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
     ```
 
 </details>
@@ -156,17 +142,14 @@ Cria as tabelas especializadas CartaRaca, CartaClasse, CartaItem e CartaMonstro,
 Cria a tabela PoderRaca que possui relação com a CartaRaca.
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
    CREATE TABLE poder_raca (
-        id_poder_raca INT PRIMARY KEY,
-        id_carta INT,
-        descricao VARCHAR(200),
-        
-        FOREIGN KEY (id_carta) REFERENCES carta_raca(id_carta)
-);
-
+    id_poder_raca SERIAL PRIMARY KEY,
+    id_carta INT NOT NULL,
+    descricao VARCHAR(200),
+    FOREIGN KEY (id_carta) REFERENCES carta_raca(id_carta));
     ```
 
 </details>
@@ -176,47 +159,43 @@ Cria a tabela PoderRaca que possui relação com a CartaRaca.
 Cria as tabelas especializadas de `poder_raca`, que detalham os tipos específicos de habilidades que podem estar associadas a uma raça. Todas elas herdam o `id_poder_raca` como chave primária e estrangeira.
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
     CREATE TABLE poder_fuga_condicional (
-        id_poder_raca INT PRIMARY KEY,
-        nova_tentativa BOOLEAN DEFAULT FALSE, 
-        quantidade INT,
-        condicao_tipo VARCHAR(20) CHECK (condicao_tipo IN ('sem_condicao', 'descartar_carta')),
-    
-        FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
+    id_poder_raca INT PRIMARY KEY,
+    nova_tentativa BOOLEAN DEFAULT FALSE, 
+    quantidade INT,
+    condicao_tipo VARCHAR(20) CHECK (condicao_tipo IN ('sem_condicao', 'descartar_carta')),
+    FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
 );
 
-    CREATE TABLE poder_maldicao (
-        id_poder_raca INT PRIMARY KEY,
-        ignora_maldicao BOOLEAN DEFAULT FALSE,
-        penalidade_substituta VARCHAR(100),
-        nivel_minimo INT,
-        
-        FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
+CREATE TABLE poder_maldicao (
+    id_poder_raca INT PRIMARY KEY,
+    ignora_maldicao BOOLEAN DEFAULT FALSE,
+    penalidade_substituta VARCHAR(100),
+    nivel_minimo INT,
+    FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
 );
 
-    CREATE TABLE poder_recompensa_condicional (
-        id_poder_raca INT PRIMARY KEY,
-        bonus_tipo VARCHAR(20) CHECK (bonus_tipo IN ('nivel', 'tesouro_extra')),
-        bonus_quantidade INT,
-        condicao_tipo VARCHAR(30) CHECK (condicao_tipo IN ('nivel_menor_que_monstro', 'matar_monstro')),
-        
-        FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
+CREATE TABLE poder_recompensa_condicional (
+    id_poder_raca INT PRIMARY KEY,
+    bonus_tipo VARCHAR(20) CHECK (bonus_tipo IN ('nivel', 'tesouro_extra')),
+    bonus_quantidade INT,
+    condicao_tipo VARCHAR(30) CHECK (condicao_tipo IN ('nivel_menor_que_monstro', 'matar_monstro')),
+    FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
 );
 
-    CREATE TABLE poder_limite_de_mao (
-        id_poder_raca INT PRIMARY KEY,
-        limite_carta_mao INT,
-        
-        FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
+CREATE TABLE poder_limite_de_mao (
+    id_poder_raca INT PRIMARY KEY,
+    limite_carta_mao INT,
+    FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
 );
-    CREATE TABLE poder_pecas_ouro (
-        id_poder_raca INT PRIMARY KEY,
-        quantidade INT,
-        
-        FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
+
+CREATE TABLE poder_pecas_ouro (
+    id_poder_raca INT PRIMARY KEY,
+    quantidade INT,
+    FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
 );
 
   ```
@@ -229,15 +208,15 @@ Cria as tabelas especializadas de `poder_raca`, que detalham os tipos específic
 Cria a tabela `poder_classe`, associada às cartas do subtipo classe, e define o relacionamento com `carta_classe`.
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
     CREATE TABLE poder_classe (
-        id_poder_classe INT PRIMARY KEY,
-        id_carta_classe INT,
-        descricao VARCHAR(200),
-        
-        FOREIGN KEY (id_carta_classe) REFERENCES carta_classe(id_carta)
+    id_poder_classe INT PRIMARY KEY,
+    id_carta_classe INT,
+    descricao VARCHAR(200),
+
+    FOREIGN KEY (id_carta_classe) REFERENCES carta_classe(id_carta)
 );
 
     ```
@@ -248,7 +227,7 @@ Cria a tabela `poder_classe`, associada às cartas do subtipo classe, e define o
 Cria as tabelas especializadas de `poder_classe`, detalhando os tipos específicos de habilidades relacionadas a classe.
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
     CREATE TABLE descarta_para_efeito (
@@ -274,7 +253,7 @@ Cria as tabelas especializadas de `poder_classe`, detalhando os tipos específic
 Cria a tabela `restricao_item`, que define as restrições de uso dos itens com base em raça ou classe. Relaciona-se diretamente com a tabela `carta_item`.
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
     CREATE TABLE restricao_item (
@@ -294,13 +273,13 @@ Cria a tabela `restricao_item`, que define as restrições de uso dos itens com 
 Cria a tabela `efeito_monstro`, que define os efeitos associados a cartas de monstro.
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
     CREATE TABLE efeito_monstro (
-        id_efeito_monstro SERIAL PRIMARY KEY,
-        id_carta_monstro INTEGER REFERENCES carta_monstro(id_carta),
-        descricao TEXT
+    id_efeito_monstro SERIAL PRIMARY KEY,
+    id_carta_monstro INTEGER REFERENCES carta_monstro(id_carta),
+    descricao TEXT
 );
 
     ```
@@ -312,56 +291,55 @@ Cria a tabela `efeito_monstro`, que define os efeitos associados a cartas de mon
 Cria tabelas especializadas para os efeitos de monstro, como modificadores, penalidades e condições específicas.
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
     CREATE TABLE penalidade_perda_nivel (
-        id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-        niveis INT
+    id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
+    niveis INT NOT NULL
 );
 
-    CREATE TABLE penalidade_item (
-        id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-        local_item VARCHAR(50) CHECK (alvo_tipo IN ('mao', 'corpo', 'cabeca', 'todos')),
-        remove_tudo BOOLEAN
+CREATE TABLE penalidade_item (
+    id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
+    local_item VARCHAR(50) CHECK (local_item IN ('mao', 'corpo', 'cabeca', 'todos')) NOT NULL,
+    remove_tudo BOOLEAN NOT NULL
 );
 
-    CREATE TABLE penalidade_transformacao (
-        id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-        perde_classe BOOLEAN,
-        perde_raca BOOLEAN,
-        vira_humano BOOLEAN
+CREATE TABLE penalidade_transformacao (
+    id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
+    perde_classe BOOLEAN NOT NULL DEFAULT FALSE,
+    perde_raca BOOLEAN NOT NULL DEFAULT FALSE,
+    vira_humano BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-    CREATE TABLE penalidade_morte (
-        id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-        morte BOOLEAN
+CREATE TABLE penalidade_morte (
+    id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
+    morte BOOLEAN NOT NULL DEFAULT FALSE
 );
-
     ```
 
 </details>
 
 ### V11_create_combate_table
 
-Cria a tabela `Combate`, que registra os dados dos combates entre jogadores e monstros durante as partidas.
+Cria a tabela `combate`, que registra os dados dos combates entre jogadores e monstros durante as partidas.
 
 <details>
-    <sumary>Migrações</sumary>
+    <summary>Migrações</summary>
 
     ```sql
-    CREATE TABLE Combate (
-        id_partida INT,
-        id_carta_monstro INT,
-        monstro_vindo_do_baralho BOOLEAN,
-        vitoria BOOLEAN,
-        coisa_ruim_aplicada BOOLEAN,
-        nivel_ganho INT,
-        data_ocorrido TIMESTAMP,
-        FOREIGN KEY (id_partida) REFERENCES partida(id_partida),
-        FOREIGN KEY (id_carta_monstro) REFERENCES carta_monstro(id_carta)
+    CREATE TABLE combate (
+    id_combate SERIAL PRIMARY KEY,
+    id_partida INT NOT NULL,
+    id_carta_monstro INT NOT NULL,
+    monstro_vindo_do_baralho BOOLEAN,
+    vitoria BOOLEAN,
+    coisa_ruim_aplicada BOOLEAN,
+    nivel_ganho INT,
+    data_ocorrido TIMESTAMP,
+    FOREIGN KEY (id_partida) REFERENCES partida(id_partida),
+    FOREIGN KEY (id_carta_monstro) REFERENCES carta_monstro(id_carta)
 );
-
 
     ```
 
