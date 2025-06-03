@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  # Serviço principal: Banco de Dados PostgreSQL com pg_cron
+  banco_de_dados:
+    build:
+      context: .                        # Usa o diretório atual como contexto de build
+      dockerfile: Dockerfile.pgcron    # Usa o Dockerfile personalizado com pg_cron
+    container_name: munchkin_db        # Nome visível do container
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}            # Usuário do banco (vem do .env)
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}    # Senha do banco
+      POSTGRES_DB: ${POSTGRES_DB}                # Nome do banco
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   # Volume persistente para não perder dados
+    ports:
+      - "5432:5432"                    # Expõe a porta padrão do PostgreSQL no host
+    healthcheck:                       # Verifica se o banco está pronto para uso
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  # Serviço responsável por aplicar as migrations (scripts SQL)
+  controlador_de_migrations:
+    image: flyway/flyway:latest        # Imagem oficial do Flyway
+    container_name: munchkin_migrator
+    restart: on-failure
+    depends_on:
+      banco_de_dados:
+        condition: service_healthy
+    environment:
+      FLYWAY_URL: jdbc:postgresql://banco_de_dados:5432/${POSTGRES_DB}
+      FLYWAY_USER: ${POSTGRES_USER}
+      FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./migrations:/flyway/sql       # Scripts .sql devem estar na pasta migrations/
+    entrypoint: ["flyway", "migrate"]  # Aplica todas as migrations quando o container sobe
+
+volumes:
+  postgres_data:                       # Volume nomeado usado para persistência do banco

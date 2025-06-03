@@ -1,0 +1,21 @@
+# Usa a imagem oficial do PostgreSQL com base leve
+FROM postgres:13.2-alpine
+
+# Instala dependências para compilar extensões
+RUN apk update && apk add --no-cache \
+
+    gcc \
+    make \
+    postgresql-dev \
+    git \
+    libc-dev \
+    linux-headers
+
+# Baixa e instala a extensão pg_cron
+RUN git clone https://github.com/citusdata/pg_cron.git /tmp/pg_cron \
+    && cd /tmp/pg_cron && make && make install \
+    && rm -rf /tmp/pg_cron
+
+# Inicia o PostgreSQL com pg_cron ativado e definindo o banco de cron
+CMD ["postgres", "-c", "shared_preload_libraries=pg_cron", "-c", "cron.database_name=postgres"]
+
