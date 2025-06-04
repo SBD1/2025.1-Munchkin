@@ -4,7 +4,7 @@
 
 O Data Manipulation Language (DML) é um subconjunto da linguagem SQL responsável por manipular os dados armazenados nas estruturas criadas pelo DDL. Segundo Elmasri e Navathe, o DML permite inserir, consultar, atualizar e excluir dados de tabelas. Este documento apresenta a inserção de dados iniciais para o sistema de gerenciamento de partidas com cartas, seguindo a mesma estrutura de versionamento definida no DDL.
 
-### V1_insert_core_game_data 
+### V12_insert_core_game_data 
 <details><summary>Comandos</summary>
 
 ```sql
@@ -66,7 +66,7 @@ VALUES
 
 </details>
 
-### V2_insert_carta_partida_data 
+### V13_insert_carta_partida_data 
 <details><summary>Comandos</summary>
 
 ```sql
@@ -79,7 +79,7 @@ VALUES
 
 </details>
 
-### V3_insert_cartas_especificas_data 
+### V14_insert_cartas_especificas_data 
 <details><summary>Comandos</summary>
 
 ```sql
@@ -193,7 +193,7 @@ VALUES (10, 34, 20, TRUE, 5, 'sem_tipo');
 
 </details>
 
-### V4_insert_poder_raca_data 
+### V15_insert_poder_raca_data 
 <details><summary>Comandos</summary>
 
 ```sql
@@ -226,7 +226,7 @@ VALUES (8, 21, 'Quando um orc vence um combate tendo o nível menor que o do mon
 
 </details>
 
-### V5_insert_poderes_raca_especificos_data 
+### V16_insert_poderes_raca_especificos_data 
 <details><summary>Comandos</summary>
 
 ```sql
@@ -262,7 +262,7 @@ VALUES (5, 20);
 
 </details>
 
-### V6_insert_poder_classe_data 
+### V17_insert_poder_classe_data 
 <details><summary>Comandos</summary>
 
 ```sql
@@ -290,7 +290,7 @@ VALUES (6, 24, 'Você pode descartar a sua mão inteira para enfeitiçar um úni
 </details>
 
 
-### V7_insert_poder_classe_especificos_data 
+### V18_insert_poder_classe_especificos_data 
 <details><summary>Comandos</summary>
 
 ```sql
@@ -320,7 +320,7 @@ VALUES (4, TRUE);
 
 </details>
 
-### V8_insert_restricao_item_data 
+### V19_insert_restricao_item_data 
 <details><summary>Comandos</summary>
 
 ```sql
@@ -352,7 +352,7 @@ VALUES (16, 'raca', 'orc', TRUE);
 
 </details>
 
-### V9_insert_efeito_monstro_data 
+### V20_insert_efeito_monstro_data 
 <details><summary>Comandos</summary>
 
 ```sql
@@ -390,7 +390,7 @@ VALUES (10, 10, 'Você é assado e devorado. Está morto!');
 
 </details>
 
-### V10_insert_efeitos_monstros_especificos_data
+### V21_insert_efeitos_monstros_especificos_data
 <details><summary>Comandos</summary>
 
 ```sql
@@ -434,7 +434,7 @@ VALUES (10, TRUE);
 
 </details>
 
-### V11_insert_combate_data 
+### V22_insert_combate_data 
 <details><summary>Comandos</summary>
 
 ```sql
