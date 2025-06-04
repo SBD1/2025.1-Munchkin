@@ -237,19 +237,19 @@ Cria as tabelas especializadas de `poder_classe`, detalhando os tipos específic
 
     ```sql
     CREATE TABLE descarta_para_efeito (
-        id_poder_classe INT PRIMARY KEY,
-        efeito VARCHAR(100),
-        max_cartas INT,
-  
-        FOREIGN KEY (id_poder_classe) REFERENCES poder_classe(id_poder_classe)
-);
+            id_poder_classe INT PRIMARY KEY,
+            efeito VARCHAR(100),
+            max_cartas INT,
+    
+            FOREIGN KEY (id_poder_classe) REFERENCES poder_classe(id_poder_classe)
+    );
 
-    CREATE TABLE empata_vence (
-        id_poder_classe INT PRIMARY KEY,
-        vence_empata BOOLEAN DEFAULT FALSE,
-  
-        FOREIGN KEY (id_poder_classe) REFERENCES poder_classe(id_poder_classe)
-);
+        CREATE TABLE empata_vence (
+            id_poder_classe INT PRIMARY KEY,
+            vence_empata BOOLEAN DEFAULT FALSE,
+    
+            FOREIGN KEY (id_poder_classe) REFERENCES poder_classe(id_poder_classe)
+    );
     ```
 
 </details>
@@ -283,10 +283,10 @@ Cria a tabela `efeito_monstro`, que define os efeitos associados a cartas de mon
 
     ```sql
     CREATE TABLE efeito_monstro (
-    id_efeito_monstro SERIAL PRIMARY KEY,
-    id_carta_monstro INTEGER REFERENCES carta_monstro(id_carta),
-    descricao TEXT
-);
+        id_efeito_monstro SERIAL PRIMARY KEY,
+        id_carta_monstro INTEGER REFERENCES carta_monstro(id_carta),
+        descricao TEXT
+    );
 
     ```
 
@@ -301,27 +301,27 @@ Cria tabelas especializadas para os efeitos de monstro, como modificadores, pena
 
     ```sql
     CREATE TABLE penalidade_perda_nivel (
-    id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-    niveis INT NOT NULL
-);
+        id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
+        niveis INT NOT NULL
+    );
 
-CREATE TABLE penalidade_item (
-    id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-    local_item VARCHAR(50) CHECK (local_item IN ('mao', 'corpo', 'cabeca', 'todos')) NOT NULL,
-    remove_tudo BOOLEAN NOT NULL
-);
+    CREATE TABLE penalidade_item (
+        id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
+        local_item VARCHAR(50) CHECK (local_item IN ('mao', 'corpo', 'cabeca', 'todos')) NOT NULL,
+        remove_tudo BOOLEAN NOT NULL
+    );
 
-CREATE TABLE penalidade_transformacao (
-    id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-    perde_classe BOOLEAN NOT NULL DEFAULT FALSE,
-    perde_raca BOOLEAN NOT NULL DEFAULT FALSE,
-    vira_humano BOOLEAN NOT NULL DEFAULT FALSE
-);
+    CREATE TABLE penalidade_transformacao (
+        id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
+        perde_classe BOOLEAN NOT NULL DEFAULT FALSE,
+        perde_raca BOOLEAN NOT NULL DEFAULT FALSE,
+        vira_humano BOOLEAN NOT NULL DEFAULT FALSE
+    );
 
-CREATE TABLE penalidade_morte (
-    id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
-    morte BOOLEAN NOT NULL DEFAULT FALSE
-);
+    CREATE TABLE penalidade_morte (
+        id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
+        morte BOOLEAN NOT NULL DEFAULT FALSE
+    );
     ```
 
 </details>
@@ -335,17 +335,17 @@ Cria a tabela `combate`, que registra os dados dos combates entre jogadores e mo
 
     ```sql
     CREATE TABLE combate (
-    id_combate SERIAL PRIMARY KEY,
-    id_partida INT NOT NULL,
-    id_carta_monstro INT NOT NULL,
-    monstro_vindo_do_baralho BOOLEAN,
-    vitoria BOOLEAN,
-    coisa_ruim_aplicada BOOLEAN,
-    nivel_ganho INT,
-    data_ocorrido TIMESTAMP,
-    FOREIGN KEY (id_partida) REFERENCES partida(id_partida),
-    FOREIGN KEY (id_carta_monstro) REFERENCES carta_monstro(id_carta)
-);
+        id_combate SERIAL PRIMARY KEY,
+        id_partida INT NOT NULL,
+        id_carta_monstro INT NOT NULL,
+        monstro_vindo_do_baralho BOOLEAN,
+        vitoria BOOLEAN,
+        coisa_ruim_aplicada BOOLEAN,
+        nivel_ganho INT,
+        data_ocorrido TIMESTAMP,
+        FOREIGN KEY (id_partida) REFERENCES partida(id_partida),
+        FOREIGN KEY (id_carta_monstro) REFERENCES carta_monstro(id_carta)
+    );
 
     ```
 
