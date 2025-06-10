@@ -6,7 +6,6 @@ CREATE TABLE carta_classe (
 CREATE TABLE carta_raca (
     id_carta INT PRIMARY KEY,
     nome_raca VARCHAR(20) NOT NULL,
-    descricao VARCHAR(200),
     FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
 
 CREATE TABLE carta_item (

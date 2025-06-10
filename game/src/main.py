@@ -5,6 +5,8 @@ from database import obter_cursor
 from usecases.obter_acoes_disponiveis import obter_acoes_disponiveis
 from usecases.criar_jogador import criar_jogador
 from usecases.selecionar_jogador import selecionar_jogador
+from usecases.iniciar_partida import iniciar_partida 
+from usecases.mostrar_regras import mostrar_regras
 
 # Variável global para armazenar o jogador selecionado na sessão atual
 jogador_selecionado_id = None
@@ -73,7 +75,8 @@ def run():
         console.print("1️⃣ Criar Novo Jogador")
         console.print("2️⃣ Selecionar Jogador Existente")
         console.print("3️⃣ Iniciar Jogo")
-        console.print("4️⃣ Sair")
+        console.print("4️⃣ Ver Regras do Jogo")
+        console.print("5️⃣ Sair")
 
         escolha = input("\nDigite o número da opção desejada: ").strip()
 
@@ -90,9 +93,13 @@ def run():
             if jogador_selecionado_id is None:
                 console.print("[red]⚠ Você precisa selecionar um jogador primeiro![/red]")
             else:
+                iniciar_partida(console, jogador_selecionado_id)
                 mostrar_menu_acoes(console)
+        
+        elif escolha == '4':
+            mostrar_regras(console)
 
-        elif escolha == "4":
+        elif escolha == "5":
             console.print("[bold red]👋 Saindo do jogo. Até a próxima![/bold red]")
             break
 

@@ -30,7 +30,7 @@ INSERT INTO carta_item (id_carta, bonus_combate, valor_ouro, tipo_item, slot, oc
 VALUES (10, 3, 400, 'acessório', 'nenhum', FALSE);
 
 INSERT INTO carta_item (id_carta, bonus_combate, valor_ouro, tipo_item, slot, ocupacao_dupla)
-VALUES (11, 3, 400, 'armadura', 'armadura', TRUE);
+VALUES (11, 3, 400, 'armadura', 'corpo', TRUE);
 
 INSERT INTO carta_item (id_carta, bonus_combate, valor_ouro, tipo_item, slot, ocupacao_dupla)
 VALUES (12, 4, 800, 'arma', '2_maos', TRUE);
@@ -48,30 +48,30 @@ INSERT INTO carta_item (id_carta, bonus_combate, valor_ouro, tipo_item, slot, oc
 VALUES (16, 4, 600, 'arma', '1_mao', TRUE);
 
 INSERT INTO carta_item (id_carta, bonus_combate, valor_ouro, tipo_item, slot, ocupacao_dupla)
-VALUES (17, 3, 400, 'cabeca', TRUE);
+VALUES (17, 3, 400, 'armadura', 'cabeca', TRUE);
 
 -- Carta Classe
-INSERT INTO carta_classe (id_carta, nome_classe, descricao)
-VALUES (22, 'clérigo', NULL);
+INSERT INTO carta_classe (id_carta, nome_classe)
+VALUES (22, 'clérigo');
 
-INSERT INTO carta_classe (id_carta, nome_classe, descricao)
-VALUES (23, 'guerreiro', NULL);
+INSERT INTO carta_classe (id_carta, nome_classe)
+VALUES (23, 'guerreiro');
 
-INSERT INTO carta_classe (id_carta, nome_classe, descricao)
-VALUES (24, 'mago', NULL);
+INSERT INTO carta_classe (id_carta, nome_classe)
+VALUES (24, 'mago');
 
 -- Carta Raça
-INSERT INTO carta_raca (id_carta, nome_raca, descricao)
-VALUES (18, 'anao', NULL);
+INSERT INTO carta_raca (id_carta, nome_raca)
+VALUES (18, 'anao');
 
-INSERT INTO carta_raca (id_carta, nome_raca, descricao)
-VALUES (19, 'elfo', NULL);
+INSERT INTO carta_raca (id_carta, nome_raca)
+VALUES (19, 'elfo');
 
-INSERT INTO carta_raca (id_carta, nome_raca, descricao)
-VALUES (20, 'halfling', NULL);
+INSERT INTO carta_raca (id_carta, nome_raca)
+VALUES (20, 'halfling');
 
-INSERT INTO carta_raca (id_carta, nome_raca, descricao)
-VALUES (21, 'orc', NULL);
+INSERT INTO carta_raca (id_carta, nome_raca)
+VALUES (21, 'orc');
 
 -- Carta Monstro
 INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
