@@ -25,6 +25,14 @@ A versão solo imaginada mantém os desafios estratégicos do jogo original, sim
 
   - [Dicionário de Dados](./modulo01/dicionario.md)
 
+- Módulo 2:
+
+  - [Data Definition Language](./modulo02/ddl.md)
+
+  - [Data Manipulation Language](./modulo02/dml.md)
+
+  - [Data Query Language](./modulo02/dql.md)
+
 
 ## Apresentações
 
