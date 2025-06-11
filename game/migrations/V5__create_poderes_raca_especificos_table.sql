@@ -24,3 +24,12 @@ CREATE TABLE poder_venda_multiplicada (
     limite_vezes_por_turno INT NOT NULL DEFAULT 1,
     FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
 );
+
+-- Controle de uso do poder de venda multiplicada por turno
+CREATE TABLE uso_poder_venda (
+    id_partida INT REFERENCES partida(id_partida),
+    id_carta INT REFERENCES carta(id_carta),
+    turno INT,
+    usos INT DEFAULT 0,
+    PRIMARY KEY (id_partida, id_carta, turno)
+);

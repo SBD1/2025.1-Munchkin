@@ -71,7 +71,8 @@ def gerenciar_cartas(console, jogador_id):
             return
 
         nova_zona = None
-        
+        acao = acoes[acao_escolhida - 1]
+
         if acao == "Equipar":
             nova_zona = tratar_equipar(console, cursor, id_carta, subtipo, id_partida)
 

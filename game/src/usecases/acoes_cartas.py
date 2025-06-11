@@ -66,7 +66,7 @@ def tratar_venda(console, cursor, id_carta, subtipo, id_partida):
         console.print("[bold red]❌ Apenas cartas do tipo ITEM podem ser vendidas.[/bold red]")
         return None
 
-    # Buscar valor do item
+    # 1. Buscar valor do item
     cursor.execute("""
         SELECT valor_ouro FROM carta_item WHERE id_carta = %s
     """, (id_carta,))
@@ -75,35 +75,78 @@ def tratar_venda(console, cursor, id_carta, subtipo, id_partida):
         console.print("[red]Erro ao buscar valor do item.[/red]")
         return None
 
-    ouro_item = valor[0]
+    valor_ouro = valor[0]
 
-    # Buscar ouro atual e nível
+    # 2. Buscar ouro, nível e turno atual da partida
     cursor.execute("""
-        SELECT ouro_acumulado, nivel FROM partida WHERE id_partida = %s
+        SELECT ouro_acumulado, nivel, turno_atual FROM partida WHERE id_partida = %s
     """, (id_partida,))
-    dados_partida = cursor.fetchone()
-    if not dados_partida:
+    partida_info = cursor.fetchone()
+    if not partida_info:
         console.print("[red]Erro ao acessar os dados da partida.[/red]")
         return None
 
-    ouro_atual, nivel_atual = dados_partida
-    novo_ouro = ouro_atual + ouro_item
+    ouro_atual, nivel_atual, turno_atual = partida_info
 
-    # Verifica se deve subir de nível
+    # 3. Verifica se o jogador tem uma raça com o poder de venda multiplicada equipada
+    cursor.execute("""
+        SELECT pr.id_carta, pvm.multiplicador, pvm.limite_vezes_por_turno
+        FROM carta_partida cp
+        JOIN poder_raca pr ON cp.id_carta = pr.id_carta
+        JOIN poder_venda_multiplicada pvm ON pr.id_poder_raca = pvm.id_poder_raca
+        WHERE cp.id_partida = %s AND cp.zona = 'equipado'
+    """, (id_partida,))
+    poder = cursor.fetchone()
+
+    # 4. Se tiver esse poder e ainda não atingiu o limite de usos no turno, aplica o multiplicador
+    if poder:
+        id_carta_raca, multiplicador, limite = poder
+
+        cursor.execute("""
+            SELECT usos FROM uso_poder_venda
+            WHERE id_partida = %s AND id_carta = %s AND turno = %s
+        """, (id_partida, id_carta_raca, turno_atual))
+        uso = cursor.fetchone()
+
+        if not uso or uso[0] < limite:
+            valor_final = valor_ouro * multiplicador
+
+            # Atualiza ou insere uso
+            if uso:
+                cursor.execute("""
+                    UPDATE uso_poder_venda
+                    SET usos = usos + 1
+                    WHERE id_partida = %s AND id_carta = %s AND turno = %s
+                """, (id_partida, id_carta_raca, turno_atual))
+            else:
+                cursor.execute("""
+                    INSERT INTO uso_poder_venda (id_partida, id_carta, turno, usos)
+                    VALUES (%s, %s, %s, 1)
+                """, (id_partida, id_carta_raca, turno_atual))
+
+            console.print(f"[bold green]🪙 Poder de raça ativado! Item vendido por {valor_final} de ouro (x{multiplicador}).[/bold green]")
+        else:
+            valor_final = valor_ouro
+            console.print("[yellow]⚠️ Poder de venda já usado neste turno. Venda normal aplicada.[/yellow]")
+    else:
+        valor_final = valor_ouro
+
+    # 5. Atualiza o ouro e nível acumulado
+    novo_ouro = ouro_atual + valor_final
+
     subir_nivel = 0
     while novo_ouro >= 1000:
         subir_nivel += 1
         novo_ouro -= 1000
 
-    # Atualiza ouro e nível
     cursor.execute("""
         UPDATE partida
         SET ouro_acumulado = %s, nivel = nivel + %s
         WHERE id_partida = %s
     """, (novo_ouro, subir_nivel, id_partida))
 
-    console.print(f"💰 Item vendido por {ouro_item} de ouro.")
+    console.print(f"💰 Item vendido por {valor_final} de ouro.")
     if subir_nivel > 0:
-        console.print(f"[bold green]⬆️ Você acumulou ouro suficiente e subiu {subir_nivel} nível(is)![/bold green]")
+        console.print(f"[bold green]⬆️ Você subiu {subir_nivel} nível(is)![/bold green]")
 
     return "descartada"
