@@ -12,6 +12,8 @@ CREATE TABLE partida (
     vitoria BOOLEAN DEFAULT FALSE,
     nivel INT DEFAULT 1,
     vida_restantes SMALLINT CHECK (vida_restantes BETWEEN 0 AND 3), -- substitui TINYINT por SMALLINT
+    ouro_acumulado INT DEFAULT 0,
+    limite_mao_atual INT DEFAULT 5,
     FOREIGN KEY (id_jogador) REFERENCES jogador(id_jogador));
 
 -- restrição parcial para que não possa existir mais de uma partida em andamento para o mesmo jogador

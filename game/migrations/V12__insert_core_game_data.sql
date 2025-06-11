@@ -20,13 +20,17 @@ BEGIN
         id_jogador,
         data_inicio,
         estado_partida,
-        vida_restantes
+        vida_restantes,
+        ouro_acumulado,
+        limite_mao_atual
     )
     VALUES (
         p_id_jogador,
         NOW(),
         'em andamento',
-        3
+        3,
+        0,
+        5
     )
     RETURNING id_partida INTO nova_partida_id;
 
@@ -38,11 +42,10 @@ $$ LANGUAGE plpgsql;
 -- Inserção de partidas (DESCOMENTE apenas se tiver jogadores inseridos com id 1 e 2)
 INSERT INTO partida (
     id_jogador, data_inicio, turno_atual, estado_partida,
-    finalizada, vitoria, nivel, vida_restantes
+    finalizada, vitoria, nivel, vida_restantes, ouro_acumulado, limite_mao_atual
 ) VALUES
-(1, NOW(), 1, 'em andamento', FALSE, TRUE, 1, 3),
-(2, NOW(), 2, 'encerrada', TRUE, FALSE, 2, 2);
-
+(1, NOW(), 1, 'em andamento', FALSE, TRUE, 1, 3, 0, 5),
+(2, NOW(), 2, 'encerrada', TRUE, FALSE, 2, 2, 0, 5);
 
 
 -- Inserção de cartas iniciais
