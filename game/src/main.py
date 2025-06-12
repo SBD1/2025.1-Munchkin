@@ -10,9 +10,6 @@ from usecases.mostrar_regras import mostrar_regras
 from usecases.excluir_jogador import excluir_jogador
 from usecases.excluir_partidas_jogador import excluir_partidas_jogador
 
-# 🔹 Importa o mapa dos reinos
-from interface.mapa import mostrar_mapa
-
 # Variável global para armazenar o jogador selecionado na sessão atual
 jogador_selecionado_id = None
 
@@ -42,7 +39,6 @@ def mostrar_menu_acoes(console):
         console.print(f"\n[bold yellow]🎮 Menu de Ações - Turno do Jogador: [green]{nome_jogador}[/green][/bold yellow]")
 
         opcoes = obter_acoes_disponiveis(jogador_selecionado_id)
-        opcoes.append(("Ver Mapa", mostrar_mapa))  # ➕ Adiciona a opção do mapa ao menu
 
         for i, (nome, _) in enumerate(opcoes, 1):
             console.print(f"{i}. {nome}")

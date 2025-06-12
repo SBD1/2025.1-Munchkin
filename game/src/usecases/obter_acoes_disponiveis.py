@@ -3,7 +3,11 @@ from database import obter_cursor
 from usecases.mostrar_regras import mostrar_regras
 from usecases.ver_cartas import ver_cartas_por_zona
 from usecases.gerenciar_cartas import gerenciar_cartas
+<<<<<<< HEAD
 from usecases.iniciar_turno import iniciar_turno
+=======
+from usecases.mostrar_mapa import mostrar_mapa
+>>>>>>> 554731e (Integra sistema de mapa ao banco de dados)
 
 def ver_status(console, jogador_id):
     with obter_cursor() as cursor:
@@ -41,6 +45,7 @@ def obter_acoes_disponiveis(jogador_id):
         ("[bold purple]🚪 Iniciar Turno[/bold purple]", iniciar_turno),
         ("[bold cyan]🧙 Ver Status do Jogador[/bold cyan]", ver_status),
         ("[bold yellow]📖 Ver Regras do Jogo[/bold yellow]", lambda console, _: mostrar_regras(console)),
+        ("[bold dark_orange]🧭 Ver mapa[/bold dark_orange]", mostrar_mapa),
         ("[bold red]❌ Sair do Menu de Ações[/bold red]", None),
     ]
     return opcoes

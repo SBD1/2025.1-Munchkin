@@ -38,3 +38,8 @@ CREATE TABLE slot_equipamento (
     descricao TEXT
 );
 
+CREATE TABLE mapa (
+    id_reino SERIAL PRIMARY KEY,
+    nome VARCHAR(100) UNIQUE NOT NULL,
+    descricao TEXT NOT NULL
+);
