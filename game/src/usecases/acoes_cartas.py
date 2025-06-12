@@ -25,6 +25,40 @@ def tratar_equipar(console, cursor, id_carta, subtipo, id_partida):
             """, (limite_mao, id_partida))
             console.print(f"[bold green]🧬 Limite de cartas na mão atualizado para {limite_mao} devido ao poder da raça.[/bold green]")
 
+    elif subtipo == 'item':
+        cursor.execute("""
+            SELECT tipo_item, slot, bonus_combate
+            FROM carta_item
+            WHERE id_carta = %s
+        """, (id_carta,))
+        resultado = cursor.fetchone()
+
+        if resultado:
+            tipo_item, slot, bonus_combate = resultado
+
+            if slot != 'nenhum':
+                # Verificar se já há outro item no mesmo slot
+                cursor.execute("""
+                    SELECT 1
+                    FROM carta_partida cp
+                    JOIN carta_item ci ON ci.id_carta = cp.id_carta
+                    WHERE cp.id_partida = %s AND cp.zona = 'equipado' AND ci.slot = %s
+                """, (id_partida, slot))
+                conflito = cursor.fetchone()
+
+                if conflito:
+                    console.print(f"[bold red]❌ Você já tem um item equipado no slot '{slot}'. Remova-o antes de equipar outro.[/bold red]")
+                    return None  # Bloqueia o equipamento se houver conflito
+
+            # Agora sim, aplica o bônus e equipa
+            cursor.execute("""
+                UPDATE partida
+                SET nivel = nivel + %s
+                WHERE id_partida = %s
+            """, (bonus_combate, id_partida))
+
+            console.print(f"[bold green]🪖 Item equipado! Bônus de combate +{bonus_combate} aplicado ao seu nível.[/bold green]")
+
     return nova_zona
 
 def tratar_voltar(console, cursor, id_carta, subtipo, id_partida):

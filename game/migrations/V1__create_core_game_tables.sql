@@ -30,3 +30,10 @@ CREATE TABLE carta (
     tipo_carta tipo_carta_enum NOT NULL,
     subtipo subtipo_carta_enum NOT NULL,
     disponivel_para_virar BOOLEAN NOT NULL);
+
+CREATE TABLE slot_equipamento (
+    nome VARCHAR PRIMARY KEY, 
+    capacidade INT NOT NULL,  
+    grupo_exclusao VARCHAR,   
+    descricao TEXT
+);

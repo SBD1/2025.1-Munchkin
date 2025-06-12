@@ -1,3 +1,12 @@
+-- Dados da tabela slot_equipamento
+INSERT INTO slot_equipamento (nome, capacidade, grupo_exclusao, descricao) VALUES
+('cabeca', 1, NULL, 'Equipamentos de cabeça'),
+('corpo', 1, NULL, 'Armaduras corporais'),
+('pe', 1, NULL, 'Botas ou calçados'),
+('1_mao', 2, 'mao', 'Armas de uma mão'),
+('2_maos', 1, 'mao', 'Armas que ocupam as duas mãos'),
+('nenhum', NULL, NULL, 'Itens que não ocupam espaço específico');
+
 -- Carta Item
 INSERT INTO carta_item (id_carta, bonus_combate, valor_ouro, tipo_item, slot, ocupacao_dupla)
 VALUES (1, 1, 200, 'arma', 'nenhum', FALSE);
@@ -103,3 +112,4 @@ VALUES (9, 33, 18, TRUE, 5, 'sem_tipo');
 
 INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
 VALUES (10, 34, 20, TRUE, 5, 'sem_tipo');
+
