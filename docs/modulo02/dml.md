@@ -9,26 +9,68 @@ O Data Manipulation Language (DML) é um subconjunto da linguagem SQL responsáv
 
 ```sql
 
--- Inserção de jogadores
-INSERT INTO jogador (nome) VALUES 
--- ('Ana Luiza Komatsu'),
--- ('Breno Fernandes'),
--- ('Maria Clara Sena'),
--- ('Mylena Trindade');
+-- Cria função para inserir jogador
+CREATE OR REPLACE FUNCTION insert_munchkin_jogador(p_nome TEXT)
+RETURNS VOID AS $$
+BEGIN
+    INSERT INTO jogador (nome) VALUES (p_nome);
+END;
+$$ LANGUAGE plpgsql;
 
--- Inserção de partidas
+-- Inserção de jogadores
+INSERT INTO jogador (nome) VALUES
+('Breno'),
+('Maria');
+
+-- Cria função para iniciar uma nova partida
+CREATE OR REPLACE FUNCTION insert_munchkin_partida(p_id_jogador INT)
+RETURNS INT AS $$
+DECLARE
+    nova_partida_id INT;
+BEGIN
+    INSERT INTO partida (
+        id_jogador,
+        data_inicio,
+        turno_atual,
+        estado_partida,
+        finalizada,
+        vitoria,
+        nivel,
+        vida_restantes,
+        ouro_acumulado,
+        limite_mao_atual
+    )
+    VALUES (
+        p_id_jogador,
+        NOW(),
+        1,
+        'em andamento',
+        FALSE,
+        FALSE,
+        1,
+        3,
+        0,
+        5
+    )
+    RETURNING id_partida INTO nova_partida_id;
+
+    RETURN nova_partida_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Inserção de partidas (DESCOMENTE apenas se tiver jogadores com id 1 e 2)
 INSERT INTO partida (
     id_jogador, data_inicio, turno_atual, estado_partida,
-    primeira_rodada, finalizada, vitoria, nivel, vida_restantes
+    finalizada, vitoria, nivel, vida_restantes, ouro_acumulado, limite_mao_atual
 ) VALUES
--- (1, NOW(), 1, 'em andamento', TRUE, FALSE, TRUE, 1, 3),
--- (2, NOW(), 2, 'pausada', TRUE, FALSE, FALSE, 2, 2);
+(1, NOW(), 1, 'em andamento', FALSE, TRUE, 1, 3, 0, 5),
+(2, NOW(), 2, 'encerrada', TRUE, FALSE, 2, 2, 0, 5);
 
--- Inserção de cartas
+-- Inserção de cartas iniciais
 INSERT INTO carta (id_carta, nome, tipo_carta, subtipo, disponivel_para_virar)
 VALUES 
 (1, 'dentadura postiça aterrorizante', 'tesouro', 'item', TRUE),
-(2, 'Título realmente impressiionante', 'tesouro', 'item', TRUE),
+(2, 'Título realmente impressionante', 'tesouro', 'item', TRUE),
 (3, 'joelheiras pontiagudas', 'tesouro', 'item', TRUE),
 (4, 'botas de chutas a bunda', 'tesouro', 'item', TRUE),
 (5, 'broquel da bravata', 'tesouro', 'item', TRUE),
