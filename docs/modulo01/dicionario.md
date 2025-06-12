@@ -47,11 +47,8 @@ A seguir, cada entidade será documentada em uma tabela com suas respectivas car
 ### Tabela: **PoderRaca**
 ![Tabela PoderRaca](../assets/PoderRaca.png)
 
-### Tabela: **PoderFugaCondicional**
-![Tabela PoderFugaCondicional](../assets/PoderFugaCondicional.png)
-
-### Tabela: **PoderMaldicao**
-![Tabela PoderMaldicao](../assets/PoderMaldicao.png)
+### Tabela: **PoderVendaMultiplicada**
+![Tabela PoderVendaMultiplicada](../assets/PoderVendaMultiplicada.png)
 
 ### Tabela: **PoderRecompensaCondicional**
 ![Tabela PoderRecompensaCondicional](../assets/PoderRecompensaCondicional.png)
@@ -59,26 +56,23 @@ A seguir, cada entidade será documentada em uma tabela com suas respectivas car
 ### Tabela: **PoderLimiteDeMao**
 ![Tabela PoderLimiteDeMao](../assets/PoderLimiteDeMao.png)
 
+### Tabela: **UsoPoderVenda**
+![Tabela UsoPoderVenda](../assets/UsoPoderVenda.png)
+
 ### Tabela: **CartaClasse**
 ![Tabela CartaClasse](../assets/CartaClasse.png)
 
 ### Tabela: **PoderClasse**
 ![Tabela PoderClasse](../assets/PoderClasse.png)
 
-### Tabela: **PoderCombate**
-![Tabela PoderCombate](../assets/PoderCombate.png)
+### Tabela: **PoderRessureicao**
+![Tabela PoderRessureicao](../assets/PoderRessureicao.png)
 
-### Tabela: **PoderFuga**
-![Tabela PoderFuga](../assets/PoderFuga.png)
-
-### Tabela: **PoderFugaComBonus**
-![Tabela PoderFugaComBonus](../assets/PoderFugaComBonus.png)
+### Tabela: **PoderCompensacaoDerrota**
+![Tabela PoderCompensacaoDerrota](../assets/PoderCompensacaoDerrota.png)
 
 ### Tabela: **PoderDescartaParaEfeito**
 ![Tabela PoderDescartaParaEfeito](../assets/PoderDescartaParaEfeito.png)
-
-### Tabela: **PoderRecuperaDescarte**
-![Tabela PoderRecuperaDescarte](../assets/PoderRecuperaDescarte.png)
 
 ### Tabela: **PoderEmpateVence**
 ![Tabela PoderEmpateVence](../assets/PoderEmpateVence.png)
