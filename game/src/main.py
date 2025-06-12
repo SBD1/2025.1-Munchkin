@@ -10,6 +10,9 @@ from usecases.mostrar_regras import mostrar_regras
 from usecases.excluir_jogador import excluir_jogador
 from usecases.excluir_partidas_jogador import excluir_partidas_jogador
 
+# 🔹 Importa o mapa dos reinos
+from interface.mapa import mostrar_mapa
+
 # Variável global para armazenar o jogador selecionado na sessão atual
 jogador_selecionado_id = None
 
@@ -18,6 +21,7 @@ def executar_com_interface(console, func, *args, **kwargs):
     func(console, *args, **kwargs)
     console.print("\n[bold green]✅ Pressione ENTER para continuar...[/bold green]")
     input()
+
 
 # Exibe o menu de ações para o jogador e executa a função escolhida
 def mostrar_menu_acoes(console):
@@ -36,21 +40,21 @@ def mostrar_menu_acoes(console):
 
     while True:
         console.print(f"\n[bold yellow]🎮 Menu de Ações - Turno do Jogador: [green]{nome_jogador}[/green][/bold yellow]")
+
         opcoes = obter_acoes_disponiveis(jogador_selecionado_id)
+        opcoes.append(("Ver Mapa", mostrar_mapa))  # ➕ Adiciona a opção do mapa ao menu
 
         for i, (nome, _) in enumerate(opcoes, 1):
             console.print(f"{i}. {nome}")
 
         escolha = input("\nDigite o número da ação desejada: ").strip()
 
-        # Verifica se a entrada é um número válido
         if escolha.isdigit():
             escolha_num = int(escolha)
 
             if 1 <= escolha_num <= len(opcoes):
                 nome_acao, func_acao = opcoes[escolha_num - 1]
 
-                # Se a ação for "sair", termina o loop
                 if func_acao is None:
                     console.print("[bold red]🚪 Saindo do menu de ações...[/bold red]")
                     break
@@ -62,11 +66,9 @@ def mostrar_menu_acoes(console):
         else:
             console.print("[red]⚠ Entrada inválida. Digite apenas números.[/red]")
 
-# ✅ Nova função: menu principal extraído de main()
+
+# ✅ Menu principal
 def run():
-    """
-    Menu principal do jogo. Responsável por criação, seleção e início da partida.
-    """
     global jogador_selecionado_id
     console = Console()
 
@@ -99,7 +101,7 @@ def run():
             else:
                 iniciar_partida(console, jogador_selecionado_id)
                 mostrar_menu_acoes(console)
-        
+
         elif escolha == '4':
             mostrar_regras(console)
 
@@ -126,7 +128,8 @@ def run():
         else:
             console.print("[red]⚠ Opção inválida. Tente novamente.[/red]")
 
-# ✅ Ponto de entrada do programa
+
+# ✅ Ponto de entrada
 def main():
     run()
 
