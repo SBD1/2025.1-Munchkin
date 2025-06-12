@@ -85,3 +85,12 @@ VALUES
 (32, 'rei tut', 'porta', 'monstro', TRUE),
 (33, 'balrog', 'porta', 'monstro', TRUE),
 (34, 'dragão de plutônio', 'porta', 'monstro', TRUE);
+
+
+INSERT INTO mapa ( id_reino, nome, descricao) 
+VALUES
+(1, '🏰Abismo da Masmorra Sombria', 'Criaturas deformadas espreitam nas sombras em corredores esquecidos'),
+(2, '🌲Selva de Espinhos Eternos', 'A floresta vive, sussurra e caça os que ousam entrar'),
+(3, '🧙Cúpula dos Arquimagos', 'Feitiços antigos moldaram monstros que guardam segredos arcanos'),
+(4, '🔥Fornalha do Trono Carmesim', 'Chamas vivas e legiões demoníacas defendem a entrada do inferno'),
+(5, '👑Coração do Deus Quebrado', 'Um palácio partido onde o Chefão Final aguarda em ruína sagrada');
