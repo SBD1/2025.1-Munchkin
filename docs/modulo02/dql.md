@@ -137,3 +137,12 @@ SELECT c.id_carta, c.nome, c.tipo_carta, c.subtipo
 FROM carta_partida cp
 JOIN carta c ON c.id_carta = cp.id_carta
 WHERE cp.id_partida = %s AND cp.zona = %s;
+
+
+-- ===========================================================
+-- 🔹 VERSIONAMENTO
+-- ===========================================================
+
+| Versão | Data | Modificação | Autor |
+| --- | --- | --- | --- |
+|  0.1 | 10/06/2025 | Criação do Documento | Mylena Mendonça |
