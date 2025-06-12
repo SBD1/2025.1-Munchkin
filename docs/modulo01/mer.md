@@ -57,21 +57,6 @@ O Modelo Entidade-Relacionamento (MER) é uma descrição textual das entidades 
 - `nome`: Nome do poder (ex: Fuga Extra, Resistência à Maldição).
 - `descricao`: Descrição do efeito de alto nível.
 
-
-##### **PoderFugaCondicional**
-- `id_poder_raca` (PK, FK → PoderRaca): Relacionamento com o poder da raça.
-- `nova_tentativa` (bool): Se permite nova tentativa de fuga.
-- `condicao_tipo`: Condição exigida (ex: `descartar_carta`, `usar_item`, `sem_condicao`).
-- `quantidade`: Quantidade exigida (ex: descartar 1 carta).
-
-
-##### **PoderMaldicao**
-- `id_poder_raca` (PK, FK → PoderRaca): Relacionamento com o poder da raça.
-- `ignora_maldicao` (bool): Se pode ignorar maldições.
-- `penalidade_substituta`: Penalidade aplicada no lugar da maldição (ex: perder 1 nível).
-- `nivel_minimo`: Nível mínimo para a substituição (ex: 2 ou mais).
-
-
 ##### **PoderRecompensaCondicional**
 - `id_poder_raca` (PK, FK → PoderRaca): Relacionamento com o poder da raça.
 - `bonus_tipo`: Tipo de bônus recebido (ex: `tesouro_extra`, `nivel`).
@@ -82,6 +67,11 @@ O Modelo Entidade-Relacionamento (MER) é uma descrição textual das entidades 
 ##### **PoderLimiteDeMao**
 - `id_poder_raca` (PK, FK → PoderRaca): Relacionamento com o poder da raça.
 - `limite_cartas_mao`: Novo limite de cartas na mão no fim do turno (ex: 6 para o Anão).
+
+### **PoderVendaMultiplicada
+- `id_poder_raca` (PK, FK → PoderRaca): Relaciona o poder com uma raça específica.
+- `multiplicador`: Fator multiplicador aplicado ao valor de venda de cartas (ex: 2x, 3x).
+- `limite_vezes_por_turno`: Quantas vezes esse poder pode ser usado por turno.
 
 #### **CartaClasse**
 - `id_carta` (PK, FK → Carta): Referência à carta que representa uma classe.
