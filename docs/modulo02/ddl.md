@@ -168,6 +168,7 @@ Cria as tabelas especializadas de `poder_raca`, que detalham os tipos específic
     <summary>Migrações</summary>
 
     ```sql
+-- Recompensa condicional (ex: Elfo e Orc)
 CREATE TABLE poder_recompensa_condicional (
     id_poder_raca INT PRIMARY KEY,
     bonus_tipo VARCHAR(20) CHECK (bonus_tipo IN ('nivel', 'tesouro_extra')),
@@ -179,17 +180,28 @@ CREATE TABLE poder_recompensa_condicional (
     FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
 );
 
+-- Limite de mão extra (Anão)
 CREATE TABLE poder_limite_de_mao (
     id_poder_raca INT PRIMARY KEY,
     limite_cartas_mao INT NOT NULL,
     FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
 );
 
+-- Venda multiplicada (Halfling)
 CREATE TABLE poder_venda_multiplicada (
     id_poder_raca INT PRIMARY KEY,
     multiplicador INT NOT NULL DEFAULT 2,
     limite_vezes_por_turno INT NOT NULL DEFAULT 1,
     FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
+);
+
+-- Controle de uso do poder de venda multiplicada por turno
+CREATE TABLE uso_poder_venda (
+    id_partida INT REFERENCES partida(id_partida),
+    id_carta INT REFERENCES carta(id_carta),
+    turno INT,
+    usos INT DEFAULT 0,
+    PRIMARY KEY (id_partida, id_carta, turno)
 );
 
   ```
@@ -351,3 +363,4 @@ Cria a tabela `combate`, que registra os dados dos combates entre jogadores e mo
 |  0.1 | 14/05/2025 | Criação do Documento | Maria Clara |
 |  1.0 | 26/05/2025 | Atualização do DDL | Maria Clara e Breno Fernandes |
 |  2.0 | 03/06/2025 | Atualização do DDL | Ana Luiza Komatsu |
+|  3.0 | 11/06/2025 | Ajustes do DDL | Mylena Mendonça |

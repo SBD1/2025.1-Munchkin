@@ -433,3 +433,4 @@ INSERT INTO combate (id_partida, id_carta_monstro, monstro_vindo_do_baralho, vit
 | Versão | Data | Modificação | Autor |
 | --- | --- | --- | --- |
 |  0.1 | 2/06/2025 | Criação do Documento | Ana Luiza Komatsu |
+|  1.0 | 11/06/2025 | Ajuste do Documento | Mylena Mendonça e Maria clara Sena |
