@@ -3,6 +3,7 @@ from database import obter_cursor
 from usecases.mostrar_regras import mostrar_regras
 from usecases.ver_cartas import ver_cartas_por_zona
 from usecases.gerenciar_cartas import gerenciar_cartas
+from usecases.iniciar_turno import iniciar_turno
 
 def ver_status(console, jogador_id):
     with obter_cursor() as cursor:
@@ -36,7 +37,8 @@ def ver_status(console, jogador_id):
 def obter_acoes_disponiveis(jogador_id):
     opcoes = [
         ("[bold green]📜 Ver Todas as Cartas do Jogador[/bold green]", ver_cartas_por_zona),
-        ("[bold blue]🛠️ Gerenciar Cartas (Equipar, Descartar, etc.)[/bold blue]", gerenciar_cartas),
+        ("[bold blue]🛠️ Gerenciar Cartas(Equipar, Descartar, etc.)[/bold blue]", gerenciar_cartas),
+        ("[bold purple]🚪 Iniciar Turno[/bold purple]", iniciar_turno),
         ("[bold cyan]🧙 Ver Status do Jogador[/bold cyan]", ver_status),
         ("[bold yellow]📖 Ver Regras do Jogo[/bold yellow]", lambda console, _: mostrar_regras(console)),
         ("[bold red]❌ Sair do Menu de Ações[/bold red]", None),

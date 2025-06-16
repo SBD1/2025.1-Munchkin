@@ -12,14 +12,14 @@ INSERT INTO penalidade_perda_nivel (id_efeito_monstro, niveis)
 VALUES (5, 4);
 
 -- penalidade_item
-INSERT INTO penalidade_item (id_efeito_monstro, local_item, remove_tudo)
-VALUES (4, 'cabeca', FALSE);
+INSERT INTO penalidade_item (id_efeito_monstro, local_item)
+VALUES (4, 'cabeca');
 
-INSERT INTO penalidade_item (id_efeito_monstro, local_item, remove_tudo)
-VALUES (6, 'cabeca', FALSE);
+INSERT INTO penalidade_item (id_efeito_monstro, local_item)
+VALUES (6, 'cabeca');
 
-INSERT INTO penalidade_item (id_efeito_monstro, local_item, remove_tudo)
-VALUES (8, 'todos', TRUE);
+INSERT INTO penalidade_item (id_efeito_monstro, local_item)
+VALUES (8, 'todos');
 
 -- penalidade_transformacao
 INSERT INTO penalidade_transformacao (id_efeito_monstro, perde_classe, perde_raca, vira_humano)

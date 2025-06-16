@@ -1,11 +1,26 @@
 def buscar_detalhes_por_subtipo(cursor, id_carta, subtipo):
     # Detalhes de cartas do tipo "item"
     if subtipo == 'item':
+        # Buscar informações principais do item
         cursor.execute("""
             SELECT bonus_combate, valor_ouro, tipo_item, slot, ocupacao_dupla
-            FROM carta_item WHERE id_carta = %s
+            FROM carta_item
+            WHERE id_carta = %s
         """, (id_carta,))
-        return cursor.fetchone()
+        dados_item = cursor.fetchone()
+
+        if not dados_item:
+            return None
+
+        # Buscar restrições do item
+        cursor.execute("""
+            SELECT tipo_alvo, valor_alvo, permitido
+            FROM restricao_item
+            WHERE id_carta_item = %s
+        """, (id_carta,))
+        restricoes = cursor.fetchall()
+
+        return (*dados_item, restricoes)
 
     # Detalhes de cartas do tipo "monstro" com JOIN para obter efeitos
     elif subtipo == 'monstro':

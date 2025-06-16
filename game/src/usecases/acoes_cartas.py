@@ -34,6 +34,49 @@ def tratar_equipar(console, cursor, id_carta, subtipo, id_partida):
         resultado = cursor.fetchone()
 
         if resultado:
+            # Verifica restrições do item
+            cursor.execute("""
+                SELECT tipo_alvo, valor_alvo, permitido
+                FROM restricao_item
+                WHERE id_carta_item = %s
+            """, (id_carta,))
+            restricoes = cursor.fetchall()
+
+            for tipo_alvo, valor_alvo, permitido in restricoes:
+                if tipo_alvo == 'classe':
+                    # Verifica se o jogador tem a classe exigida
+                    cursor.execute("""
+                        SELECT 1
+                        FROM carta_partida cp
+                        JOIN carta_classe cc ON cc.id_carta = cp.id_carta
+                        WHERE cp.id_partida = %s AND cp.zona = 'equipado' AND cc.nome_classe = %s
+                    """, (id_partida, valor_alvo))
+                    possui = cursor.fetchone()
+                    
+                    if permitido and not possui:
+                        console.print(f"[bold red]❌ Este item só pode ser usado por um personagem da classe '{valor_alvo.upper()}', mas você não está com essa classe equipada.[/bold red]")
+                        return None
+                    if not permitido and possui:
+                        console.print(f"[bold red]❌ Personagens da classe '{valor_alvo.upper()}' não podem usar este item.[/bold red]")
+                        return None
+
+                elif tipo_alvo == 'raca':
+                    # Verifica se o jogador tem a raça exigida
+                    cursor.execute("""
+                        SELECT 1
+                        FROM carta_partida cp
+                        JOIN carta_raca cr ON cr.id_carta = cp.id_carta
+                        WHERE cp.id_partida = %s AND cp.zona = 'equipado' AND cr.nome_raca = %s
+                    """, (id_partida, valor_alvo))
+                    possui = cursor.fetchone()
+                    
+                    if permitido and not possui:
+                        console.print(f"[bold red]❌ Este item só pode ser usado por um personagem da raça '{valor_alvo.upper()}', mas você não está com essa raça equipada.[/bold red]")
+                        return None
+                    if not permitido and possui:
+                        console.print(f"[bold red]❌ Personagens da raça '{valor_alvo.upper()}' não podem usar este item.[/bold red]")
+                        return None
+                    
             tipo_item, slot, bonus_combate = resultado
 
             if slot != 'nenhum':
@@ -57,7 +100,7 @@ def tratar_equipar(console, cursor, id_carta, subtipo, id_partida):
                 WHERE id_partida = %s
             """, (bonus_combate, id_partida))
 
-            console.print(f"[bold green]🪖 Item equipado! Bônus de combate +{bonus_combate} aplicado ao seu nível.[/bold green]")
+            console.print(f"[bold green]🪖 Item equipado no slot '{slot.upper()}'! Bônus de combate +{bonus_combate} aplicado ao seu nível.[/bold green]")
 
     return nova_zona
 

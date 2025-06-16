@@ -37,3 +37,4 @@ CREATE TABLE slot_equipamento (
     grupo_exclusao VARCHAR,   
     descricao TEXT
 );
+

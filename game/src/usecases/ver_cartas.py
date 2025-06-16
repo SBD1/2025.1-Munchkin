@@ -1,9 +1,9 @@
-from database import obter_cursor
 from usecases.obter_detalhes_carta import buscar_detalhes_por_subtipo
 
 ZONAS = ['mao', 'equipado', 'descartada']
 
 def ver_cartas_por_zona(console, jogador_id):
+    from database import obter_cursor
     with obter_cursor() as cursor:
         # Buscar a partida atual do jogador
         cursor.execute("""
@@ -47,8 +47,13 @@ def ver_cartas_por_zona(console, jogador_id):
                 detalhes = buscar_detalhes_por_subtipo(cursor, id_carta, subtipo)
 
                 if subtipo == 'item' and detalhes:
-                    bonus, ouro, tipo_item, slot, dupla = detalhes
-                    console.print(f"   ➕ Bônus: {bonus}, 💰 Ouro: {ouro}, Tipo: {tipo_item}, Slot: {slot}, Dupla? {'Sim' if dupla else 'Não'}")
+                    bonus, ouro, tipo_item, slot, dupla, restricoes = detalhes
+                    console.print(f"   ➕ Bônus: {bonus}, 💰 Ouro: {ouro}, Tipo: {tipo_item}, Slot: {slot}")
+
+                    if restricoes:
+                        for tipo_alvo, valor_alvo, permitido in restricoes:
+                            emoji = "✅" if permitido else "🚫"
+                            console.print(f"   {emoji} {'Somente' if permitido else 'Exceto'} para {tipo_alvo.upper()}: {valor_alvo}")
 
                 elif subtipo == 'monstro' and detalhes:
                     (nivel, pode_fugir, recompensa, tipo_monstro), efeitos = detalhes

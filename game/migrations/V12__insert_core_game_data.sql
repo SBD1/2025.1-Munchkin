@@ -85,3 +85,4 @@ VALUES
 (32, 'rei tut', 'porta', 'monstro', TRUE),
 (33, 'balrog', 'porta', 'monstro', TRUE),
 (34, 'dragão de plutônio', 'porta', 'monstro', TRUE);
+
