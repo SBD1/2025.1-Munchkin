@@ -1,11 +1,12 @@
--- Cria função para inserir jogador com nome
-CREATE OR REPLACE FUNCTION insert_munchkin_jogador(nome TEXT)
+-- Cria função para inserir jogador
+CREATE OR REPLACE FUNCTION insert_munchkin_jogador(p_nome TEXT)
 RETURNS VOID AS $$
 BEGIN
-    INSERT INTO jogador (nome) VALUES (nome);
+    INSERT INTO jogador (nome) VALUES (p_nome);
 END;
 $$ LANGUAGE plpgsql;
 
+-- Inserção de jogadores
 INSERT INTO jogador (nome) VALUES
 ('Breno'),
 ('Maria');
@@ -19,7 +20,11 @@ BEGIN
     INSERT INTO partida (
         id_jogador,
         data_inicio,
+        turno_atual,
         estado_partida,
+        finalizada,
+        vitoria,
+        nivel,
         vida_restantes,
         ouro_acumulado,
         limite_mao_atual
@@ -27,7 +32,11 @@ BEGIN
     VALUES (
         p_id_jogador,
         NOW(),
+        1,
         'em andamento',
+        FALSE,
+        FALSE,
+        1,
         3,
         0,
         5
@@ -38,8 +47,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
--- Inserção de partidas (DESCOMENTE apenas se tiver jogadores inseridos com id 1 e 2)
+-- Inserção de partidas (DESCOMENTE apenas se tiver jogadores com id 1 e 2)
 INSERT INTO partida (
     id_jogador, data_inicio, turno_atual, estado_partida,
     finalizada, vitoria, nivel, vida_restantes, ouro_acumulado, limite_mao_atual
@@ -47,12 +55,11 @@ INSERT INTO partida (
 (1, NOW(), 1, 'em andamento', FALSE, TRUE, 1, 3, 0, 5),
 (2, NOW(), 2, 'encerrada', TRUE, FALSE, 2, 2, 0, 5);
 
-
 -- Inserção de cartas iniciais
 INSERT INTO carta (id_carta, nome, tipo_carta, subtipo, disponivel_para_virar)
 VALUES 
 (1, 'dentadura postiça aterrorizante', 'tesouro', 'item', TRUE),
-(2, 'Título realmente impressiionante', 'tesouro', 'item', TRUE),
+(2, 'Título realmente impressionante', 'tesouro', 'item', TRUE),
 (3, 'joelheiras pontiagudas', 'tesouro', 'item', TRUE),
 (4, 'botas de chutas a bunda', 'tesouro', 'item', TRUE),
 (5, 'broquel da bravata', 'tesouro', 'item', TRUE),

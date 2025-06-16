@@ -77,6 +77,12 @@ Cria as tabelas principais do sistema de gerenciamento de partidas: Jogador, Par
         tipo_carta tipo_carta_enum NOT NULL,
         subtipo subtipo_carta_enum NOT NULL,
         disponivel_para_virar BOOLEAN NOT NULL);
+    
+    CREATE TABLE slot_equipamento (
+        nome VARCHAR PRIMARY KEY, 
+        capacidade INT NOT NULL,  
+        grupo_exclusao VARCHAR,   
+        descricao TEXT);
     ```
 
 </details>
@@ -127,8 +133,9 @@ Cria as tabelas especializadas CartaRaca, CartaClasse, CartaItem e CartaMonstro,
         bonus_combate INT,
         valor_ouro INT,
         tipo_item VARCHAR(20) CHECK (tipo_item IN ('arma', 'armadura', 'acessório')),
-        slot VARCHAR(20) CHECK (slot IN ('cabeca', 'pe', 'corpo', '1_mao', '2_maos', 'nenhum')),
         ocupacao_dupla BOOLEAN DEFAULT FALSE,
+        slot VARCHAR(20),
+        FOREIGN KEY (slot) REFERENCES slot_equipamento(nome),
         FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
 
     CREATE TABLE carta_monstro (
@@ -139,6 +146,7 @@ Cria as tabelas especializadas CartaRaca, CartaClasse, CartaItem e CartaMonstro,
         recompensa INT,
         tipo_monstro VARCHAR(50) CHECK (tipo_monstro IN ('morto_vivo', 'sem_tipo')),
         FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
+    
     ```
 
 </details>
