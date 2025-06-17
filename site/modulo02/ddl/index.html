@@ -974,7 +974,7 @@
     <summary>Migrações</summary>
 
     ```sql
-    CREATE TABLE jogador (
+CREATE TABLE jogador (
     id_jogador SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL);
 
@@ -994,8 +994,8 @@ CREATE TABLE partida (
 
 -- restrição parcial para que não possa existir mais de uma partida em andamento para o mesmo jogador
 CREATE UNIQUE INDEX idx_unico_jogador_partida_em_andamento
-ON partida(id_jogador)
-WHERE estado_partida = 'em andamento';
+    ON partida(id_jogador)
+    WHERE estado_partida = 'em andamento';
 
 CREATE TYPE tipo_carta_enum AS ENUM ('porta', 'tesouro');
 CREATE TYPE subtipo_carta_enum AS ENUM ('classe', 'raca', 'item', 'monstro');
@@ -1025,15 +1025,15 @@ CREATE TABLE slot_equipamento (
     <summary>Migrações</summary>
 
     ```sql
-   CREATE TYPE enum_zona AS ENUM ('mao', 'equipado', 'mochila', 'descartada');
+CREATE TYPE enum_zona AS ENUM ('mao', 'equipado', 'mochila', 'descartada');
 
-    CREATE TABLE carta_partida (
-        id_carta_partida SERIAL PRIMARY KEY,
-        id_partida INT NOT NULL,
-        id_carta INT NOT NULL,
-        zona enum_zona NOT NULL,
-        FOREIGN KEY (id_partida) REFERENCES partida(id_partida),
-        FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
+CREATE TABLE carta_partida (
+    id_carta_partida SERIAL PRIMARY KEY,
+    id_partida INT NOT NULL,
+    id_carta INT NOT NULL,
+    zona enum_zona NOT NULL,
+    FOREIGN KEY (id_partida) REFERENCES partida(id_partida),
+    FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
     ```
 
 </details>
@@ -1043,36 +1043,39 @@ CREATE TABLE slot_equipamento (
 <details>
     <summary>Migrações</summary>
 
-    <div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">carta_classe</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">id_carta</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<span class="w">    </span><span class="n">nome_classe</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id_carta</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">carta</span><span class="p">(</span><span class="n">id_carta</span><span class="p">));</span>
+    ```sql
 
-<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">carta_raca</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">id_carta</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<span class="w">    </span><span class="n">nome_raca</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">descricao</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
-<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id_carta</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">carta</span><span class="p">(</span><span class="n">id_carta</span><span class="p">));</span>
+CREATE TABLE carta_classe (
+    id_carta INT PRIMARY KEY,
+    nome_classe VARCHAR(20) NOT NULL,
+    FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
 
-<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">carta_item</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">id_carta</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<span class="w">    </span><span class="n">bonus_combate</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<span class="w">    </span><span class="n">valor_ouro</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<span class="w">    </span><span class="n">tipo_item</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">tipo_item</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;arma&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;armadura&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;acessório&#39;</span><span class="p">)),</span>
-<span class="w">    </span><span class="n">ocupacao_dupla</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
-<span class="w">    </span><span class="n">slot</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
-<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">slot</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">slot_equipamento</span><span class="p">(</span><span class="n">nome</span><span class="p">),</span>
-<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id_carta</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">carta</span><span class="p">(</span><span class="n">id_carta</span><span class="p">));</span>
+CREATE TABLE carta_raca (
+    id_carta INT PRIMARY KEY,
+    nome_raca VARCHAR(20) NOT NULL,
+    descricao VARCHAR(200),
+    FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
 
-<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">carta_monstro</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">id_carta_monstro</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<span class="w">    </span><span class="n">id_carta</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">nivel</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<span class="w">    </span><span class="n">pode_fugir</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="p">,</span>
-<span class="w">    </span><span class="n">recompensa</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<span class="w">    </span><span class="n">tipo_monstro</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">tipo_monstro</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;morto_vivo&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;sem_tipo&#39;</span><span class="p">)),</span>
-<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id_carta</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">carta</span><span class="p">(</span><span class="n">id_carta</span><span class="p">));</span>
-</code></pre></div>
+CREATE TABLE carta_item (
+    id_carta INT PRIMARY KEY,
+    bonus_combate INT,
+    valor_ouro INT,
+    tipo_item VARCHAR(20) CHECK (tipo_item IN ('arma', 'armadura', 'acessório')),
+    ocupacao_dupla BOOLEAN DEFAULT FALSE,
+    slot VARCHAR(20),
+    FOREIGN KEY (slot) REFERENCES slot_equipamento(nome),
+    FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
+
+CREATE TABLE carta_monstro (
+    id_carta_monstro SERIAL PRIMARY KEY,
+    id_carta INT UNIQUE NOT NULL,
+    nivel INT,
+    pode_fugir BOOLEAN,
+    recompensa INT,
+    tipo_monstro VARCHAR(50) CHECK (tipo_monstro IN ('morto_vivo', 'sem_tipo')),
+    FOREIGN KEY (id_carta) REFERENCES carta(id_carta));
+
+    ```
 
 </details>
 
@@ -1082,11 +1085,11 @@ CREATE TABLE slot_equipamento (
     <summary>Migrações</summary>
 
     ```sql
-   CREATE TABLE poder_raca (
-        id_poder_raca SERIAL PRIMARY KEY,
-        id_carta INT NOT NULL,
-        descricao VARCHAR(200),
-        FOREIGN KEY (id_carta) REFERENCES carta_raca(id_carta));
+CREATE TABLE poder_raca (
+    id_poder_raca SERIAL PRIMARY KEY,
+    id_carta INT NOT NULL,
+    descricao VARCHAR(200),
+    FOREIGN KEY (id_carta) REFERENCES carta_raca(id_carta));
     ```
 
 </details>
@@ -1137,84 +1140,87 @@ CREATE TABLE uso_poder_venda (
 
 </details>
 
+</details>
 <h3 id="v6_create_poder_classe">V6_create_poder_classe</h3>
 <p>Cria a tabela <code>poder_classe</code>, associada às cartas do subtipo classe, e define o relacionamento com <code>carta_classe</code>.</p>
 <details>
-    <summary>Migrações</summary>
+  <summary>Migrações</summary>
 
-    ```sql
-    CREATE TABLE poder_classe (
-        id_poder_classe INT PRIMARY KEY,
-        id_carta_classe INT,
-        descricao VARCHAR(200),
+  ```sql
+CREATE TABLE poder_classe (
+    id_poder_classe INT PRIMARY KEY,
+    id_carta_classe INT,
+    descricao VARCHAR(200),
 
-        FOREIGN KEY (id_carta_classe) REFERENCES carta_classe(id_carta)
+    FOREIGN KEY (id_carta_classe) REFERENCES carta_classe(id_carta)
 );
-
-    ```
+  ```
 
 </details>
 
 <h3 id="v7_create_poder_classe_especificos_table">V7_create_poder_classe_especificos_table</h3>
 <p>Cria as tabelas especializadas de <code>poder_classe</code>, detalhando os tipos específicos de habilidades relacionadas a classe.</p>
 <details>
-    <summary>Migrações</summary>
+  <summary>Migrações</summary>
 
-    <div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">descarta_para_efeito</span><span class="w"> </span><span class="p">(</span>
-<span class="w">        </span><span class="n">id_poder_classe</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<span class="w">        </span><span class="n">efeito</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
-<span class="w">        </span><span class="n">max_cartas</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
+  ```sql
+CREATE TABLE descarta_para_efeito (
+    id_poder_classe INT PRIMARY KEY,
+    efeito VARCHAR(100),
+    max_cartas INT,
 
-<span class="w">        </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_classe</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">poder_classe</span><span class="p">(</span><span class="n">id_poder_classe</span><span class="p">)</span>
-<span class="p">);</span>
+    FOREIGN KEY (id_poder_classe) REFERENCES poder_classe(id_poder_classe)
+  );
 
-<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">empata_vence</span><span class="w"> </span><span class="p">(</span>
-<span class="w">        </span><span class="n">id_poder_classe</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<span class="w">        </span><span class="n">vence_empata</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
+CREATE TABLE empata_vence (
+    id_poder_classe INT PRIMARY KEY,
+    vence_empata BOOLEAN DEFAULT FALSE,
 
-<span class="w">        </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_classe</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">poder_classe</span><span class="p">(</span><span class="n">id_poder_classe</span><span class="p">)</span>
-<span class="p">);</span>
-</code></pre></div>
+    FOREIGN KEY (id_poder_classe) REFERENCES poder_classe(id_poder_classe)
+  );
+  ```
 
 </details>
 
 <h3 id="v8_create_restricao_item_table">V8_create_restricao_item_table</h3>
 <p>Cria a tabela <code>restricao_item</code>, que define as restrições de uso dos itens com base em raça ou classe. Relaciona-se diretamente com a tabela <code>carta_item</code>.</p>
 <details>
-    <summary>Migrações</summary>
+  <summary>Migrações</summary>
 
-    <div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">restricao_item</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">id_restricao</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<span class="w">    </span><span class="n">id_carta_item</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">carta_item</span><span class="p">(</span><span class="n">id_carta</span><span class="p">),</span>
-<span class="w">    </span><span class="n">tipo_alvo</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">tipo_alvo</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;raca&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;classe&#39;</span><span class="p">)),</span>
-<span class="w">    </span><span class="n">valor_alvo</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">valor_alvo</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;mago&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;anao&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;guerreiro&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;orc&#39;</span><span class="p">)),</span>
-<span class="w">    </span><span class="n">permitido</span><span class="w"> </span><span class="nb">BOOLEAN</span>
-<span class="p">);</span>
-</code></pre></div>
+  ```sql
+CREATE TABLE restricao_item (
+    id_restricao SERIAL PRIMARY KEY,
+    id_carta_item INT REFERENCES carta_item(id_carta),
+    tipo_alvo VARCHAR(20) CHECK (tipo_alvo IN ('raca', 'classe')),
+    valor_alvo VARCHAR(50) CHECK (valor_alvo IN ('mago', 'anao', 'guerreiro', 'orc')),
+    permitido BOOLEAN
+  );
+  ```
 
 </details>
 
 <h3 id="v9_create_efeito_monstro_table">V9_create_efeito_monstro_table</h3>
 <p>Cria a tabela <code>efeito_monstro</code>, que define os efeitos associados a cartas de monstro.</p>
 <details>
-    <summary>Migrações</summary>
+  <summary>Migrações</summary>
 
-    <div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">efeito_monstro</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">id_efeito_monstro</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<span class="w">    </span><span class="n">id_carta_monstro</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">carta_monstro</span><span class="p">(</span><span class="n">id_carta</span><span class="p">),</span>
-<span class="w">    </span><span class="n">descricao</span><span class="w"> </span><span class="nb">TEXT</span>
-<span class="p">);</span>
-</code></pre></div>
+  ```sql
+CREATE TABLE efeito_monstro (
+    id_efeito_monstro SERIAL PRIMARY KEY,
+    id_carta_monstro INTEGER REFERENCES carta_monstro(id_carta),
+    descricao TEXT
+  );
+  ```
 
 </details>
 
 <h3 id="v10_create_efeitos_monstros_especificos_table">V10_create_efeitos_monstros_especificos_table</h3>
 <p>Cria tabelas especializadas para os efeitos de monstro, como modificadores, penalidades e condições específicas.</p>
 <details>
-    <summary>Migrações</summary>
+  <summary>Migrações</summary>
 
-    ```sql
-    CREATE TABLE penalidade_perda_nivel (
+  ```sql
+CREATE TABLE penalidade_perda_nivel (
     id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
     niveis INT NOT NULL
 );
@@ -1235,37 +1241,38 @@ CREATE TABLE penalidade_morte (
     id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
     morte BOOLEAN NOT NULL DEFAULT FALSE
 );
-    ```
+  ```
 
 </details>
 
 <h3 id="v11_create_combate_table">V11_create_combate_table</h3>
 <p>Cria a tabela <code>combate</code>, que registra os dados dos combates entre jogadores e monstros durante as partidas.</p>
 <details>
-    <summary>Migrações</summary>
+  <summary>Migrações</summary>
 
-    ```sql
-    CREATE TABLE combate (
+  ```sql
+CREATE TABLE combate (
     id_combate SERIAL PRIMARY KEY,
     id_partida INT NOT NULL,
-    id_carta INT NOT NULL, 
+    id_carta INT NOT NULL,
     monstro_vindo_do_baralho BOOLEAN,
     vitoria BOOLEAN,
     coisa_ruim_aplicada BOOLEAN,
     nivel_ganho INT,
     data_ocorrido TIMESTAMP,
     FOREIGN KEY (id_partida) REFERENCES partida(id_partida),
-    FOREIGN KEY (id_carta) REFERENCES carta(id_carta) 
-);
-
-    ```
+    FOREIGN KEY (id_carta) REFERENCES carta(id_carta)
+    );
+  ```
 
 </details>
 
+<hr />
 <h2 id="referencia-bibliografica">Referência Bibliográfica</h2>
 <blockquote>
 <p>[1] ELMASRI, Ramez; NAVATHE, Shamkant B. Sistemas de banco de dados. Tradução: Daniel Vieira. Revisão técnica: Enzo Seraphim; Thatyana de Faria Piola Seraphim. 6. ed. São Paulo: Pearson Addison Wesley, 2011.</p>
 </blockquote>
+<hr />
 <h3 id="versionamento">Versionamento</h3>
 <table>
 <thead>
