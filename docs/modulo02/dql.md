@@ -77,6 +77,28 @@ WHERE id_partida = %s AND id_carta = %s AND turno = %s;
 
 
 -- ===========================================================
+-- 🔹 CHUTAR A PORTA
+-- ===========================================================
+-- Seleciona aleatoriamente uma carta do tipo porta que esteja disponível para virar.
+SELECT id_carta, nome, subtipo FROM carta
+WHERE tipo_carta = 'porta' AND disponivel_para_virar = TRUE
+ORDER BY RANDOM() LIMIT 1;
+
+-- Marca a carta sorteada como indisponível para não ser usada novamente.
+UPDATE carta
+SET disponivel_para_virar = FALSE
+WHERE id_carta = %s;
+
+-- Registra o início de um combate com um monstro vindo do baralho na partida atual.
+INSERT INTO combate (id_partida, id_carta, monstro_vindo_do_baralho, data_ocorrido)
+VALUES (%s, %s, TRUE, NOW());
+
+-- Adiciona a carta à mão do jogador na partida atual.
+INSERT INTO carta_partida (id_partida, id_carta, zona)
+VALUES (%s, %s, 'mao');
+
+
+-- ===========================================================
 -- 🔹 CRIAR JOGADOR
 -- ===========================================================
 -- Cria um novo munchkin usando função armazenada
@@ -98,6 +120,11 @@ FROM carta_partida cp
 JOIN carta c ON c.id_carta = cp.id_carta
 WHERE cp.id_partida = %s AND cp.zona = 'mao';
 
+-- Atualiza a zona de uma carta específica na partida, movendo-a para a nova posição (ex: mão, mesa, descarte).
+UPDATE carta_partida
+SET zona = %s
+WHERE id_partida = %s AND id_carta = %s;
+
 
 -- ===========================================================
 -- 🔹 INICIAR PARTIDA
@@ -108,16 +135,45 @@ SELECT id_partida FROM partida
 WHERE id_jogador = %s AND estado_partida = 'em andamento'
 LIMIT 1;
 
+--  Cria uma nova partida com o jogador, data atual, estado "em andamento" e 3 vidas, retornando o ID gerado.
+INSERT INTO partida (id_jogador, data_inicio, estado_partida, vida_restantes)
+VALUES (%s, %s, 'em andamento', 3)
+RETURNING id_partida;
+
 -- Seleciona 4 cartas de tipo específico aleatórias disponíveis
 SELECT id_carta FROM carta
 WHERE tipo_carta = %s AND disponivel_para_virar = TRUE
 ORDER BY RANDOM()
 LIMIT 4;
 
+-- Insere cada carta na nova partida, colocando-a na zona "mão" do jogador.
+INSERT INTO carta_partida (id_partida, id_carta, zona)
+VALUES (%s, %s, 'mao');
+
+
+-- ===========================================================
+-- 🔹 INICIAR TURNO
+-- ===========================================================
+
+-- Busca a partida mais recente em andamento do jogador, com ID, limite de mão e turno atual.
+SELECT id_partida, limite_mao_atual, turno_atual
+FROM partida
+WHERE id_jogador = %s AND estado_partida = 'em andamento'
+ORDER BY id_partida DESC LIMIT 1;
+
+-- Conta quantas cartas estão na mão do jogador na partida informada.SELECT COUNT(*) FROM carta_partida
+WHERE id_partida = %s AND zona = 'mao';
+
+-- Atualiza a partida somando 1 ao turno atual para iniciar um novo turno.
+UPDATE partida
+SET turno_atual = turno_atual + 1
+WHERE id_partida = %s
+
 
 -- ===========================================================
 -- 🔹 LISTAR JOGADORES
 -- ===========================================================
+-- Executa a consulta que busca todos os jogadores e armazena o resultado em resultados.
 SELECT id_jogador, nome FROM Jogador ORDER BY id_jogador;
 
 
@@ -164,6 +220,7 @@ WHERE cc.id_carta = %s;
 -- ===========================================================
 -- 🔹 SELECIONAR JOGADOR
 -- ===========================================================
+-- Seleciona todos os jogadores com seus IDs e nomes, ordenados pelo ID.
 SELECT id_jogador, nome FROM Jogador ORDER BY id_jogador;
 
 
@@ -190,3 +247,4 @@ WHERE cp.id_partida = %s AND cp.zona = %s;
 | Versão | Data | Modificação | Autor |
 | --- | --- | --- | --- |
 |  0.1 | 10/06/2025 | Criação do Documento | Mylena Mendonça |
+|  1.0 | 16/06/2025 | Modificação | Ana Luiza Komatsu e Mylena Mendonça |
