@@ -87,10 +87,10 @@ VALUES
 (34, 'dragão de plutônio', 'porta', 'monstro', TRUE);
 
 
-INSERT INTO mapa ( id_reino, nome, descricao) 
+INSERT INTO mapa (id_reino, nome, descricao, nivel_min, nivel_max, ordem) 
 VALUES
-(1, '🏰Abismo da Masmorra Sombria', 'Criaturas deformadas espreitam nas sombras em corredores esquecidos'),
-(2, '🌲Selva de Espinhos Eternos', 'A floresta vive, sussurra e caça os que ousam entrar'),
-(3, '🧙Cúpula dos Arquimagos', 'Feitiços antigos moldaram monstros que guardam segredos arcanos'),
-(4, '🔥Fornalha do Trono Carmesim', 'Chamas vivas e legiões demoníacas defendem a entrada do inferno'),
-(5, '👑Coração do Deus Quebrado', 'Um palácio partido onde o Chefão Final aguarda em ruína sagrada');
+(1, '🏰Abismo da Masmorra Sombria', 'Criaturas deformadas espreitam nas sombras em corredores esquecidos', 2, 6, 1),
+(2, '🌲Selva de Espinhos Eternos', 'A floresta vive, sussurra e caça os que ousam entrar', 6, 10, 2),
+(3, '🧙Cúpula dos Arquimagos', 'Feitiços antigos moldaram monstros que guardam segredos arcanos', 10, 14, 3),
+(4, '🔥Fornalha do Trono Carmesim', 'Chamas vivas e legiões demoníacas defendem a entrada do inferno', 14, 18, 4),
+(5, '👑Coração do Deus Quebrado', 'Um palácio partido onde o Chefão Final aguarda em ruína sagrada', 20, 20, 5);
