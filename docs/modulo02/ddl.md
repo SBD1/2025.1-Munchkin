@@ -221,7 +221,7 @@ Cria as tabelas especializadas de `poder_raca`, que detalham os tipos específic
         PRIMARY KEY (id_partida, id_carta, turno)
     );
 
-  ```
+    ```
 
 </details>
 
