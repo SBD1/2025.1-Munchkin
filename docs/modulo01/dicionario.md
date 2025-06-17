@@ -104,6 +104,9 @@ A seguir, cada entidade será documentada em uma tabela com suas respectivas car
 ### Tabela: **PenalidadeTransformacao**
 ![Tabela PenalidadeTransformacao](../assets/PenalidadeTranformacao.png)
 
+### Tabela: **PenalidadeMorte**
+![Tabela PenalidadeMorte](../assets/PenalidadeMorte.png)
+
 ### Tabela: **PenalidadeCondicional**
 ![Tabela PenalidadeCondicional](../assets/PenalidadeCondicional.png)
 
@@ -118,4 +121,5 @@ A seguir, cada entidade será documentada em uma tabela com suas respectivas car
 |------------|----------------------------------------|-----------------------------------------------------------------------|
 | 25/04/2025 | Criação do artefato                    | [Breno Fernandes](https://github.com/Brenofrds)                      |
 | 02/05/2025 | Colaboração na construção do dicionário de dados |[Breno Fernandes](https://github.com/Brenofrds),[Maria Clara Sena](https://github.com/mclarasenaa), [Ana Luiza](https://github.com/luluaroeira), [Mylena Mendonça](https://github.com/MylenaTrindade) |
-| 11/06/2025 | Correções  do dicionário                | [Maria Clara](https://github.com/mclarasenaa), [Mylena Mendonça](https://github.com/MylenaTrindade) 
+| 11/06/2025 | Correções  do dicionário                | [Maria Clara](https://github.com/mclarasenaa), [Mylena Mendonça](https://github.com/MylenaTrindade) |
+| 11/06/2025 | Adições no dicionário |[Maria Clara Sena](https://github.com/mclarasenaa) |
