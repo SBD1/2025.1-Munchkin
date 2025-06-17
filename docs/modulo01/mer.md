@@ -16,22 +16,12 @@ O Modelo Entidade-Relacionamento (MER) é uma descrição textual das entidades 
 - `data_inicio`: Data e hora em que a partida começou.
 - `turno_atual`: Número atual do turno.
 - `estado_partida`: Estado da partida (ex: "em_andamento", "pausada", "encerrada").
-- `primeira_rodada` (bool): Indica se está na primeira fase da partida.
 - `finalizada` (bool): Define se a partida foi concluída.
 - `vitoria` (bool): Define se o jogador venceu a partida.
 - `nivel`: Nível atual do jogador dentro dessa partida.
 - `vida_restantes`: Quantidade de vidas restantes (máx. 3).
-
-### **CartaPartida**
-
-- `id_carta_partida` (PK): Identificador único da relação entre carta e partida.
-- `id_partida` (FK): Referência à partida onde a carta está sendo usada.
-- `id_carta` (FK): Referência à carta associada.
-- `zona`: Define onde a carta está na partida. Pode ser:
-  - `mao`
-  - `equipado`
-  - `mochila`
-  - `descartada`
+- `ouro_acumulado`: Quantidade de ouro acumulado pelo jogador na partida (inicia em 0).
+- `limite_mao_atual`: Quantidade máxima de cartas na mão permitidas no momento (inicia em 5).
 
 ### **Carta**
 
@@ -44,6 +34,23 @@ O Modelo Entidade-Relacionamento (MER) é uma descrição textual das entidades 
   - `classe`, `raça`, `item`, `monstro`
 - `descricao`: Descrição da carta, visível ao jogador.
 - `disponivel_para_virar`: Indica se a carta pode ser sorteada do baralho no início de um turno.
+
+### **SlotEquipamento**
+-`nome` (PK): Nome do slot de equipamento (ex: "mão direita","cabeça").
+-`capacidade`: Quantidade de itens que o slot comporta.
+-`grupo_exclusao`: Grupo de exclusão (ex: "somente um capacete", etc).
+-`descricao`: Descrição do slot e sua função.
+
+### **CartaPartida**
+
+- `id_carta_partida` (PK): Identificador único da relação entre carta e partida.
+- `id_partida` (FK): Referência à partida onde a carta está sendo usada.
+- `id_carta` (FK): Referência à carta associada.
+- `zona`: Define onde a carta está na partida. Pode ser:
+  - `mao`
+  - `equipado`
+  - `mochila`
+  - `descartada`
 
 #### **CartaRaca**
 - `id_carta` (PK, FK → Carta): Referência à carta que representa uma raça.
@@ -152,14 +159,11 @@ O Modelo Entidade-Relacionamento (MER) é uma descrição textual das entidades 
 
 ###### **PenalidadePerdaNivel**
 - `id_efeito_monstro` (PK, FK → EfeitoMonstro): Referência ao efeito associado.
-- `tipo_alvo`: Quem é afetado (ex: `jogador`, `classe`).
-- `alvo`: Valor afetado (ex: `qualquer`, `nao_mago`).
 - `bonus_poder`: Níveis perdidos (ex: `2`, `3`).
 
 ###### **PenalidadeItem**
 - `id_efeito_monstro` (PK, FK → EfeitoMonstro): Referência ao efeito associado.
 - `local_item`: Local do item afetado (ex: `cabeca`, `mao`, `corpo`).
-- `remove_tudo` (bool): Se remove todos os itens daquela zona.
 
 ###### **PenalidadeTransformacao**
 - `id_efeito_monstro` (PK, FK → EfeitoMonstro): Referência ao efeito associado.
@@ -167,14 +171,12 @@ O Modelo Entidade-Relacionamento (MER) é uma descrição textual das entidades 
 - `perde_raca` (bool): Se o jogador perde sua raça.
 - `vira_humano` (bool): Se o jogador vira humano (sem classe e raça).
 
-###### **PenalidadeCondicional**
-- `id_efeito_monstro` (PK, FK → EfeitoMonstro): Referência ao efeito associado.
-- `condicao`: Condição para aplicar a penalidade (ex: `nao_mago`).
-- `acao`: Ação ou penalidade resultante (ex: `perder`, `descartar`).
-- `valor`: Valor específico da penalidade (ex: `classe`, `nivel`).
+###### **PenalidadeMorte**
+-`id_efeito_monstro` (PK, FK → EfeitoMonstro): Referência ao efeito associado.
+-`morte`: Indica se o efeito causa a morte (TRUE ou FALSE).
 
 ### **Combate**
-
+- `id_combate (PK)`: Identificador único do combate.
 - `id_partida` (FK): Referência à partida onde o combate ocorreu.
 - `id_carta_monstro` (FK): Referência à carta do monstro enfrentado.
 - `monstro_vindo_do_baralho` (bool): Indica se o monstro veio do baralho (`true`) ou da mão do jogador (`false`).
@@ -191,3 +193,4 @@ O Modelo Entidade-Relacionamento (MER) é uma descrição textual das entidades 
 | 25/04/2025 | Criação do artefato                | [Breno Fernandes](https://github.com/Brenofrds)                      |
 | 02/05/2025 | Colaboração na construção do MER   | [Breno Fernandes](https://github.com/Brenofrds), [Maria Clara Sena](https://github.com/mclarasena), [Ana Luiza](https://github.com/luluaroeira), [Mylena Mendonça](https://github.com/MylenaTrindade) |
 | 11/06/2025 | Correções  do MER                | [Maria Clara](https://github.com/mclarasena), [Mylena Mendonça](https://github.com/MylenaTrindade) 
+| 16/06/2025 | Correções  do MER para a segunda entrega              | [Maria Clara](https://github.com/mclarasena), [Mylena Mendonça](https://github.com/MylenaTrindade) 

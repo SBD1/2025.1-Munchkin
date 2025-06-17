@@ -477,3 +477,4 @@ VALUES (1, 1, TRUE, TRUE, FALSE, 1, NOW());
 | --- | --- | --- | --- |
 |  0.1 | 2/06/2025 | Criação do Documento | Ana Luiza Komatsu |
 |  1.0 | 11/06/2025 | Ajuste do Documento | Mylena Mendonça e Maria clara Sena |
+|  2.0 | 11/06/2025 | Ajuste para a segunda entrega | Mylena Mendonça|

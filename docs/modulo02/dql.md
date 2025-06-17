@@ -5,20 +5,48 @@
 -- ===========================================================
 -- 🔹 AÇÕES CARTAS
 -- ===========================================================
-
 -- Retorna o ID do poder da raça e o limite de cartas na mão da carta especificada
 SELECT pr.id_poder_raca, pl.limite_cartas_mao
 FROM poder_raca pr
 JOIN poder_limite_de_mao pl ON pr.id_poder_raca = pl.id_poder_raca
 WHERE pr.id_carta = %s;
 
--- Retorna apenas o ID do poder da raça com limite de mão associado à carta
+-- São exibidos: o tipo do item, o slot de equipamento correspondente e o bônus de combate fornecido
+SELECT tipo_item, slot, bonus_combate
+FROM carta_item
+WHERE id_carta = %s;
+
+-- São exibidos: o tipo de alvo (ex: raça, classe), o valor do alvo (ex: "elfo", "guerreiro") 
+-- e se o uso do item é permitido para esse alvo
+SELECT tipo_alvo, valor_alvo, permitido
+FROM restricao_item
+WHERE id_carta_item = %s;
+
+-- Verifica se o jogador possui uma carta de classe específica equipada
+SELECT 1
+FROM carta_partida cp
+JOIN carta_classe cc ON cc.id_carta = cp.id_carta
+WHERE cp.id_partida = %s AND cp.zona = 'equipado' AND cc.nome_classe = %s;
+
+-- Verifica se o jogador possui uma carta de raça específica equipada
+SELECT 1
+FROM carta_partida cp
+JOIN carta_raca cr ON cr.id_carta = cp.id_carta
+WHERE cp.id_partida = %s AND cp.zona = 'equipado' AND cr.nome_raca = %s;
+
+-- Verifica se já existe um item equipado no mesmo slot
+SELECT 1
+FROM carta_partida cp
+JOIN carta_item ci ON ci.id_carta = cp.id_carta
+WHERE cp.id_partida = %s AND cp.zona = 'equipado' AND ci.slot = %s;
+
+-- Retorna o ID do poder da raça associado a uma carta (usado ao voltar para a mão)
 SELECT pr.id_poder_raca
 FROM poder_raca pr
 JOIN poder_limite_de_mao pl ON pr.id_poder_raca = pl.id_poder_raca
 WHERE pr.id_carta = %s;
 
--- Verifica se uma carta equipada possui um poder de limite de mão
+-- Verifica se ainda há alguma carta equipada com o poder de limite de mão
 SELECT 1
 FROM carta_partida cp
 JOIN poder_raca pr ON cp.id_carta = pr.id_carta
@@ -26,10 +54,26 @@ JOIN poder_limite_de_mao pl ON pr.id_poder_raca = pl.id_poder_raca
 WHERE cp.id_partida = %s AND cp.zona = 'equipado';
 
 -- Retorna o valor de ouro de uma carta item específica
-SELECT valor_ouro FROM carta_item WHERE id_carta = %s;
+SELECT valor_ouro
+FROM carta_item
+WHERE id_carta = %s;
 
--- Retorna o ouro acumulado e o nível atual de uma partida
-SELECT ouro_acumulado, nivel FROM partida WHERE id_partida = %s;
+-- Retorna o ouro acumulado, o nível e o turno atual de uma partida
+SELECT ouro_acumulado, nivel, turno_atual
+FROM partida
+WHERE id_partida = %s;
+
+-- Retorna os dados do poder de venda multiplicada (caso haja) e seu limite de usos
+SELECT pr.id_carta, pvm.multiplicador, pvm.limite_vezes_por_turno
+FROM carta_partida cp
+JOIN poder_raca pr ON cp.id_carta = pr.id_carta
+JOIN poder_venda_multiplicada pvm ON pr.id_poder_raca = pvm.id_poder_raca
+WHERE cp.id_partida = %s AND cp.zona = 'equipado';
+
+-- Retorna quantas vezes o poder de venda já foi usado neste turno
+SELECT usos
+FROM uso_poder_venda
+WHERE id_partida = %s AND id_carta = %s AND turno = %s;
 
 
 -- ===========================================================

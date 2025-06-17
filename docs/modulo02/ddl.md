@@ -380,3 +380,4 @@ Cria a tabela `combate`, que registra os dados dos combates entre jogadores e mo
 |  1.0 | 26/05/2025 | Atualização do DDL | Maria Clara e Breno Fernandes |
 |  2.0 | 03/06/2025 | Atualização do DDL | Ana Luiza Komatsu |
 |  3.0 | 11/06/2025 | Ajustes do DDL | Mylena Mendonça |
+|  4.0 | 11/06/2025 | Ajustes do DDL para a segunda entrega | Mylena Mendonça |
