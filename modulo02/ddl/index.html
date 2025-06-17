@@ -1091,44 +1091,42 @@
 <details>
     <summary>Migrações</summary>
 
-    ```sql
-    -- Recompensa condicional (ex: Elfo e Orc)
-    CREATE TABLE poder_recompensa_condicional (
-        id_poder_raca INT PRIMARY KEY,
-        bonus_tipo VARCHAR(20) CHECK (bonus_tipo IN ('nivel', 'tesouro_extra')),
-        bonus_quantidade INT NOT NULL,
-        condicao_tipo VARCHAR(30) CHECK (condicao_tipo IN (
-            'matar_monstro',
-            'nivel_monstro_maior_10'
-        )),
-        FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
-    );
+    <div class="highlight"><pre><span></span><code><span class="c1">-- Recompensa condicional (ex: Elfo e Orc)</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">poder_recompensa_condicional</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id_poder_raca</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">bonus_tipo</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">bonus_tipo</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;nivel&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tesouro_extra&#39;</span><span class="p">)),</span>
+<span class="w">    </span><span class="n">bonus_quantidade</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">condicao_tipo</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">condicao_tipo</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="s1">&#39;matar_monstro&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="s1">&#39;nivel_monstro_maior_10&#39;</span>
+<span class="w">    </span><span class="p">)),</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">poder_raca</span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">)</span>
+<span class="p">);</span>
 
-    -- Limite de mão extra (Anão)
-    CREATE TABLE poder_limite_de_mao (
-        id_poder_raca INT PRIMARY KEY,
-        limite_cartas_mao INT NOT NULL,
-        FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
-    );
+<span class="c1">-- Limite de mão extra (Anão)</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">poder_limite_de_mao</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id_poder_raca</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">limite_cartas_mao</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">poder_raca</span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">)</span>
+<span class="p">);</span>
 
-    -- Venda multiplicada (Halfling)
-    CREATE TABLE poder_venda_multiplicada (
-        id_poder_raca INT PRIMARY KEY,
-        multiplicador INT NOT NULL DEFAULT 2,
-        limite_vezes_por_turno INT NOT NULL DEFAULT 1,
-        FOREIGN KEY (id_poder_raca) REFERENCES poder_raca(id_poder_raca)
-    );
+<span class="c1">-- Venda multiplicada (Halfling)</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">poder_venda_multiplicada</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id_poder_raca</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">multiplicador</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="n">limite_vezes_por_turno</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">poder_raca</span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">)</span>
+<span class="p">);</span>
 
-    -- Controle de uso do poder de venda multiplicada por turno
-    CREATE TABLE uso_poder_venda (
-        id_partida INT REFERENCES partida(id_partida),
-        id_carta INT REFERENCES carta(id_carta),
-        turno INT,
-        usos INT DEFAULT 0,
-        PRIMARY KEY (id_partida, id_carta, turno)
-    );
-
-  ```
+<span class="c1">-- Controle de uso do poder de venda multiplicada por turno</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">uso_poder_venda</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id_partida</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">partida</span><span class="p">(</span><span class="n">id_partida</span><span class="p">),</span>
+<span class="w">    </span><span class="n">id_carta</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">carta</span><span class="p">(</span><span class="n">id_carta</span><span class="p">),</span>
+<span class="w">    </span><span class="n">turno</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">usos</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id_partida</span><span class="p">,</span><span class="w"> </span><span class="n">id_carta</span><span class="p">,</span><span class="w"> </span><span class="n">turno</span><span class="p">)</span>
+<span class="p">);</span>
+</code></pre></div>
 
 </details>
 
