@@ -22,8 +22,8 @@ INSERT INTO penalidade_item (id_efeito_monstro, local_item)
 VALUES (8, 'todos');
 
 -- penalidade_transformacao
-INSERT INTO penalidade_transformacao (id_efeito_monstro, perde_classe, perde_raca, vira_humano)
-VALUES (3, TRUE, TRUE, TRUE);
+INSERT INTO penalidade_transformacao (id_efeito_monstro, perde_classe, perde_raca)
+VALUES (3, TRUE, TRUE);
 
 -- penalidade_morte
 INSERT INTO penalidade_morte (id_efeito_monstro, morte)

@@ -11,8 +11,7 @@ CREATE TABLE penalidade_item (
 CREATE TABLE penalidade_transformacao (
     id_efeito_monstro INTEGER PRIMARY KEY REFERENCES efeito_monstro(id_efeito_monstro),
     perde_classe BOOLEAN NOT NULL DEFAULT FALSE,
-    perde_raca BOOLEAN NOT NULL DEFAULT FALSE,
-    vira_humano BOOLEAN NOT NULL DEFAULT FALSE
+    perde_raca BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE penalidade_morte (
