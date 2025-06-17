@@ -104,6 +104,7 @@ VALUES
 (33, 'balrog', 'porta', 'monstro', TRUE),
 (34, 'dragão de plutônio', 'porta', 'monstro', TRUE);
 
+
 ```
 
 </details>
@@ -429,14 +430,14 @@ INSERT INTO penalidade_perda_nivel (id_efeito_monstro, niveis)
 VALUES (5, 4);
 
 -- penalidade_item
-INSERT INTO penalidade_item (id_efeito_monstro, local_item, remove_tudo)
-VALUES (4, 'cabeca', FALSE);
+INSERT INTO penalidade_item (id_efeito_monstro, local_item)
+VALUES (4, 'cabeca');
 
-INSERT INTO penalidade_item (id_efeito_monstro, local_item, remove_tudo)
-VALUES (6, 'cabeca', FALSE);
+INSERT INTO penalidade_item (id_efeito_monstro, local_item)
+VALUES (6, 'cabeca');
 
-INSERT INTO penalidade_item (id_efeito_monstro, local_item, remove_tudo)
-VALUES (8, 'todos', TRUE);
+INSERT INTO penalidade_item (id_efeito_monstro, local_item)
+VALUES (8, 'todos');
 
 -- penalidade_transformacao
 INSERT INTO penalidade_transformacao (id_efeito_monstro, perde_classe, perde_raca, vira_humano)
@@ -459,8 +460,8 @@ VALUES (10, TRUE);
 <details><summary>Comandos</summary>
 
 ```sql
-INSERT INTO combate (id_partida, id_carta_monstro, monstro_vindo_do_baralho, vitoria, coisa_ruim_aplicada, nivel_ganho, data_ocorrido)
--- VALUES (1, 3, TRUE, TRUE, FALSE, 1, NOW());
+INSERT INTO combate (id_partida, id_carta, monstro_vindo_do_baralho, vitoria, coisa_ruim_aplicada, nivel_ganho, data_ocorrido)
+VALUES (1, 1, TRUE, TRUE, FALSE, 1, NOW());
 ```
 
 </details>
