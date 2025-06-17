@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.48">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.45">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.6f8fc17f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.0253249f.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -889,26 +889,68 @@
 <h3 id="v12_insert_core_game_data">V12_insert_core_game_data</h3>
 <details><summary>Comandos</summary>
 
-<div class="highlight"><pre><span></span><code><span class="c1">-- Inserção de jogadores</span>
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">jogador</span><span class="w"> </span><span class="p">(</span><span class="n">nome</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span>
-<span class="c1">-- (&#39;Ana Luiza Komatsu&#39;),</span>
-<span class="c1">-- (&#39;Breno Fernandes&#39;),</span>
-<span class="c1">-- (&#39;Maria Clara Sena&#39;),</span>
-<span class="c1">-- (&#39;Mylena Trindade&#39;);</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Cria função para inserir jogador</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">insert_munchkin_jogador</span><span class="p">(</span><span class="n">p_nome</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">)</span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="n">VOID</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">$$</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">jogador</span><span class="w"> </span><span class="p">(</span><span class="n">nome</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="n">p_nome</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="err">$$</span><span class="w"> </span><span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span><span class="p">;</span>
 
-<span class="c1">-- Inserção de partidas</span>
+<span class="c1">-- Inserção de jogadores</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">jogador</span><span class="w"> </span><span class="p">(</span><span class="n">nome</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="p">(</span><span class="s1">&#39;Breno&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;Maria&#39;</span><span class="p">);</span>
+
+<span class="c1">-- Cria função para iniciar uma nova partida</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">insert_munchkin_partida</span><span class="p">(</span><span class="n">p_id_jogador</span><span class="w"> </span><span class="nb">INT</span><span class="p">)</span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">$$</span>
+<span class="k">DECLARE</span>
+<span class="w">    </span><span class="n">nova_partida_id</span><span class="w"> </span><span class="nb">INT</span><span class="p">;</span>
+<span class="k">BEGIN</span>
+<span class="w">    </span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">partida</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">id_jogador</span><span class="p">,</span>
+<span class="w">        </span><span class="n">data_inicio</span><span class="p">,</span>
+<span class="w">        </span><span class="n">turno_atual</span><span class="p">,</span>
+<span class="w">        </span><span class="n">estado_partida</span><span class="p">,</span>
+<span class="w">        </span><span class="n">finalizada</span><span class="p">,</span>
+<span class="w">        </span><span class="n">vitoria</span><span class="p">,</span>
+<span class="w">        </span><span class="n">nivel</span><span class="p">,</span>
+<span class="w">        </span><span class="n">vida_restantes</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ouro_acumulado</span><span class="p">,</span>
+<span class="w">        </span><span class="n">limite_mao_atual</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">p_id_jogador</span><span class="p">,</span>
+<span class="w">        </span><span class="n">NOW</span><span class="p">(),</span>
+<span class="w">        </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="s1">&#39;em andamento&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">FALSE</span><span class="p">,</span>
+<span class="w">        </span><span class="k">FALSE</span><span class="p">,</span>
+<span class="w">        </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">        </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="mi">5</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span><span class="n">RETURNING</span><span class="w"> </span><span class="n">id_partida</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">nova_partida_id</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">RETURN</span><span class="w"> </span><span class="n">nova_partida_id</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="err">$$</span><span class="w"> </span><span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span><span class="p">;</span>
+
+<span class="c1">-- Inserção de partidas (DESCOMENTE apenas se tiver jogadores com id 1 e 2)</span>
 <span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">partida</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">id_jogador</span><span class="p">,</span><span class="w"> </span><span class="n">data_inicio</span><span class="p">,</span><span class="w"> </span><span class="n">turno_atual</span><span class="p">,</span><span class="w"> </span><span class="n">estado_partida</span><span class="p">,</span>
-<span class="w">    </span><span class="n">primeira_rodada</span><span class="p">,</span><span class="w"> </span><span class="n">finalizada</span><span class="p">,</span><span class="w"> </span><span class="n">vitoria</span><span class="p">,</span><span class="w"> </span><span class="n">nivel</span><span class="p">,</span><span class="w"> </span><span class="n">vida_restantes</span>
+<span class="w">    </span><span class="n">finalizada</span><span class="p">,</span><span class="w"> </span><span class="n">vitoria</span><span class="p">,</span><span class="w"> </span><span class="n">nivel</span><span class="p">,</span><span class="w"> </span><span class="n">vida_restantes</span><span class="p">,</span><span class="w"> </span><span class="n">ouro_acumulado</span><span class="p">,</span><span class="w"> </span><span class="n">limite_mao_atual</span>
 <span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
-<span class="c1">-- (1, NOW(), 1, &#39;em andamento&#39;, TRUE, FALSE, TRUE, 1, 3),</span>
-<span class="c1">-- (2, NOW(), 2, &#39;pausada&#39;, TRUE, FALSE, FALSE, 2, 2);</span>
+<span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;em andamento&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;encerrada&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
 
-<span class="c1">-- Inserção de cartas</span>
+<span class="c1">-- Inserção de cartas iniciais</span>
 <span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">carta</span><span class="w"> </span><span class="p">(</span><span class="n">id_carta</span><span class="p">,</span><span class="w"> </span><span class="n">nome</span><span class="p">,</span><span class="w"> </span><span class="n">tipo_carta</span><span class="p">,</span><span class="w"> </span><span class="n">subtipo</span><span class="p">,</span><span class="w"> </span><span class="n">disponivel_para_virar</span><span class="p">)</span>
 <span class="k">VALUES</span><span class="w"> </span>
 <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;dentadura postiça aterrorizante&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tesouro&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;item&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">),</span>
-<span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Título realmente impressiionante&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tesouro&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;item&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Título realmente impressionante&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tesouro&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;item&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">),</span>
 <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;joelheiras pontiagudas&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tesouro&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;item&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">),</span>
 <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;botas de chutas a bunda&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tesouro&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;item&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">),</span>
 <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;broquel da bravata&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tesouro&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;item&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">),</span>
@@ -1093,18 +1135,7 @@
 <h3 id="v16_insert_poderes_raca_especificos_data">V16_insert_poderes_raca_especificos_data</h3>
 <details><summary>Comandos</summary>
 
-<div class="highlight"><pre><span></span><code><span class="c1">-- poder_fuga_condicional</span>
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">poder_fuga_condicional</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">,</span><span class="w"> </span><span class="n">nova_tentativa</span><span class="p">,</span><span class="w"> </span><span class="n">quantidade</span><span class="p">,</span><span class="w"> </span><span class="n">condicao_tipo</span><span class="p">)</span>
-<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;sem_condicao&#39;</span><span class="p">);</span>
-
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">poder_fuga_condicional</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">,</span><span class="w"> </span><span class="n">nova_tentativa</span><span class="p">,</span><span class="w"> </span><span class="n">quantidade</span><span class="p">,</span><span class="w"> </span><span class="n">condicao_tipo</span><span class="p">)</span>
-<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;descartar_carta&#39;</span><span class="p">);</span>
-
-<span class="c1">-- poder_maldicao</span>
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">poder_maldicao</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">,</span><span class="w"> </span><span class="n">ignora_maldicao</span><span class="p">,</span><span class="w"> </span><span class="n">penalidade_substituta</span><span class="p">,</span><span class="w"> </span><span class="n">nivel_minimo</span><span class="p">)</span>
-<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Perde 1 nível em vez de descartar&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
-
-<span class="c1">-- poder_recompensa_condicional</span>
+<div class="highlight"><pre><span></span><code><span class="c1">-- poder_recompensa_condicional</span>
 <span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">poder_recompensa_condicional</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">,</span><span class="w"> </span><span class="n">bonus_tipo</span><span class="p">,</span><span class="w"> </span><span class="n">bonus_quantidade</span><span class="p">,</span><span class="w"> </span><span class="n">condicao_tipo</span><span class="p">)</span>
 <span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tesouro_extra&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;matar_monstro&#39;</span><span class="p">);</span>
 
@@ -1115,12 +1146,9 @@
 <span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">poder_limite_de_mao</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">,</span><span class="w"> </span><span class="n">limite_carta_mao</span><span class="p">)</span>
 <span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">);</span>
 
-<span class="c1">-- poder_pecas_ouro</span>
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">poder_pecas_ouro</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">,</span><span class="w"> </span><span class="n">quantidade</span><span class="p">)</span>
-<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">);</span>
-
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">poder_pecas_ouro</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">,</span><span class="w"> </span><span class="n">quantidade</span><span class="p">)</span>
-<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+<span class="c1">-- poder venda multiplicada</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">poder_venda_multiplicada</span><span class="w"> </span><span class="p">(</span><span class="n">id_poder_raca</span><span class="p">,</span><span class="w"> </span><span class="n">multiplicador</span><span class="p">,</span><span class="w"> </span><span class="n">limite_vezes_por_turno</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
 </code></pre></div>
 
 </details>
@@ -1260,14 +1288,14 @@
 <span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
 
 <span class="c1">-- penalidade_item</span>
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">penalidade_item</span><span class="w"> </span><span class="p">(</span><span class="n">id_efeito_monstro</span><span class="p">,</span><span class="w"> </span><span class="n">local_item</span><span class="p">,</span><span class="w"> </span><span class="n">remove_tudo</span><span class="p">)</span>
-<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;cabeca&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">FALSE</span><span class="p">);</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">penalidade_item</span><span class="w"> </span><span class="p">(</span><span class="n">id_efeito_monstro</span><span class="p">,</span><span class="w"> </span><span class="n">local_item</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;cabeca&#39;</span><span class="p">);</span>
 
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">penalidade_item</span><span class="w"> </span><span class="p">(</span><span class="n">id_efeito_monstro</span><span class="p">,</span><span class="w"> </span><span class="n">local_item</span><span class="p">,</span><span class="w"> </span><span class="n">remove_tudo</span><span class="p">)</span>
-<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;cabeca&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">FALSE</span><span class="p">);</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">penalidade_item</span><span class="w"> </span><span class="p">(</span><span class="n">id_efeito_monstro</span><span class="p">,</span><span class="w"> </span><span class="n">local_item</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;cabeca&#39;</span><span class="p">);</span>
 
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">penalidade_item</span><span class="w"> </span><span class="p">(</span><span class="n">id_efeito_monstro</span><span class="p">,</span><span class="w"> </span><span class="n">local_item</span><span class="p">,</span><span class="w"> </span><span class="n">remove_tudo</span><span class="p">)</span>
-<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;todos&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">);</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">penalidade_item</span><span class="w"> </span><span class="p">(</span><span class="n">id_efeito_monstro</span><span class="p">,</span><span class="w"> </span><span class="n">local_item</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;todos&#39;</span><span class="p">);</span>
 
 <span class="c1">-- penalidade_transformacao</span>
 <span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">penalidade_transformacao</span><span class="w"> </span><span class="p">(</span><span class="n">id_efeito_monstro</span><span class="p">,</span><span class="w"> </span><span class="n">perde_classe</span><span class="p">,</span><span class="w"> </span><span class="n">perde_raca</span><span class="p">,</span><span class="w"> </span><span class="n">vira_humano</span><span class="p">)</span>
@@ -1289,8 +1317,8 @@
 <h3 id="v22_insert_combate_data">V22_insert_combate_data</h3>
 <details><summary>Comandos</summary>
 
-<div class="highlight"><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">combate</span><span class="w"> </span><span class="p">(</span><span class="n">id_partida</span><span class="p">,</span><span class="w"> </span><span class="n">id_carta_monstro</span><span class="p">,</span><span class="w"> </span><span class="n">monstro_vindo_do_baralho</span><span class="p">,</span><span class="w"> </span><span class="n">vitoria</span><span class="p">,</span><span class="w"> </span><span class="n">coisa_ruim_aplicada</span><span class="p">,</span><span class="w"> </span><span class="n">nivel_ganho</span><span class="p">,</span><span class="w"> </span><span class="n">data_ocorrido</span><span class="p">)</span>
-<span class="c1">-- VALUES (1, 3, TRUE, TRUE, FALSE, 1, NOW());</span>
+<div class="highlight"><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">combate</span><span class="w"> </span><span class="p">(</span><span class="n">id_partida</span><span class="p">,</span><span class="w"> </span><span class="n">id_carta</span><span class="p">,</span><span class="w"> </span><span class="n">monstro_vindo_do_baralho</span><span class="p">,</span><span class="w"> </span><span class="n">vitoria</span><span class="p">,</span><span class="w"> </span><span class="n">coisa_ruim_aplicada</span><span class="p">,</span><span class="w"> </span><span class="n">nivel_ganho</span><span class="p">,</span><span class="w"> </span><span class="n">data_ocorrido</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">NOW</span><span class="p">());</span>
 </code></pre></div>
 
 </details>
@@ -1315,6 +1343,18 @@
 <td>2/06/2025</td>
 <td>Criação do Documento</td>
 <td>Ana Luiza Komatsu</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td>11/06/2025</td>
+<td>Ajuste do Documento</td>
+<td>Mylena Mendonça e Maria clara Sena</td>
+</tr>
+<tr>
+<td>2.0</td>
+<td>11/06/2025</td>
+<td>Ajuste para a segunda entrega</td>
+<td>Mylena Mendonça</td>
 </tr>
 </tbody>
 </table>

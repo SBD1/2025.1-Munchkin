@@ -38,7 +38,7 @@ As próximas seções detalham individualmente cada tabela e sua finalidade.
 
 **Figura 2 - Modelo Lógico Versão 2.0**
 
-![Segunda versão do modelo logico](../assets/Conceitual_5.png)
+![Segunda versão do modelo logico](../assets/Lógico_2.0.png)
 
 **Fonte:** [Breno Fernandes](https://github.com/Brenofrds)
 

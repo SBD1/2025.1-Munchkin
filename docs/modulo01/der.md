@@ -23,7 +23,7 @@ A Figura 1 a seguir exibe a versão inicial do Diagrama Entidade-Relacionamento,
 
 ### Figura 2 - Segunda versão do DER
 
-![Segunda versão do DER](../assets/Lógico_5.png)
+![Segunda versão do DER](../assets/Conceitual_2.0.png)
 
 **Fonte:** [Breno Fernandes](https://github.com/Brenofrds)
 
