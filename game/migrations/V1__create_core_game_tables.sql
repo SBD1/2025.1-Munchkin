@@ -1,6 +1,7 @@
 CREATE TABLE jogador (
     id_jogador SERIAL PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL);
+    nome VARCHAR(255) NOT NULL
+    );
 
 CREATE TABLE partida (
     id_partida SERIAL PRIMARY KEY, -- substitui AUTO_INCREMENT por SERIAL
@@ -41,5 +42,13 @@ CREATE TABLE slot_equipamento (
 CREATE TABLE mapa (
     id_reino SERIAL PRIMARY KEY,
     nome VARCHAR(100) UNIQUE NOT NULL,
-    descricao TEXT NOT NULL
+    descricao TEXT NOT NULL,
+    nivel_min INTEGER NOT NULL,
+    nivel_max INTEGER NOT NULL,
+    ordem INTEGER NOT NULL
 );
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 5cb1407 (adicionando colunas no banco do mapa)
