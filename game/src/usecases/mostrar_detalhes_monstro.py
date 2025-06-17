@@ -27,7 +27,7 @@ def mostrar_detalhes_monstro(console, cursor, id_carta):
     cursor.execute("""
         SELECT e.id_efeito_monstro, e.descricao
         FROM efeito_monstro e
-        JOIN carta_monstro m ON m.id_carta_monstro = e.id_carta_monstro
+        JOIN carta_monstro m ON m.id_carta = e.id_carta_monstro
         WHERE m.id_carta = %s;
     """, (id_carta,))
     efeitos = cursor.fetchall()
