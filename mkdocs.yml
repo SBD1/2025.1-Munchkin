@@ -55,7 +55,11 @@ nav:
     - Data Definition Language: "modulo02/ddl.md"
     - Data Manipulation Language: "modulo02/dml.md"
     - Data Query Language: "modulo02/dql.md"
-
+  - Módulo 3:
+    - Triggers: "modulo03/triggers.md"
+    - Procedures: "modulo03/procedures.md"
+    - Funções: "modulo03/funcoes.md"
+    
 plugins:
    - glightbox
 
