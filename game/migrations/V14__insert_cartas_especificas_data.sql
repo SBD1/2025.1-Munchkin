@@ -5,7 +5,7 @@ INSERT INTO slot_equipamento (nome, capacidade, grupo_exclusao, descricao) VALUE
 ('pe', 1, NULL, 'Botas ou calçados'),
 ('1_mao', 2, 'mao', 'Armas de uma mão'),
 ('2_maos', 1, 'mao', 'Armas que ocupam as duas mãos'),
-('nenhum', NULL, NULL, 'Itens que não ocupam espaço específico');
+('nenhum', 0, NULL, 'Itens que não ocupam espaço específico');
 
 -- Carta Item
 INSERT INTO carta_item (id_carta, bonus_combate, valor_ouro, tipo_item, slot, ocupacao_dupla)
@@ -83,33 +83,33 @@ INSERT INTO carta_raca (id_carta, nome_raca)
 VALUES (21, 'orc');
 
 -- Carta Monstro
-INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
-VALUES (1, 25, 2, FALSE, 1, 'sem_tipo');
+INSERT INTO carta_monstro (id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
+VALUES (25, 2, FALSE, 1, 'sem_tipo');
 
-INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
-VALUES (2, 26, 4, TRUE, 2, 'morto_vivo');
+INSERT INTO carta_monstro (id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
+VALUES (26, 4, TRUE, 2, 'morto_vivo');
 
-INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
-VALUES (3, 27, 6, TRUE, 2, 'sem_tipo');
+INSERT INTO carta_monstro (id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
+VALUES (27, 6, TRUE, 2, 'sem_tipo');
 
-INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
-VALUES (4, 28, 8, TRUE, 2, 'sem_tipo');
+INSERT INTO carta_monstro (id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
+VALUES (28, 8, TRUE, 2, 'sem_tipo');
 
-INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
-VALUES (5, 29, 10, TRUE, 3, 'sem_tipo');
+INSERT INTO carta_monstro (id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
+VALUES (29, 10, TRUE, 3, 'sem_tipo');
 
-INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
-VALUES (6, 30, 12, TRUE, 3, 'sem_tipo');
+INSERT INTO carta_monstro (id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
+VALUES (30, 12, TRUE, 3, 'sem_tipo');
 
-INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
-VALUES (7, 31, 14, TRUE, 4, 'sem_tipo');
+INSERT INTO carta_monstro (id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
+VALUES (31, 14, TRUE, 4, 'sem_tipo');
 
-INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
-VALUES (8, 32, 16, TRUE, 4, 'morto_vivo');
+INSERT INTO carta_monstro (id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
+VALUES (32, 16, TRUE, 4, 'morto_vivo');
 
-INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
-VALUES (9, 33, 18, TRUE, 5, 'sem_tipo');
+INSERT INTO carta_monstro (id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
+VALUES (33, 18, TRUE, 5, 'sem_tipo');
 
-INSERT INTO carta_monstro (id_carta_monstro, id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
-VALUES (10, 34, 20, TRUE, 5, 'sem_tipo');
+INSERT INTO carta_monstro (id_carta, nivel, pode_fugir, recompensa, tipo_monstro)
+VALUES (34, 20, TRUE, 5, 'sem_tipo');
 

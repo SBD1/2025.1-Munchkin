@@ -9,26 +9,68 @@ O Data Manipulation Language (DML) é um subconjunto da linguagem SQL responsáv
 
 ```sql
 
--- Inserção de jogadores
-INSERT INTO jogador (nome) VALUES 
--- ('Ana Luiza Komatsu'),
--- ('Breno Fernandes'),
--- ('Maria Clara Sena'),
--- ('Mylena Trindade');
+-- Cria função para inserir jogador
+CREATE OR REPLACE FUNCTION insert_munchkin_jogador(p_nome TEXT)
+RETURNS VOID AS $$
+BEGIN
+    INSERT INTO jogador (nome) VALUES (p_nome);
+END;
+$$ LANGUAGE plpgsql;
 
--- Inserção de partidas
+-- Inserção de jogadores
+INSERT INTO jogador (nome) VALUES
+('Breno'),
+('Maria');
+
+-- Cria função para iniciar uma nova partida
+CREATE OR REPLACE FUNCTION insert_munchkin_partida(p_id_jogador INT)
+RETURNS INT AS $$
+DECLARE
+    nova_partida_id INT;
+BEGIN
+    INSERT INTO partida (
+        id_jogador,
+        data_inicio,
+        turno_atual,
+        estado_partida,
+        finalizada,
+        vitoria,
+        nivel,
+        vida_restantes,
+        ouro_acumulado,
+        limite_mao_atual
+    )
+    VALUES (
+        p_id_jogador,
+        NOW(),
+        1,
+        'em andamento',
+        FALSE,
+        FALSE,
+        1,
+        3,
+        0,
+        5
+    )
+    RETURNING id_partida INTO nova_partida_id;
+
+    RETURN nova_partida_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Inserção de partidas (DESCOMENTE apenas se tiver jogadores com id 1 e 2)
 INSERT INTO partida (
     id_jogador, data_inicio, turno_atual, estado_partida,
-    primeira_rodada, finalizada, vitoria, nivel, vida_restantes
+    finalizada, vitoria, nivel, vida_restantes, ouro_acumulado, limite_mao_atual
 ) VALUES
--- (1, NOW(), 1, 'em andamento', TRUE, FALSE, TRUE, 1, 3),
--- (2, NOW(), 2, 'pausada', TRUE, FALSE, FALSE, 2, 2);
+(1, NOW(), 1, 'em andamento', FALSE, TRUE, 1, 3, 0, 5),
+(2, NOW(), 2, 'encerrada', TRUE, FALSE, 2, 2, 0, 5);
 
--- Inserção de cartas
+-- Inserção de cartas iniciais
 INSERT INTO carta (id_carta, nome, tipo_carta, subtipo, disponivel_para_virar)
 VALUES 
 (1, 'dentadura postiça aterrorizante', 'tesouro', 'item', TRUE),
-(2, 'Título realmente impressiionante', 'tesouro', 'item', TRUE),
+(2, 'Título realmente impressionante', 'tesouro', 'item', TRUE),
 (3, 'joelheiras pontiagudas', 'tesouro', 'item', TRUE),
 (4, 'botas de chutas a bunda', 'tesouro', 'item', TRUE),
 (5, 'broquel da bravata', 'tesouro', 'item', TRUE),
@@ -61,6 +103,7 @@ VALUES
 (32, 'rei tut', 'porta', 'monstro', TRUE),
 (33, 'balrog', 'porta', 'monstro', TRUE),
 (34, 'dragão de plutônio', 'porta', 'monstro', TRUE);
+
 
 ```
 
@@ -387,14 +430,14 @@ INSERT INTO penalidade_perda_nivel (id_efeito_monstro, niveis)
 VALUES (5, 4);
 
 -- penalidade_item
-INSERT INTO penalidade_item (id_efeito_monstro, local_item, remove_tudo)
-VALUES (4, 'cabeca', FALSE);
+INSERT INTO penalidade_item (id_efeito_monstro, local_item)
+VALUES (4, 'cabeca');
 
-INSERT INTO penalidade_item (id_efeito_monstro, local_item, remove_tudo)
-VALUES (6, 'cabeca', FALSE);
+INSERT INTO penalidade_item (id_efeito_monstro, local_item)
+VALUES (6, 'cabeca');
 
-INSERT INTO penalidade_item (id_efeito_monstro, local_item, remove_tudo)
-VALUES (8, 'todos', TRUE);
+INSERT INTO penalidade_item (id_efeito_monstro, local_item)
+VALUES (8, 'todos');
 
 -- penalidade_transformacao
 INSERT INTO penalidade_transformacao (id_efeito_monstro, perde_classe, perde_raca, vira_humano)
@@ -417,8 +460,8 @@ VALUES (10, TRUE);
 <details><summary>Comandos</summary>
 
 ```sql
-INSERT INTO combate (id_partida, id_carta_monstro, monstro_vindo_do_baralho, vitoria, coisa_ruim_aplicada, nivel_ganho, data_ocorrido)
--- VALUES (1, 3, TRUE, TRUE, FALSE, 1, NOW());
+INSERT INTO combate (id_partida, id_carta, monstro_vindo_do_baralho, vitoria, coisa_ruim_aplicada, nivel_ganho, data_ocorrido)
+VALUES (1, 1, TRUE, TRUE, FALSE, 1, NOW());
 ```
 
 </details>
@@ -434,3 +477,4 @@ INSERT INTO combate (id_partida, id_carta_monstro, monstro_vindo_do_baralho, vit
 | --- | --- | --- | --- |
 |  0.1 | 2/06/2025 | Criação do Documento | Ana Luiza Komatsu |
 |  1.0 | 11/06/2025 | Ajuste do Documento | Mylena Mendonça e Maria clara Sena |
+|  2.0 | 15/06/2025 | Ajuste para a segunda entrega | Breno Fernandes|

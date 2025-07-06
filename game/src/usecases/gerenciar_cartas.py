@@ -40,7 +40,35 @@ def gerenciar_cartas(console, jogador_id):
 
         console.print("\n[bold magenta]🛠️ Gerenciar Cartas da Mão:[/bold magenta]")
         for i, (id_carta, nome, tipo, subtipo) in enumerate(cartas, start=1):
-            console.print(f"{i}. [bold]{nome}[/bold] [cyan]({tipo} - {subtipo})[/cyan]")
+            console.print(f"\n{i}. [bold]{nome}[/bold] [cyan]({tipo} - {subtipo})[/cyan]")
+
+            detalhes = buscar_detalhes_por_subtipo(cursor, id_carta, subtipo)
+
+            if subtipo == 'item' and detalhes:
+                bonus, ouro, tipo_item, slot, dupla, restricoes = detalhes
+                console.print(f"   ➕ Bônus: {bonus}, 💰 Ouro: {ouro}, Tipo: {tipo_item}, Slot: {slot}, Dupla? {'Sim' if dupla else 'Não'}")
+                if restricoes:
+                    for tipo_alvo, valor_alvo, permitido in restricoes:
+                        emoji = "✅" if permitido else "🚫"
+                        console.print(f"   {emoji} {'Somente' if permitido else 'Exceto'} para {tipo_alvo.upper()}: {valor_alvo}")
+
+            elif subtipo == 'monstro' and detalhes:
+                (nivel, pode_fugir, recompensa, tipo_monstro), efeitos = detalhes
+                console.print(f"   👹 Nível: {nivel}, 🎁 Recompensa: {recompensa}, Fuga? {'Sim' if pode_fugir else 'Não'}, Tipo: {tipo_monstro}")
+                for ef in efeitos:
+                    console.print(f"   ⚠️ Efeito: {ef}")
+
+            elif subtipo == 'raca' and detalhes:
+                nome_raca, poder = detalhes
+                console.print(f"   🧬 Raça: {nome_raca}")
+                if poder:
+                    console.print(f"   ✨ Poder: {poder}")
+
+            elif subtipo == 'classe' and detalhes:
+                (nome_classe,), poderes = detalhes
+                console.print(f"   🛡️ Classe: {nome_classe}")
+                for p in poderes:
+                    console.print(f"   ✨ Poder: {p}")
 
         try:
             escolha = int(input("\nDigite o número da carta que deseja gerenciar (0 para cancelar): "))

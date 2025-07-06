@@ -34,6 +34,14 @@ As próximas seções detalham individualmente cada tabela e sua finalidade.
 
 **Fonte:** [Breno Fernandes](https://github.com/Brenofrds)
 
+## Modelo logico
+
+**Figura 2 - Modelo Lógico Versão 2.0**
+
+![Segunda versão do modelo logico](../assets/Lógico_2.0.png)
+
+**Fonte:** [Breno Fernandes](https://github.com/Brenofrds)
+
 ## Bibliografia
 
 > Diagrama Entidade Relacionamento Stardew Valley. Disponível em: https://github.com/SBD1/2023.2-Grupo01-StardewValley/blob/main/docs/Entrega-01/DER_StardewValley_v1.0.md. Acesso em 26 de abril de 2025.

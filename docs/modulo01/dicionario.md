@@ -38,6 +38,9 @@ A seguir, cada entidade será documentada em uma tabela com suas respectivas car
 ### Tabela: **Carta**
 ![Tabela Carta](../assets/Carta.png)
 
+### Tabela: **SlotEquipamento**
+![Tabela Combate](../assets/SlotEquipamento.png)
+
 ### Tabela: **CartaPartida**
 ![Tabela CartaPartida](../assets/CartaPartida.png)
 
@@ -101,16 +104,22 @@ A seguir, cada entidade será documentada em uma tabela com suas respectivas car
 ### Tabela: **PenalidadeTransformacao**
 ![Tabela PenalidadeTransformacao](../assets/PenalidadeTranformacao.png)
 
+### Tabela: **PenalidadeMorte**
+![Tabela PenalidadeMorte](../assets/PenalidadeMorte.png)
+
 ### Tabela: **PenalidadeCondicional**
 ![Tabela PenalidadeCondicional](../assets/PenalidadeCondicional.png)
 
 ### Tabela: **Combate**
 ![Tabela Combate](../assets/Combate.png)
 
+
+
 ## Histórico de Versão
 
 | Data       | Descrição                              | Autor                                                                 |
 |------------|----------------------------------------|-----------------------------------------------------------------------|
 | 25/04/2025 | Criação do artefato                    | [Breno Fernandes](https://github.com/Brenofrds)                      |
-| 02/05/2025 | Colaboração na construção do dicionário de dados |[Breno Fernandes](https://github.com/Brenofrds),[Maria Clara Sena](https://github.com/mclarasena), [Ana Luiza](https://github.com/luluaroeira), [Mylena Mendonça](https://github.com/MylenaTrindade) |
-| 11/06/2025 | Correções  do dicionário                | [Maria Clara](https://github.com/mclarasena), [Mylena Mendonça](https://github.com/MylenaTrindade) 
+| 02/05/2025 | Colaboração na construção do dicionário de dados |[Breno Fernandes](https://github.com/Brenofrds),[Maria Clara Sena](https://github.com/mclarasenaa), [Ana Luiza](https://github.com/luluaroeira), [Mylena Mendonça](https://github.com/MylenaTrindade) |
+| 11/06/2025 | Correções  do dicionário                | [Maria Clara](https://github.com/mclarasenaa), [Mylena Mendonça](https://github.com/MylenaTrindade) |
+| 11/06/2025 | Adições no dicionário |[Maria Clara Sena](https://github.com/mclarasenaa) |
