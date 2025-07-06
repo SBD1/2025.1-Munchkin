@@ -1,21 +1,19 @@
 -- =====================================================
--- Migration V24: Procedures Seguras para Criação de Partidas
+-- Migration V24: Functions Seguras para Criação de Partidas
 -- Projeto: Munchkin - Banco de Dados
 -- Objetivo: Garantir integridade na criação de partidas e distribuição de cartas
 -- Data: 2025-01-06
 -- =====================================================
 
 -- =====================================================
--- STORED PROCEDURES PARA CRIAÇÃO SEGURA DE PARTIDAS
+-- STORED FUNCTIONS PARA CRIAÇÃO SEGURA DE PARTIDAS
 -- =====================================================
 
--- Procedure para iniciar partida de forma segura
+-- Function para iniciar partida de forma segura
 -- Garante que partida seja criada com exatamente 8 cartas (4 porta + 4 tesouro)
-CREATE OR REPLACE PROCEDURE iniciar_partida_segura(
-    p_id_jogador INTEGER,
-    OUT p_id_partida INTEGER,
-    OUT p_status VARCHAR(50)
-)
+-- Retorna: (id_partida, status)
+CREATE OR REPLACE FUNCTION iniciar_partida_segura(p_id_jogador INTEGER)
+RETURNS TABLE(p_id_partida INTEGER, p_status VARCHAR(50))
 LANGUAGE plpgsql AS $$
 DECLARE
     partida_existente INTEGER;
@@ -23,6 +21,8 @@ DECLARE
     contador_cartas INTEGER := 0;
     cartas_porta INTEGER := 0;
     cartas_tesouro INTEGER := 0;
+    nova_partida_id INTEGER;
+    resultado_status VARCHAR(50);
 BEGIN
     -- Verificar se jogador existe
     IF NOT EXISTS (SELECT 1 FROM jogador WHERE id_jogador = p_id_jogador) THEN
@@ -35,9 +35,14 @@ BEGIN
     WHERE id_jogador = p_id_jogador AND estado_partida = 'em andamento';
 
     IF partida_existente IS NOT NULL THEN
-        p_id_partida := partida_existente;
-        p_status := 'PARTIDA_EXISTENTE';
+        nova_partida_id := partida_existente;
+        resultado_status := 'PARTIDA_EXISTENTE';
         RAISE NOTICE 'Jogador % já possui partida em andamento (ID: %)', p_id_jogador, partida_existente;
+        
+        -- Retornar resultado
+        p_id_partida := nova_partida_id;
+        p_status := resultado_status;
+        RETURN NEXT;
         RETURN;
     END IF;
 
@@ -61,9 +66,9 @@ BEGIN
     -- Criar nova partida
     INSERT INTO partida (id_jogador, data_inicio, estado_partida, vida_restantes)
     VALUES (p_id_jogador, NOW(), 'em andamento', 3)
-    RETURNING id_partida INTO p_id_partida;
+    RETURNING id_partida INTO nova_partida_id;
 
-    RAISE NOTICE 'Criando partida % para jogador %...', p_id_partida, p_id_jogador;
+    RAISE NOTICE 'Criando partida % para jogador %...', nova_partida_id, p_id_jogador;
 
     -- Distribuir exatamente 4 cartas de cada tipo
     -- 1. Distribuir 4 cartas PORTA
@@ -74,7 +79,7 @@ BEGIN
         LIMIT 4
     ) LOOP
         INSERT INTO carta_partida (id_partida, id_carta, zona)
-        VALUES (p_id_partida, carta_record.id_carta, 'mao');
+        VALUES (nova_partida_id, carta_record.id_carta, 'mao');
         
         contador_cartas := contador_cartas + 1;
         RAISE NOTICE 'Carta PORTA % adicionada à mão (total: %)', carta_record.id_carta, contador_cartas;
@@ -88,7 +93,7 @@ BEGIN
         LIMIT 4
     ) LOOP
         INSERT INTO carta_partida (id_partida, id_carta, zona)
-        VALUES (p_id_partida, carta_record.id_carta, 'mao');
+        VALUES (nova_partida_id, carta_record.id_carta, 'mao');
         
         contador_cartas := contador_cartas + 1;
         RAISE NOTICE 'Carta TESOURO % adicionada à mão (total: %)', carta_record.id_carta, contador_cartas;
@@ -102,9 +107,14 @@ BEGIN
     -- Limpar autorização
     PERFORM set_config('app.criacao_partida_autorizada', '', true);
     
-    p_status := 'NOVA_PARTIDA_CRIADA';
+    resultado_status := 'NOVA_PARTIDA_CRIADA';
     RAISE NOTICE 'Partida % criada com sucesso! % cartas distribuídas na mão do jogador %', 
-                 p_id_partida, contador_cartas, p_id_jogador;
+                 nova_partida_id, contador_cartas, p_id_jogador;
+
+    -- Retornar resultado
+    p_id_partida := nova_partida_id;
+    p_status := resultado_status;
+    RETURN NEXT;
 
 EXCEPTION
     WHEN OTHERS THEN
@@ -122,13 +132,13 @@ $$;
 CREATE OR REPLACE FUNCTION bloquear_insert_partida() 
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Verificar se é operação autorizada pela procedure
+    -- Verificar se é operação autorizada pela function
     IF current_setting('app.criacao_partida_autorizada', true) = 'true' THEN
         RETURN NEW; -- Permitir inserção
     END IF;
     
     -- Bloquear inserção direta
-    RAISE EXCEPTION 'Inserção direta na tabela partida não permitida! Use: CALL iniciar_partida_segura(%))', NEW.id_jogador;
+    RAISE EXCEPTION 'Inserção direta na tabela partida não permitida! Use: SELECT * FROM iniciar_partida_segura(%)', NEW.id_jogador;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -141,13 +151,13 @@ BEGIN
         RETURN NEW; -- Permitir inserção
     END IF;
     
-    -- Verificar se é operação durante o jogo (outras procedures podem autorizar)
+    -- Verificar se é operação durante o jogo (outras functions podem autorizar)
     IF current_setting('app.exclusao_autorizada', true) = 'true' THEN
-        RETURN NEW; -- Permitir (para procedures de exclusão)
+        RETURN NEW; -- Permitir (para functions de exclusão)
     END IF;
     
     -- Bloquear inserção direta
-    RAISE EXCEPTION 'Inserção direta na tabela carta_partida não permitida! Use procedures seguras.';
+    RAISE EXCEPTION 'Inserção direta na tabela carta_partida não permitida! Use functions seguras.';
 END;
 $$ LANGUAGE plpgsql;
 
@@ -228,45 +238,17 @@ CREATE CONSTRAINT TRIGGER trigger_validar_integridade_partida
 -- COMENTÁRIOS E DOCUMENTAÇÃO
 -- =====================================================
 
-COMMENT ON PROCEDURE iniciar_partida_segura(INTEGER, INTEGER, VARCHAR) IS 
-'Procedure segura para criação de partidas. Garante distribuição correta de 8 cartas (4 porta + 4 tesouro) e previne criação de partidas duplicadas.';
+COMMENT ON FUNCTION iniciar_partida_segura(INTEGER) IS 
+'Function segura para iniciar partida. Retorna (id_partida, status). Distribui exatamente 8 cartas (4 porta + 4 tesouro) e garante integridade completa.';
 
 COMMENT ON FUNCTION bloquear_insert_partida() IS 
-'Function de trigger que impede inserção direta na tabela partida, exceto quando chamada pela procedure autorizada';
+'Function de trigger que impede inserção direta na tabela partida, exceto quando chamada pela function autorizada';
 
 COMMENT ON FUNCTION bloquear_insert_carta_partida() IS 
-'Function de trigger que impede inserção direta na tabela carta_partida, exceto quando chamada por procedures autorizadas';
+'Function de trigger que impede inserção direta na tabela carta_partida, exceto quando chamada por functions autorizadas';
 
 COMMENT ON FUNCTION validar_integridade_partida() IS 
 'Function de trigger que valida se partidas possuem distribuição correta de cartas após criação';
 
--- =====================================================
--- EXEMPLOS DE USO
--- =====================================================
 
-/*
--- Para criar uma partida de forma segura:
-CALL iniciar_partida_segura(123, NULL, NULL);
 
--- Para verificar resultado:
-SELECT * FROM iniciar_partida_segura(123) AS (id_partida INTEGER, status VARCHAR);
-
--- Tentativas de inserção direta resultarão em erro:
--- INSERT INTO partida (id_jogador, data_inicio...) VALUES (...); -- ERRO!
--- INSERT INTO carta_partida (id_partida, id_carta...) VALUES (...); -- ERRO!
-
--- Como funciona a proteção:
--- 1. Procedure define: app.criacao_partida_autorizada = 'true'
--- 2. Triggers verificam essa variável antes de bloquear
--- 3. Se autorizada: permite operação
--- 4. Se não autorizada: bloqueia com erro
--- 5. Procedure sempre limpa a variável no final
--- 6. Trigger de integridade valida distribuição final de cartas
-
--- Cenários protegidos:
--- - Criação de partidas sem cartas
--- - Distribuição incorreta de cartas (não 4+4)
--- - Múltiplas partidas em andamento para mesmo jogador
--- - Race conditions na criação simultânea
--- - Estados inconsistentes no banco
-*/
