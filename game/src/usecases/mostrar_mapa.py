@@ -8,53 +8,59 @@ console = Console()
 def mostrar_mapa(console, jogador_id):
     try:
         with obter_cursor() as cursor:
-            cursor.execute("SELECT id_reino, nome, descricao FROM mapa ORDER BY id_reino;")
+            cursor.execute("""
+                SELECT
+                  id_reino,
+                  nome,
+                  descricao,
+                  nivel_min,
+                  nivel_max,
+                  ordem
+                FROM mapa
+                ORDER BY ordem
+            """)
             reinos = cursor.fetchall()
     except Exception as e:
         console.print(f"[red]❌ Erro ao buscar reinos do banco: {e}[/red]")
-        return
+        return   # <- impede usar 'reinos' indefinido
 
     if not reinos:
         console.print("[red]❌ Nenhum reino foi encontrado no banco de dados.[/red]")
         return
 
-
-    posicao_atual = 0  # posição inicial (ainda sem salvar por jogador)
+    posicao_atual = 0
 
     while True:
         console.clear()
 
-        # Construir lista de reinos com destaque para o atual
+        # Monta lista destacando posição
         linhas = []
-        for i, (id_reino, nome, _) in enumerate(reinos):
+        for i, (_, nome, _, nivel_min, nivel_max, ordem) in enumerate(reinos):
             marcador = "👤" if i == posicao_atual else "  "
-            linhas.append(f"{marcador} [{i+1}] {nome}")
+            linhas.append(f"{marcador} [{ordem}] {nome} (níveis {nivel_min}-{nivel_max})")
 
-        # Informações do reino atual
-        nome_reino = reinos[posicao_atual][1]
-        desc_reino = reinos[posicao_atual][2]
+        # Detalhes do reino selecionado
+        _, nome_reino, desc_reino, nivel_min, nivel_max, ordem = reinos[posicao_atual]
+        detalhes = (
+            f"[bold]{nome_reino}[/bold]\n"
+            f"[italic]{desc_reino}[/italic]  🔸 Níveis: {nivel_min}–{nivel_max}"
+        )
 
         painel = Panel(
-            Align.left("\n".join(linhas) + f"\n\n[bold]Você está em:[/bold] {nome_reino}\n[italic]{desc_reino}[/italic]"),
+            Align.left("\n".join(linhas) + "\n\n" + detalhes),
             title="🗺️ Mapa dos Reinos",
             width=70
         )
         console.print(painel)
 
-        console.print("\nUse [bold]A[/bold] (subir), [bold]D[/bold] (descer), [bold]S[/bold] (sair do mapa)")
-        comando = input("Comando: ").strip().lower()
+        console.print("\nUse [bold]A[/bold] (acima), [bold]D[/bold] (abaixo), [bold]S[/bold] (sair)")
+        cmd = input("Comando: ").strip().lower()
 
-        if comando == "a":
-            if posicao_atual > 0:
-                posicao_atual -= 1
-            else:
-                console.print("[yellow]⛔ Você já está no primeiro reino.[/yellow]")
-        elif comando == "d":
-            if posicao_atual < len(reinos) - 1:
-                posicao_atual += 1
-            else:
-                console.print("[yellow]⛔ Você já está no último reino.[/yellow]")
-        elif comando == "s":
+        if cmd == "a":
+            posicao_atual = max(0, posicao_atual - 1)
+        elif cmd == "d":
+            posicao_atual = min(len(reinos)-1, posicao_atual + 1)
+        elif cmd == "s":
             console.print("[green]Saindo do mapa...[/green]")
             break
         else:
