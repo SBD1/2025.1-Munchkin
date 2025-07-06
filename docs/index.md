@@ -38,6 +38,8 @@ A versão solo imaginada mantém os desafios estratégicos do jogo original, sim
 
   - [Módulo 1 (Vídeo no YouTube)](https://www.youtube.com/watch?v=1JWhqNgmiXc)
 
+  - [Módulo 2 (Vídeo no YouTube)](https://youtu.be/l67PdaRC2Mk?si=N37tagg1CskSNL4d)
+
 ## Membros do grupo
 
 <center>
