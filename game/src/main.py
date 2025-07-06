@@ -7,6 +7,8 @@ from usecases.criar_jogador import criar_jogador
 from usecases.selecionar_jogador import selecionar_jogador
 from usecases.iniciar_partida import iniciar_partida 
 from usecases.mostrar_regras import mostrar_regras
+from usecases.excluir_jogador import excluir_jogador
+from usecases.excluir_partidas_jogador import excluir_partidas_jogador
 
 # Variável global para armazenar o jogador selecionado na sessão atual
 jogador_selecionado_id = None
@@ -76,7 +78,9 @@ def run():
         console.print("2️⃣ Selecionar Jogador Existente")
         console.print("3️⃣ Iniciar Jogo")
         console.print("4️⃣ Ver Regras do Jogo")
-        console.print("5️⃣ Sair")
+        console.print("5️⃣ Excluir Jogador")
+        console.print("6️⃣ Excluir Partidas de Jogador")
+        console.print("7️⃣ Sair")
 
         escolha = input("\nDigite o número da opção desejada: ").strip()
 
@@ -100,6 +104,22 @@ def run():
             mostrar_regras(console)
 
         elif escolha == "5":
+            executar_com_interface(console, excluir_jogador)
+            # Se o jogador excluído era o selecionado, limpar a seleção
+            if jogador_selecionado_id:
+                try:
+                    with obter_cursor() as cursor:
+                        cursor.execute("SELECT COUNT(*) FROM jogador WHERE id_jogador = %s;", (jogador_selecionado_id,))
+                        if cursor.fetchone()[0] == 0:
+                            jogador_selecionado_id = None
+                            console.print("[yellow]ℹ️ Jogador selecionado foi excluído. Selecione outro jogador.[/yellow]")
+                except:
+                    pass
+
+        elif escolha == "6":
+            executar_com_interface(console, excluir_partidas_jogador)
+
+        elif escolha == "7":
             console.print("[bold red]👋 Saindo do jogo. Até a próxima![/bold red]")
             break
 
