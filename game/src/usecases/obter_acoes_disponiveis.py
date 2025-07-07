@@ -4,10 +4,14 @@ from usecases.mostrar_regras import mostrar_regras
 from usecases.ver_cartas import ver_cartas_por_zona
 from usecases.gerenciar_cartas import gerenciar_cartas
 <<<<<<< HEAD
+<<<<<<< HEAD
 from usecases.iniciar_turno import iniciar_turno
 =======
 from usecases.mostrar_mapa import mostrar_mapa
 >>>>>>> 554731e (Integra sistema de mapa ao banco de dados)
+=======
+from usecases.mostrar_mapa import mostrar_mapa
+>>>>>>> cb8e53a56d569e911da7c6bddfc64f6d657c7dca
 
 def ver_status(console, jogador_id):
     with obter_cursor() as cursor:
@@ -41,8 +45,7 @@ def ver_status(console, jogador_id):
 def obter_acoes_disponiveis(jogador_id):
     opcoes = [
         ("[bold green]📜 Ver Todas as Cartas do Jogador[/bold green]", ver_cartas_por_zona),
-        ("[bold blue]🛠️ Gerenciar Cartas(Equipar, Descartar, etc.)[/bold blue]", gerenciar_cartas),
-        ("[bold purple]🚪 Iniciar Turno[/bold purple]", iniciar_turno),
+        ("[bold blue]🛠️ Gerenciar Cartas (Equipar, Descartar, etc.)[/bold blue]", gerenciar_cartas),
         ("[bold cyan]🧙 Ver Status do Jogador[/bold cyan]", ver_status),
         ("[bold yellow]📖 Ver Regras do Jogo[/bold yellow]", lambda console, _: mostrar_regras(console)),
         ("[bold dark_orange]🧭 Ver mapa[/bold dark_orange]", mostrar_mapa),

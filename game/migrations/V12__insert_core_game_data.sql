@@ -1,12 +1,11 @@
--- Cria função para inserir jogador
-CREATE OR REPLACE FUNCTION insert_munchkin_jogador(p_nome TEXT)
+-- Cria função para inserir jogador com nome
+CREATE OR REPLACE FUNCTION insert_munchkin_jogador(nome TEXT)
 RETURNS VOID AS $$
 BEGIN
-    INSERT INTO jogador (nome) VALUES (p_nome);
+    INSERT INTO jogador (nome) VALUES (nome);
 END;
 $$ LANGUAGE plpgsql;
 
--- Inserção de jogadores
 INSERT INTO jogador (nome) VALUES
 ('Breno'),
 ('Maria');
@@ -20,11 +19,7 @@ BEGIN
     INSERT INTO partida (
         id_jogador,
         data_inicio,
-        turno_atual,
         estado_partida,
-        finalizada,
-        vitoria,
-        nivel,
         vida_restantes,
         ouro_acumulado,
         limite_mao_atual
@@ -32,11 +27,7 @@ BEGIN
     VALUES (
         p_id_jogador,
         NOW(),
-        1,
         'em andamento',
-        FALSE,
-        FALSE,
-        1,
         3,
         0,
         5
@@ -47,7 +38,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Inserção de partidas (DESCOMENTE apenas se tiver jogadores com id 1 e 2)
+
+-- Inserção de partidas (DESCOMENTE apenas se tiver jogadores inseridos com id 1 e 2)
 INSERT INTO partida (
     id_jogador, data_inicio, turno_atual, estado_partida,
     finalizada, vitoria, nivel, vida_restantes, ouro_acumulado, limite_mao_atual
@@ -55,11 +47,12 @@ INSERT INTO partida (
 (1, NOW(), 1, 'em andamento', FALSE, TRUE, 1, 3, 0, 5),
 (2, NOW(), 2, 'encerrada', TRUE, FALSE, 2, 2, 0, 5);
 
+
 -- Inserção de cartas iniciais
 INSERT INTO carta (id_carta, nome, tipo_carta, subtipo, disponivel_para_virar)
 VALUES 
 (1, 'dentadura postiça aterrorizante', 'tesouro', 'item', TRUE),
-(2, 'Título realmente impressionante', 'tesouro', 'item', TRUE),
+(2, 'Título realmente impressiionante', 'tesouro', 'item', TRUE),
 (3, 'joelheiras pontiagudas', 'tesouro', 'item', TRUE),
 (4, 'botas de chutas a bunda', 'tesouro', 'item', TRUE),
 (5, 'broquel da bravata', 'tesouro', 'item', TRUE),
@@ -94,6 +87,7 @@ VALUES
 (34, 'dragão de plutônio', 'porta', 'monstro', TRUE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 INSERT INTO mapa ( id_reino, nome, descricao) 
 VALUES
 (1, '🏰Abismo da Masmorra Sombria', 'Criaturas deformadas espreitam nas sombras em corredores esquecidos'),
@@ -102,6 +96,8 @@ VALUES
 (4, '🔥Fornalha do Trono Carmesim', 'Chamas vivas e legiões demoníacas defendem a entrada do inferno'),
 (5, '👑Coração do Deus Quebrado', 'Um palácio partido onde o Chefão Final aguarda em ruína sagrada');
 =======
+=======
+>>>>>>> cb8e53a56d569e911da7c6bddfc64f6d657c7dca
 
 INSERT INTO mapa (id_reino, nome, descricao, nivel_min, nivel_max, ordem) 
 VALUES
@@ -111,11 +107,17 @@ VALUES
 (4, '🔥Fornalha do Trono Carmesim', 'Chamas vivas e legiões demoníacas defendem a entrada do inferno', 14, 18, 4),
 (5, '👑Coração do Deus Quebrado', 'Um palácio partido onde o Chefão Final aguarda em ruína sagrada', 20, 20, 5);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 5cb1407 (adicionando colunas no banco do mapa)
 =======
+=======
+>>>>>>> cb8e53a56d569e911da7c6bddfc64f6d657c7dca
 
 
 INSERT INTO progresso_reino (id_partida, id_reino)
 VALUES
 (1, 1);
+<<<<<<< HEAD
 >>>>>>> 81678e1 (Feat: adicionando funcionalidades no mapa)
+=======
+>>>>>>> cb8e53a56d569e911da7c6bddfc64f6d657c7dca

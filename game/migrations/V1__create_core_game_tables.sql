@@ -48,7 +48,10 @@ CREATE TABLE mapa (
     ordem INTEGER NOT NULL
 );
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> cb8e53a56d569e911da7c6bddfc64f6d657c7dca
 
 CREATE TABLE progresso_reino (
     id_partida INT NOT NULL REFERENCES partida(id_partida),
@@ -58,4 +61,7 @@ CREATE TABLE progresso_reino (
 
 
 
+<<<<<<< HEAD
 >>>>>>> 5cb1407 (adicionando colunas no banco do mapa)
+=======
+>>>>>>> cb8e53a56d569e911da7c6bddfc64f6d657c7dca
