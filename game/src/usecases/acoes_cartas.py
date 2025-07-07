@@ -1,5 +1,11 @@
 # usecases/acoes_cartas.py
 
+# IMPORTANTE: As funções neste arquivo são chamadas pelo gerenciar_cartas.py
+# para processar ações específicas em cartas baseadas em sua zona atual:
+# - tratar_equipar: Move carta da 'mao' para 'equipado' (raça/classe/item)
+# - tratar_voltar: Move carta de 'equipado' para 'mao' (desequipar)
+# - tratar_venda: Move carta de qualquer zona para 'descartada' (apenas itens)
+
 def tratar_equipar(console, cursor, id_carta, subtipo, id_partida):
     if subtipo == 'monstro':
         console.print("[bold red]❌ Você não pode equipar cartas do tipo MONSTRO.[/bold red]")
@@ -18,12 +24,27 @@ def tratar_equipar(console, cursor, id_carta, subtipo, id_partida):
 
         if resultado:
             limite_mao = resultado[1]
-            cursor.execute("""
-                UPDATE partida
-                SET limite_mao_atual = %s
-                WHERE id_partida = %s
-            """, (limite_mao, id_partida))
-            console.print(f"[bold green]🧬 Limite de cartas na mão atualizado para {limite_mao} devido ao poder da raça.[/bold green]")
+            # ETAPA 2: Usar function segura em vez de UPDATE direto perigoso
+            try:
+                cursor.execute("""
+                    SELECT * FROM atualizar_limite_mao_seguro(%s, %s);
+                """, (id_partida, limite_mao))
+                
+                result = cursor.fetchone()
+                if result and result[0]:  # sucesso = True
+                    console.print(f"[bold green]🧬 {result[1]}[/bold green]")
+                else:
+                    console.print(f"[red]❌ Erro ao atualizar limite de mão: {result[1] if result else 'Erro desconhecido'}[/red]")
+                    return None
+                    
+            except Exception as e:
+                error_message = str(e)
+                if "não permitido" in error_message:
+                    console.print(f"[red]🛡️ Operação bloqueada por segurança: {error_message}[/red]")
+                    console.print("[yellow]💡 Use apenas functions seguras para atualizar partida![/yellow]")
+                else:
+                    console.print(f"[red]❌ Erro ao atualizar limite de mão: {error_message}[/red]")
+                return None
 
     elif subtipo == 'item':
         cursor.execute("""
@@ -94,13 +115,26 @@ def tratar_equipar(console, cursor, id_carta, subtipo, id_partida):
                     return None  # Bloqueia o equipamento se houver conflito
 
             # Agora sim, aplica o bônus e equipa
-            cursor.execute("""
-                UPDATE partida
-                SET nivel = nivel + %s
-                WHERE id_partida = %s
-            """, (bonus_combate, id_partida))
-
-            console.print(f"[bold green]🪖 Item equipado no slot '{slot.upper()}'! Bônus de combate +{bonus_combate} aplicado ao seu nível.[/bold green]")
+            try:
+                cursor.execute("""
+                    SELECT * FROM aplicar_bonus_combate_seguro(%s, %s);
+                """, (id_partida, bonus_combate))
+                
+                result = cursor.fetchone()
+                if result and result[0]:  # sucesso = True
+                    console.print(f"[bold green]🪖 Item equipado no slot '{slot.upper()}'! {result[1]}[/bold green]")
+                else:
+                    console.print(f"[red]❌ Erro ao aplicar bônus de combate: {result[1] if result else 'Erro desconhecido'}[/red]")
+                    return None
+                    
+            except Exception as e:
+                error_message = str(e)
+                if "não permitido" in error_message:
+                    console.print(f"[red]🛡️ Operação bloqueada por segurança: {error_message}[/red]")
+                    console.print("[yellow]💡 Use apenas functions seguras para atualizar partida![/yellow]")
+                else:
+                    console.print(f"[red]❌ Erro ao aplicar bônus de combate: {error_message}[/red]")
+                return None
 
     return nova_zona
 
@@ -129,12 +163,60 @@ def tratar_voltar(console, cursor, id_carta, subtipo, id_partida):
             ainda_tem = cursor.fetchone()
 
             if not ainda_tem:
-                cursor.execute("""
-                    UPDATE partida
-                    SET limite_mao_atual = 5
-                    WHERE id_partida = %s
-                """, (id_partida,))
-                console.print(f"[bold yellow]🔄 Nenhuma raça com poder ativo. Limite de cartas na mão retornado para 5.[/bold yellow]")
+                try:
+                    cursor.execute("""
+                        SELECT * FROM atualizar_limite_mao_seguro(%s, 5);
+                    """, (id_partida,))
+                    
+                    result = cursor.fetchone()
+                    if result and result[0]:  # sucesso = True
+                        console.print(f"[bold yellow]🔄 {result[1]} (poder de raça removido)[/bold yellow]")
+                    else:
+                        console.print(f"[red]❌ Erro ao resetar limite de mão: {result[1] if result else 'Erro desconhecido'}[/red]")
+                        
+                except Exception as e:
+                    error_message = str(e)
+                    if "não permitido" in error_message:
+                        console.print(f"[red]🛡️ Operação bloqueada por segurança: {error_message}[/red]")
+                    else:
+                        console.print(f"[red]❌ Erro ao resetar limite de mão: {error_message}[/red]")
+
+    elif subtipo == 'item':
+        # Verifica se o item tem bônus de combate que precisa ser removido
+        cursor.execute("""
+            SELECT bonus_combate, slot
+            FROM carta_item
+            WHERE id_carta = %s
+        """, (id_carta,))
+        resultado = cursor.fetchone()
+
+        if resultado:
+            bonus_combate, slot = resultado
+            
+            # Remove o bônus de combate (aplicar o valor negativo)
+            if bonus_combate != 0:
+                try:
+                    cursor.execute("""
+                        SELECT * FROM aplicar_bonus_combate_seguro(%s, %s);
+                    """, (id_partida, -bonus_combate))
+                    
+                    result = cursor.fetchone()
+                    if result and result[0]:  # sucesso = True
+                        console.print(f"[bold yellow]🪖 Item desequipado do slot '{slot.upper()}'! {result[1]}[/bold yellow]")
+                    else:
+                        console.print(f"[red]❌ Erro ao remover bônus de combate: {result[1] if result else 'Erro desconhecido'}[/red]")
+                        return None
+                        
+                except Exception as e:
+                    error_message = str(e)
+                    if "não permitido" in error_message:
+                        console.print(f"[red]🛡️ Operação bloqueada por segurança: {error_message}[/red]")
+                        console.print("[yellow]💡 Use apenas functions seguras para atualizar partida![/yellow]")
+                    else:
+                        console.print(f"[red]❌ Erro ao remover bônus de combate: {error_message}[/red]")
+                    return None
+            else:
+                console.print(f"[bold cyan]🔄 Item '{slot.upper()}' desequipado (sem bônus de combate).[/bold cyan]")
 
     return nova_zona
 
@@ -208,22 +290,30 @@ def tratar_venda(console, cursor, id_carta, subtipo, id_partida):
     else:
         valor_final = valor_ouro
 
-    # 5. Atualiza o ouro e nível acumulado
-    novo_ouro = ouro_atual + valor_final
-
-    subir_nivel = 0
-    while novo_ouro >= 1000:
-        subir_nivel += 1
-        novo_ouro -= 1000
-
-    cursor.execute("""
-        UPDATE partida
-        SET ouro_acumulado = %s, nivel = nivel + %s
-        WHERE id_partida = %s
-    """, (novo_ouro, subir_nivel, id_partida))
-
-    console.print(f"💰 Item vendido por {valor_final} de ouro.")
-    if subir_nivel > 0:
-        console.print(f"[bold green]⬆️ Você subiu {subir_nivel} nível(is)![/bold green]")
+    # 5. Atualiza o ouro e nível acumulado usando function segura
+    try:
+        cursor.execute("""
+            SELECT * FROM processar_venda_segura(%s, %s);
+        """, (id_partida, valor_final))
+        
+        result = cursor.fetchone()
+        if result and result[0]:  # sucesso = True
+            sucesso, mensagem, ouro_anterior, ouro_atual, nivel_anterior, nivel_atual, niveis_ganhos = result
+            console.print(f"💰 {mensagem}")
+            
+            if niveis_ganhos > 0:
+                console.print(f"[bold green]⬆️ Você subiu {niveis_ganhos} nível(s)! (Nível {nivel_anterior} -> {nivel_atual})[/bold green]")
+        else:
+            console.print(f"[red]❌ Erro ao processar venda: {result[1] if result else 'Erro desconhecido'}[/red]")
+            return None
+            
+    except Exception as e:
+        error_message = str(e)
+        if "não permitido" in error_message:
+            console.print(f"[red]🛡️ Operação bloqueada por segurança: {error_message}[/red]")
+            console.print("[yellow]💡 Use apenas functions seguras para atualizar partida![/yellow]")
+        else:
+            console.print(f"[red]❌ Erro ao processar venda: {error_message}[/red]")
+        return None
 
     return "descartada"
