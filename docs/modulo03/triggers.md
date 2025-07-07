@@ -122,70 +122,100 @@ CREATE TRIGGER trigger_bloquear_delete_partida
 ```
 
 -- =====================================================
--- SECTION: PROTEÇÃO DE UPDATE DIRETO
+-- SECTION: BLOQUEIO DO UPDATE DIRETO DA ZONA 
 -- =====================================================
 ```sql
--- Function para bloquear UPDATE direto em carta_partida
-CREATE OR REPLACE FUNCTION bloquear_update_carta_partida() 
+-- Função para bloquear update direto da zona
+CREATE OR REPLACE FUNCTION bloquear_update_zona()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Verificar se é operação autorizada por functions seguras (V23, V24, V25)
-    IF current_setting('app.movimentacao_carta_autorizada', true) = 'true' OR
-       current_setting('app.criacao_partida_autorizada', true) = 'true' OR
-       current_setting('app.exclusao_autorizada', true) = 'true' THEN
-        RETURN NEW; -- Permitir operação autorizada
+  -- Se a zona foi alterada manualmente
+  IF NEW.zona IS DISTINCT FROM OLD.zona THEN
+    -- Permitir apenas se estiver dentro de uma function segura
+    IF current_setting('app.mudanca_zona_autorizada', true) = 'true' THEN
+      RETURN NEW;
     END IF;
-    
-    -- Bloquear UPDATE direto não autorizado
-    RAISE EXCEPTION 'UPDATE direto na tabela carta_partida não permitido! Use: SELECT * FROM mover_carta_segura(%, %, ''%'')', 
-                   NEW.id_partida, NEW.id_carta, NEW.zona;
+
+    -- Bloquear operação não autorizada
+    RAISE EXCEPTION 'Atualização da zona não permitida diretamente! Use a procedure segura para movimentar cartas.';
+  END IF;
+
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger para impedir UPDATE direto na tabela carta_partida
-CREATE TRIGGER trigger_bloquear_update_carta_partida
-    BEFORE UPDATE ON carta_partida
-    FOR EACH ROW
-    EXECUTE FUNCTION bloquear_update_carta_partida();
+-- Trigger para proteger update na zona
+CREATE TRIGGER trigger_bloquear_update_zona
+BEFORE UPDATE ON carta_partida
+FOR EACH ROW
+EXECUTE FUNCTION bloquear_update_zona();
+
 ```
 
--- =======================================================
--- SECTION: PROTEÇÃO DE CAMPOS CRÍTICOS DA TABELA PARTIDA
--- =======================================================
+-- =========================================================
+-- SECTION: IMPEDIMENTO DE MULTÍPLOS ITENS EM UM MESMO SLOT
+-- =========================================================
+
 ```sql
-CREATE OR REPLACE FUNCTION bloquear_update_partida_criticos() 
+-- ===============================================
+-- Function: validar_limite_slot_equipado()
+-- Projeto: Munchkin - Banco de Dados
+-- Objetivo: Impedir múltiplos itens equipados no mesmo slot
+-- ===============================================
+CREATE OR REPLACE FUNCTION validar_limite_slot_equipado()
 RETURNS TRIGGER AS $$
+DECLARE
+    v_id_partida INTEGER := NEW.id_partida;
+    v_id_carta INTEGER := NEW.id_carta;
+    v_slot VARCHAR(20);
+    v_ocupacao_dupla BOOLEAN;
+    v_subtipo carta.subtipo%TYPE;
+    v_conflito INTEGER;
 BEGIN
-    -- Verificar se é operação autorizada por functions seguras
-    IF current_setting('app.update_partida_autorizado', true) = 'true' OR
-       current_setting('app.criacao_partida_autorizada', true) = 'true' OR
-       current_setting('app.exclusao_autorizada', true) = 'true' THEN
-        RETURN NEW; -- Permitir operação autorizada
+    -- Só valida se estiver sendo equipado
+    IF NEW.zona != 'equipado' THEN
+        RETURN NEW;
     END IF;
-    
-    -- Verificar quais campos críticos estão sendo alterados
-    IF OLD.limite_mao_atual IS DISTINCT FROM NEW.limite_mao_atual THEN
-        RAISE EXCEPTION 'UPDATE direto no campo limite_mao_atual não permitido! Use: SELECT * FROM atualizar_limite_mao_seguro(%, %)', NEW.id_partida, NEW.limite_mao_atual;
+
+    -- Obter slot e ocupação da carta
+    SELECT ci.slot, ci.ocupacao_dupla, c.subtipo
+    INTO v_slot, v_ocupacao_dupla, v_subtipo
+    FROM carta_item ci
+    JOIN carta c ON c.id_carta = ci.id_carta
+    WHERE ci.id_carta = v_id_carta;
+
+    -- Só aplica a regra para cartas de subtipo item
+    IF v_subtipo != 'item' THEN
+        RETURN NEW;
     END IF;
-    
-    IF OLD.nivel IS DISTINCT FROM NEW.nivel THEN
-        RAISE EXCEPTION 'UPDATE direto no campo nivel não permitido! Use: SELECT * FROM aplicar_bonus_combate_seguro(%, %)', NEW.id_partida, (NEW.nivel - OLD.nivel);
+
+    -- Contar quantas outras cartas já equipadas usam o mesmo slot
+    SELECT COUNT(*) INTO v_conflito
+    FROM carta_partida cp
+    JOIN carta_item ci ON ci.id_carta = cp.id_carta
+    JOIN carta c ON c.id_carta = cp.id_carta
+    WHERE cp.id_partida = v_id_partida
+      AND cp.zona = 'equipado'
+      AND ci.slot = v_slot
+      AND cp.id_carta != v_id_carta;
+
+    -- Se já houver outra carta no mesmo slot, e não for permitido ocupar duplamente
+    IF v_conflito > 0 AND NOT v_ocupacao_dupla THEN
+        RAISE EXCEPTION '❌ Não é permitido equipar múltiplos itens no slot "%"! Já existe outro item equipado neste slot.', v_slot;
     END IF;
-    
-    IF OLD.ouro_acumulado IS DISTINCT FROM NEW.ouro_acumulado THEN
-        RAISE EXCEPTION 'UPDATE direto no campo ouro_acumulado não permitido! Use: SELECT * FROM processar_venda_segura(%, %)', NEW.id_partida, (NEW.ouro_acumulado - OLD.ouro_acumulado);
-    END IF;
-    
-    -- Se chegou aqui, é um UPDATE em campo não crítico (permitir)
+
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger para campos críticos da tabela partida
-CREATE TRIGGER trigger_bloquear_update_partida_criticos
-    BEFORE UPDATE ON partida
-    FOR EACH ROW
-    EXECUTE FUNCTION bloquear_update_partida_criticos();
+-- Trigger: validação dos limites equipados
+-- ===============================================
+CREATE TRIGGER trigger_validar_limites_equipados
+AFTER UPDATE ON carta_partida
+FOR EACH ROW
+WHEN (OLD.zona IS DISTINCT FROM NEW.zona AND NEW.zona = 'equipado')
+EXECUTE FUNCTION validar_limite_slot_equipado();
+
 ```
 
 -- =====================================================
@@ -198,9 +228,8 @@ COMMENT ON FUNCTION bloquear_insert_carta_partida() IS 'Trigger Function: Impede
 COMMENT ON FUNCTION validar_integridade_partida() IS 'Trigger Function: Valida distribuição de cartas após criação da partida.';
 COMMENT ON FUNCTION bloquear_delete_jogador() IS 'Trigger Function: Impede exclusão direta de "jogador".';
 COMMENT ON FUNCTION bloquear_delete_partida() IS 'Trigger Function: Impede exclusão direta de "partida".';
-COMMENT ON FUNCTION bloquear_update_carta_partida() IS 'Trigger Function: Impede UPDATE direto em "carta_partida"; exige uso de função segura como mover_carta_segura.';
-COMMENT ON FUNCTION bloquear_update_partida_criticos() IS 'Trigger Function: Bloqueia alteração direta em campos críticos de "partida" (nível, ouro, limite de mão), recomendando o uso das funções seguras correspondentes.';
-
+COMMENT ON FUNCTION bloquear_update_zona() IS 'Trigger Function: Impede alteração direta da coluna "zona" de cartas. Exige autorização explícita via variável de sessão.';
+COMMENT ON FUNCTION validar_limite_slot_equipado() IS 'Trigger Function: Impede que múltiplos itens sejam equipados no mesmo slot, exceto quando permitido por ocupação dupla.';
 
 ```
 
