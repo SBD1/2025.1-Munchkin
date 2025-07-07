@@ -110,4 +110,12 @@ VALUES
 (3, '🧙Cúpula dos Arquimagos', 'Feitiços antigos moldaram monstros que guardam segredos arcanos', 10, 14, 3),
 (4, '🔥Fornalha do Trono Carmesim', 'Chamas vivas e legiões demoníacas defendem a entrada do inferno', 14, 18, 4),
 (5, '👑Coração do Deus Quebrado', 'Um palácio partido onde o Chefão Final aguarda em ruína sagrada', 20, 20, 5);
+<<<<<<< HEAD
 >>>>>>> 5cb1407 (adicionando colunas no banco do mapa)
+=======
+
+
+INSERT INTO progresso_reino (id_partida, id_reino)
+VALUES
+(1, 1);
+>>>>>>> 81678e1 (Feat: adicionando funcionalidades no mapa)

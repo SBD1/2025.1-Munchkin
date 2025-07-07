@@ -1,7 +1,6 @@
 from usecases.aplicar_penalidades_monstro import aplicar_penalidades
 from usecases.aplicar_recompensas_monstro import aplicar_recompensas
 
-
 def resolver_combate(console, cursor, id_partida, id_carta):
     # Buscar nível do jogador
     cursor.execute("""
@@ -36,7 +35,25 @@ def resolver_combate(console, cursor, id_partida, id_carta):
         """, (id_partida, id_carta))
 
         aplicar_recompensas(console, cursor, id_partida, id_carta)
-        
+
+        # 🧭 Registrar progresso do reino vencido
+        cursor.execute("""
+            SELECT id_reino FROM carta_partida
+            WHERE id_partida = %s AND id_carta = %s;
+        """, (id_partida, id_carta))
+        resultado = cursor.fetchone()
+
+        if resultado:
+            id_reino = resultado[0]
+            cursor.execute("""
+                INSERT INTO progresso_reino (id_partida, id_reino)
+                SELECT %s, %s
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM progresso_reino
+                    WHERE id_partida = %s AND id_reino = %s
+                );
+            """, (id_partida, id_reino, id_partida, id_reino))
+
     else:
         console.print(f"\n[bold red]💥 Você perdeu o combate! ({total_jogador} vs {nivel_monstro})[/bold red]")
         console.print("⚠️ Prepare-se para sofrer a coisa ruim...")

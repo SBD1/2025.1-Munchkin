@@ -50,5 +50,12 @@ CREATE TABLE mapa (
 <<<<<<< HEAD
 =======
 
+CREATE TABLE progresso_reino (
+    id_partida INT NOT NULL REFERENCES partida(id_partida),
+    id_reino   INT NOT NULL REFERENCES mapa(id_reino),
+    PRIMARY KEY (id_partida, id_reino)
+);
+
+
 
 >>>>>>> 5cb1407 (adicionando colunas no banco do mapa)
