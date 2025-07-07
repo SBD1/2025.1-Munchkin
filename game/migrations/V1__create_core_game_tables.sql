@@ -48,4 +48,11 @@ CREATE TABLE mapa (
     ordem INTEGER NOT NULL
 );
 
+CREATE TABLE progresso_reino (
+    id_partida INT NOT NULL REFERENCES partida(id_partida),
+    id_reino   INT NOT NULL REFERENCES mapa(id_reino),
+    PRIMARY KEY (id_partida, id_reino)
+);
+
+
 
