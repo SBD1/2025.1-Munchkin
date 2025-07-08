@@ -353,7 +353,7 @@ BEGIN
               AND ri.valor_alvo = v_nome
               AND ri.permitido = true
         LOOP
-            RAISE NOTICE '⚠️ O item "%" depende de sua % "%". Será automaticamente desequipado.', v_dependentes.nome, v_subtipo, v_nome;
+            RAISE NOTICE '🧤 O item "%" foi automaticamente desequipado pois depende da sua % "%".', v_dependentes.nome, v_subtipo, v_nome;
 
             -- Mover o item dependente para a mão
             CALL mover_carta_zona_seguro(p_id_partida, v_dependentes.id_item, 'mao');

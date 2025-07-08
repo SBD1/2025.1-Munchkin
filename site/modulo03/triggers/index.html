@@ -1,0 +1,1345 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../modulo02/dql/">
+      
+      
+        <link rel="next" href="../procedures/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.45">
+    
+    
+      
+        <title>Triggers e Integridade - Munchkin</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.0253249f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="amber" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#triggers-e-integridade" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href="../.." title="Munchkin" class="md-header__button md-logo" aria-label="Munchkin" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Munchkin
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Triggers e Integridade
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="amber" data-md-color-accent="red"  aria-label="Mudar para o modo escuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Mudar para o modo escuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="amber" data-md-color-accent="red"  aria-label="Mudar para modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Mudar para modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Abas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Início
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../modulo01/mer/" class="md-tabs__link">
+          
+  
+  Módulo 1
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../modulo02/ddl/" class="md-tabs__link">
+          
+  
+  Módulo 2
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  Módulo 3
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Munchkin" class="md-nav__button md-logo" aria-label="Munchkin" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Munchkin
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Início
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Módulo 1
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Módulo 1
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modulo01/mer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modelo Entidade Relacionamento
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modulo01/der/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Diagrama Entidade Relacionamento
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modulo01/ml/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modelo Lógico
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modulo01/dicionario/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dicionário de Dados
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Módulo 2
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Módulo 2
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modulo02/ddl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Definition Language
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modulo02/dml/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Manipulation Language
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modulo02/dql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Query Language
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Módulo 3
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Módulo 3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Triggers e Integridade
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Triggers e Integridade
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#triggers-e-integridade" class="md-nav__link">
+    <span class="md-ellipsis">
+      Triggers e Integridade
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Triggers e Integridade">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#introducao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdução
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-protecao-de-insercao-em-partidas-e-cartas" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Proteção de inserção em partidas e cartas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Proteção de inserção em partidas e cartas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#este-trigger-serve-para-impedir-insercoes-diretas-nas-tabelas-partida-e-carta_partida-garantindo-que-apenas-procedures-seguras-sejam-utilizadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Este trigger serve para impedir inserções diretas nas tabelas partida e carta_partida, garantindo que apenas procedures seguras sejam utilizadas.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-validacao-de-integridade-da-partida" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Validação de integridade da partida
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Validação de integridade da partida">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#este-trigger-serve-para-verificar-se-uma-partida-foi-criada-corretamente-com-14-cartas-7-porta-7-tesouro-na-mao-do-jogador" class="md-nav__link">
+    <span class="md-ellipsis">
+      Este trigger serve para verificar se uma partida foi criada corretamente com 14 cartas (7 porta + 7 tesouro) na mão do jogador.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-bloqueio-de-exclusoes-diretas" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Bloqueio de exclusões diretas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Bloqueio de exclusões diretas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#este-trigger-serve-para-impedir-exclusoes-diretas-de-jogadores-e-partidas-garantindo-que-apenas-procedures-seguras-sejam-utilizadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Este trigger serve para impedir exclusões diretas de jogadores e partidas, garantindo que apenas procedures seguras sejam utilizadas.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-bloqueio-de-atualizacao-direta-de-zona" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Bloqueio de atualização direta de zona
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Bloqueio de atualização direta de zona">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#este-trigger-serve-para-impedir-alteracoes-diretas-na-zona-das-cartas-garantindo-que-movimentacoes-sejam-feitas-apenas-via-procedures-seguras" class="md-nav__link">
+    <span class="md-ellipsis">
+      Este trigger serve para impedir alterações diretas na zona das cartas, garantindo que movimentações sejam feitas apenas via procedures seguras.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-validacao-de-slots-equipados" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Validação de slots equipados
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Validação de slots equipados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#este-trigger-serve-para-validar-se-multiplos-itens-podem-ser-equipados-no-mesmo-slot-impedindo-conflitos-de-equipamento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Este trigger serve para validar se múltiplos itens podem ser equipados no mesmo slot, impedindo conflitos de equipamento.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#referencia-bibliografica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Referência Bibliográfica
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#versionamento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Versionamento
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../procedures/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Stored Procedures
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#triggers-e-integridade" class="md-nav__link">
+    <span class="md-ellipsis">
+      Triggers e Integridade
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Triggers e Integridade">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#introducao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdução
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-protecao-de-insercao-em-partidas-e-cartas" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Proteção de inserção em partidas e cartas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Proteção de inserção em partidas e cartas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#este-trigger-serve-para-impedir-insercoes-diretas-nas-tabelas-partida-e-carta_partida-garantindo-que-apenas-procedures-seguras-sejam-utilizadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Este trigger serve para impedir inserções diretas nas tabelas partida e carta_partida, garantindo que apenas procedures seguras sejam utilizadas.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-validacao-de-integridade-da-partida" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Validação de integridade da partida
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Validação de integridade da partida">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#este-trigger-serve-para-verificar-se-uma-partida-foi-criada-corretamente-com-14-cartas-7-porta-7-tesouro-na-mao-do-jogador" class="md-nav__link">
+    <span class="md-ellipsis">
+      Este trigger serve para verificar se uma partida foi criada corretamente com 14 cartas (7 porta + 7 tesouro) na mão do jogador.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-bloqueio-de-exclusoes-diretas" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Bloqueio de exclusões diretas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Bloqueio de exclusões diretas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#este-trigger-serve-para-impedir-exclusoes-diretas-de-jogadores-e-partidas-garantindo-que-apenas-procedures-seguras-sejam-utilizadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Este trigger serve para impedir exclusões diretas de jogadores e partidas, garantindo que apenas procedures seguras sejam utilizadas.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-bloqueio-de-atualizacao-direta-de-zona" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Bloqueio de atualização direta de zona
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Bloqueio de atualização direta de zona">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#este-trigger-serve-para-impedir-alteracoes-diretas-na-zona-das-cartas-garantindo-que-movimentacoes-sejam-feitas-apenas-via-procedures-seguras" class="md-nav__link">
+    <span class="md-ellipsis">
+      Este trigger serve para impedir alterações diretas na zona das cartas, garantindo que movimentações sejam feitas apenas via procedures seguras.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-validacao-de-slots-equipados" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Validação de slots equipados
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Validação de slots equipados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#este-trigger-serve-para-validar-se-multiplos-itens-podem-ser-equipados-no-mesmo-slot-impedindo-conflitos-de-equipamento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Este trigger serve para validar se múltiplos itens podem ser equipados no mesmo slot, impedindo conflitos de equipamento.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#referencia-bibliografica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Referência Bibliográfica
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#versionamento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Versionamento
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>Triggers e Integridade</h1>
+
+<h2 id="triggers-e-integridade">Triggers e Integridade</h2>
+<h3 id="introducao">Introdução</h3>
+<p>A utilização de <em>triggers</em> em bancos de dados relacionais representa uma abordagem avançada para automatizar ações e reforçar regras de negócio diretamente no nível do banco. Segundo Elmasri e Navathe, <em>triggers</em> são procedimentos armazenados que são automaticamente executados em resposta a determinados eventos, como inserções, atualizações ou exclusões de dados em tabelas específicas.</p>
+<p>Este documento apresenta a aplicação de <em>triggers</em> no sistema de gerenciamento de partidas com cartas, demonstrando como elas contribuem para a manutenção da integridade, automação de processos e resposta a eventos críticos, garantindo que o sistema opere de acordo com os padrões e restrições previamente definidos.</p>
+<hr />
+<h3 id="1-protecao-de-insercao-em-partidas-e-cartas">1. Proteção de inserção em partidas e cartas</h3>
+<h4 id="este-trigger-serve-para-impedir-insercoes-diretas-nas-tabelas-partida-e-carta_partida-garantindo-que-apenas-procedures-seguras-sejam-utilizadas">Este trigger serve para impedir inserções diretas nas tabelas partida e carta_partida, garantindo que apenas procedures seguras sejam utilizadas.</h4>
+<details><summary>Comandos</summary>
+
+    <div class="highlight"><pre><span></span><code><span class="w">    </span><span class="c1">-- Impede inserção direta na tabela &#39;partida&#39;</span>
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">bloquear_insert_partida</span><span class="p">()</span>
+<span class="w">    </span><span class="k">RETURNS</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">$$</span>
+<span class="w">    </span><span class="k">BEGIN</span>
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="n">current_setting</span><span class="p">(</span><span class="s1">&#39;app.criacao_partida_autorizada&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="k">RETURN</span><span class="w"> </span><span class="k">NEW</span><span class="p">;</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+<span class="w">        </span><span class="n">RAISE</span><span class="w"> </span><span class="k">EXCEPTION</span><span class="w"> </span><span class="s1">&#39;Inserção direta em &quot;partida&quot; não permitida! Use: SELECT * FROM iniciar_partida_segura(id_jogador)&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">END</span><span class="p">;</span>
+<span class="w">    </span><span class="err">$$</span><span class="w"> </span><span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">trigger_bloquear_insert_partida</span>
+<span class="w">        </span><span class="k">BEFORE</span><span class="w"> </span><span class="k">INSERT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">partida</span>
+<span class="w">        </span><span class="k">FOR</span><span class="w"> </span><span class="k">EACH</span><span class="w"> </span><span class="k">ROW</span>
+<span class="w">        </span><span class="k">EXECUTE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">bloquear_insert_partida</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">-- Impede inserção direta na tabela &#39;carta_partida&#39;</span>
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">bloquear_insert_carta_partida</span><span class="p">()</span>
+<span class="w">    </span><span class="k">RETURNS</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">$$</span>
+<span class="w">    </span><span class="k">BEGIN</span>
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="n">current_setting</span><span class="p">(</span><span class="s1">&#39;app.criacao_partida_autorizada&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="k">OR</span>
+<span class="w">           </span><span class="n">current_setting</span><span class="p">(</span><span class="s1">&#39;app.exclusao_autorizada&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="k">RETURN</span><span class="w"> </span><span class="k">NEW</span><span class="p">;</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+<span class="w">        </span><span class="n">RAISE</span><span class="w"> </span><span class="k">EXCEPTION</span><span class="w"> </span><span class="s1">&#39;Inserção direta em &quot;carta_partida&quot; não permitida! Use functions seguras.&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">END</span><span class="p">;</span>
+<span class="w">    </span><span class="err">$$</span><span class="w"> </span><span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">trigger_bloquear_insert_carta_partida</span>
+<span class="w">        </span><span class="k">BEFORE</span><span class="w"> </span><span class="k">INSERT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">carta_partida</span>
+<span class="w">        </span><span class="k">FOR</span><span class="w"> </span><span class="k">EACH</span><span class="w"> </span><span class="k">ROW</span>
+<span class="w">        </span><span class="k">EXECUTE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">bloquear_insert_carta_partida</span><span class="p">();</span>
+</code></pre></div>
+
+</details>
+
+<h3 id="2-validacao-de-integridade-da-partida">2. Validação de integridade da partida</h3>
+<h4 id="este-trigger-serve-para-verificar-se-uma-partida-foi-criada-corretamente-com-14-cartas-7-porta-7-tesouro-na-mao-do-jogador">Este trigger serve para verificar se uma partida foi criada corretamente com 14 cartas (7 porta + 7 tesouro) na mão do jogador.</h4>
+<details><summary>Comandos</summary>
+
+    <div class="highlight"><pre><span></span><code><span class="w">    </span><span class="c1">-- Valida quantidade e tipo de cartas na mão ao criar uma partida</span>
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">validar_integridade_partida</span><span class="p">()</span>
+<span class="w">    </span><span class="k">RETURNS</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">$$</span>
+<span class="w">    </span><span class="k">DECLARE</span>
+<span class="w">        </span><span class="n">qtd_cartas</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">;</span>
+<span class="w">        </span><span class="n">qtd_porta</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">;</span>
+<span class="w">        </span><span class="n">qtd_tesouro</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">;</span>
+<span class="w">    </span><span class="k">BEGIN</span>
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="n">current_setting</span><span class="p">(</span><span class="s1">&#39;app.criacao_partida_autorizada&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="k">RETURN</span><span class="w"> </span><span class="k">NEW</span><span class="p">;</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">PERFORM</span><span class="w"> </span><span class="n">pg_sleep</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">05</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">qtd_cartas</span>
+<span class="w">        </span><span class="k">FROM</span><span class="w"> </span><span class="n">carta_partida</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id_partida</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">id_partida</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">zona</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;mao&#39;</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">qtd_porta</span>
+<span class="w">        </span><span class="k">FROM</span><span class="w"> </span><span class="n">carta_partida</span><span class="w"> </span><span class="n">cp</span>
+<span class="w">        </span><span class="k">JOIN</span><span class="w"> </span><span class="n">carta</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">id_carta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="p">.</span><span class="n">id_carta</span>
+<span class="w">        </span><span class="k">WHERE</span><span class="w"> </span><span class="n">cp</span><span class="p">.</span><span class="n">id_partida</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">id_partida</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">cp</span><span class="p">.</span><span class="n">zona</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;mao&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">tipo_carta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;porta&#39;</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">qtd_tesouro</span>
+<span class="w">        </span><span class="k">FROM</span><span class="w"> </span><span class="n">carta_partida</span><span class="w"> </span><span class="n">cp</span>
+<span class="w">        </span><span class="k">JOIN</span><span class="w"> </span><span class="n">carta</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">id_carta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="p">.</span><span class="n">id_carta</span>
+<span class="w">        </span><span class="k">WHERE</span><span class="w"> </span><span class="n">cp</span><span class="p">.</span><span class="n">id_partida</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">id_partida</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">cp</span><span class="p">.</span><span class="n">zona</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;mao&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">tipo_carta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;tesouro&#39;</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="n">qtd_cartas</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">14</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="n">RAISE</span><span class="w"> </span><span class="k">EXCEPTION</span><span class="w"> </span><span class="s1">&#39;Partida % tem apenas % cartas na mão (mínimo: 14)!&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">id_partida</span><span class="p">,</span><span class="w"> </span><span class="n">qtd_cartas</span><span class="p">;</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="n">qtd_porta</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">qtd_tesouro</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="n">RAISE</span><span class="w"> </span><span class="k">EXCEPTION</span><span class="w"> </span><span class="s1">&#39;Distribuição inválida: % porta, % tesouro (mínimo: 7 de cada)&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">id_partida</span><span class="p">,</span><span class="w"> </span><span class="n">qtd_porta</span><span class="p">,</span><span class="w"> </span><span class="n">qtd_tesouro</span><span class="p">;</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">RETURN</span><span class="w"> </span><span class="k">NEW</span><span class="p">;</span>
+<span class="w">    </span><span class="k">END</span><span class="p">;</span>
+<span class="w">    </span><span class="err">$$</span><span class="w"> </span><span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">trigger_validar_integridade_partida</span>
+<span class="w">        </span><span class="k">AFTER</span><span class="w"> </span><span class="k">INSERT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">partida</span>
+<span class="w">        </span><span class="k">DEFERRABLE</span><span class="w"> </span><span class="k">INITIALLY</span><span class="w"> </span><span class="k">DEFERRED</span>
+<span class="w">        </span><span class="k">FOR</span><span class="w"> </span><span class="k">EACH</span><span class="w"> </span><span class="k">ROW</span>
+<span class="w">        </span><span class="k">EXECUTE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">validar_integridade_partida</span><span class="p">();</span>
+</code></pre></div>
+
+</details>
+
+<h3 id="3-bloqueio-de-exclusoes-diretas">3. Bloqueio de exclusões diretas</h3>
+<h4 id="este-trigger-serve-para-impedir-exclusoes-diretas-de-jogadores-e-partidas-garantindo-que-apenas-procedures-seguras-sejam-utilizadas">Este trigger serve para impedir exclusões diretas de jogadores e partidas, garantindo que apenas procedures seguras sejam utilizadas.</h4>
+<details><summary>Comandos</summary>
+
+    <div class="highlight"><pre><span></span><code><span class="w">    </span><span class="c1">-- Impede exclusão direta de jogador</span>
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">bloquear_delete_jogador</span><span class="p">()</span>
+<span class="w">    </span><span class="k">RETURNS</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">$$</span>
+<span class="w">    </span><span class="k">BEGIN</span>
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="n">current_setting</span><span class="p">(</span><span class="s1">&#39;app.exclusao_autorizada&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="k">RETURN</span><span class="w"> </span><span class="k">OLD</span><span class="p">;</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+<span class="w">        </span><span class="n">RAISE</span><span class="w"> </span><span class="k">EXCEPTION</span><span class="w"> </span><span class="s1">&#39;Exclusão direta de jogador não permitida! Use: CALL excluir_jogador_completo(%)&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">OLD</span><span class="p">.</span><span class="n">id_jogador</span><span class="p">;</span>
+<span class="w">    </span><span class="k">END</span><span class="p">;</span>
+<span class="w">    </span><span class="err">$$</span><span class="w"> </span><span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">trigger_bloquear_delete_jogador</span>
+<span class="w">        </span><span class="k">BEFORE</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">jogador</span>
+<span class="w">        </span><span class="k">FOR</span><span class="w"> </span><span class="k">EACH</span><span class="w"> </span><span class="k">ROW</span>
+<span class="w">        </span><span class="k">EXECUTE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">bloquear_delete_jogador</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">-- Impede exclusão direta de partida</span>
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">bloquear_delete_partida</span><span class="p">()</span>
+<span class="w">    </span><span class="k">RETURNS</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">$$</span>
+<span class="w">    </span><span class="k">BEGIN</span>
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="n">current_setting</span><span class="p">(</span><span class="s1">&#39;app.exclusao_autorizada&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="k">RETURN</span><span class="w"> </span><span class="k">OLD</span><span class="p">;</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+<span class="w">        </span><span class="n">RAISE</span><span class="w"> </span><span class="k">EXCEPTION</span><span class="w"> </span><span class="s1">&#39;Exclusão direta de partida não permitida!&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">END</span><span class="p">;</span>
+<span class="w">    </span><span class="err">$$</span><span class="w"> </span><span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">trigger_bloquear_delete_partida</span>
+<span class="w">        </span><span class="k">BEFORE</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">partida</span>
+<span class="w">        </span><span class="k">FOR</span><span class="w"> </span><span class="k">EACH</span><span class="w"> </span><span class="k">ROW</span>
+<span class="w">        </span><span class="k">EXECUTE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">bloquear_delete_partida</span><span class="p">();</span>
+</code></pre></div>
+
+</details>
+
+<h3 id="4-bloqueio-de-atualizacao-direta-de-zona">4. Bloqueio de atualização direta de zona</h3>
+<h4 id="este-trigger-serve-para-impedir-alteracoes-diretas-na-zona-das-cartas-garantindo-que-movimentacoes-sejam-feitas-apenas-via-procedures-seguras">Este trigger serve para impedir alterações diretas na zona das cartas, garantindo que movimentações sejam feitas apenas via procedures seguras.</h4>
+<details><summary>Comandos</summary>
+
+    <div class="highlight"><pre><span></span><code><span class="w">    </span><span class="c1">-- Impede alteração direta da zona de uma carta</span>
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">bloquear_update_zona</span><span class="p">()</span>
+<span class="w">    </span><span class="k">RETURNS</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">$$</span>
+<span class="w">    </span><span class="k">BEGIN</span>
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">zona</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">OLD</span><span class="p">.</span><span class="n">zona</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="k">IF</span><span class="w"> </span><span class="n">current_setting</span><span class="p">(</span><span class="s1">&#39;app.mudanca_zona_autorizada&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">                </span><span class="k">RETURN</span><span class="w"> </span><span class="k">NEW</span><span class="p">;</span>
+<span class="w">            </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+<span class="w">            </span><span class="n">RAISE</span><span class="w"> </span><span class="k">EXCEPTION</span><span class="w"> </span><span class="s1">&#39;Atualização da zona não permitida diretamente! Use procedure segura.&#39;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+<span class="w">        </span><span class="k">RETURN</span><span class="w"> </span><span class="k">NEW</span><span class="p">;</span>
+<span class="w">    </span><span class="k">END</span><span class="p">;</span>
+<span class="w">    </span><span class="err">$$</span><span class="w"> </span><span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">trigger_bloquear_update_zona</span>
+<span class="w">        </span><span class="k">BEFORE</span><span class="w"> </span><span class="k">UPDATE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">carta_partida</span>
+<span class="w">        </span><span class="k">FOR</span><span class="w"> </span><span class="k">EACH</span><span class="w"> </span><span class="k">ROW</span>
+<span class="w">        </span><span class="k">EXECUTE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">bloquear_update_zona</span><span class="p">();</span>
+</code></pre></div>
+
+</details>
+
+<h3 id="5-validacao-de-slots-equipados">5. Validação de slots equipados</h3>
+<h4 id="este-trigger-serve-para-validar-se-multiplos-itens-podem-ser-equipados-no-mesmo-slot-impedindo-conflitos-de-equipamento">Este trigger serve para validar se múltiplos itens podem ser equipados no mesmo slot, impedindo conflitos de equipamento.</h4>
+<details><summary>Comandos</summary>
+
+    <div class="highlight"><pre><span></span><code><span class="w">    </span><span class="c1">-- Impede múltiplos itens equipados no mesmo slot</span>
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">validar_limite_slot_equipado</span><span class="p">()</span>
+<span class="w">    </span><span class="k">RETURNS</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">$$</span>
+<span class="w">    </span><span class="k">DECLARE</span>
+<span class="w">        </span><span class="n">v_slot</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+<span class="w">        </span><span class="n">v_ocupacao_dupla</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="p">;</span>
+<span class="w">        </span><span class="n">v_subtipo</span><span class="w"> </span><span class="n">carta</span><span class="p">.</span><span class="n">subtipo</span><span class="o">%</span><span class="k">TYPE</span><span class="p">;</span>
+<span class="w">        </span><span class="n">v_conflito</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">;</span>
+<span class="w">    </span><span class="k">BEGIN</span>
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">zona</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">&#39;equipado&#39;</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="k">RETURN</span><span class="w"> </span><span class="k">NEW</span><span class="p">;</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">SELECT</span><span class="w"> </span><span class="n">ci</span><span class="p">.</span><span class="n">slot</span><span class="p">,</span><span class="w"> </span><span class="n">ci</span><span class="p">.</span><span class="n">ocupacao_dupla</span><span class="p">,</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">subtipo</span>
+<span class="w">        </span><span class="k">INTO</span><span class="w"> </span><span class="n">v_slot</span><span class="p">,</span><span class="w"> </span><span class="n">v_ocupacao_dupla</span><span class="p">,</span><span class="w"> </span><span class="n">v_subtipo</span>
+<span class="w">        </span><span class="k">FROM</span><span class="w"> </span><span class="n">carta_item</span><span class="w"> </span><span class="n">ci</span>
+<span class="w">        </span><span class="k">JOIN</span><span class="w"> </span><span class="n">carta</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">id_carta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ci</span><span class="p">.</span><span class="n">id_carta</span>
+<span class="w">        </span><span class="k">WHERE</span><span class="w"> </span><span class="n">ci</span><span class="p">.</span><span class="n">id_carta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">id_carta</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="n">v_subtipo</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">&#39;item&#39;</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="k">RETURN</span><span class="w"> </span><span class="k">NEW</span><span class="p">;</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">v_conflito</span>
+<span class="w">        </span><span class="k">FROM</span><span class="w"> </span><span class="n">carta_partida</span><span class="w"> </span><span class="n">cp</span>
+<span class="w">        </span><span class="k">JOIN</span><span class="w"> </span><span class="n">carta_item</span><span class="w"> </span><span class="n">ci</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ci</span><span class="p">.</span><span class="n">id_carta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="p">.</span><span class="n">id_carta</span>
+<span class="w">        </span><span class="k">JOIN</span><span class="w"> </span><span class="n">carta</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">id_carta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="p">.</span><span class="n">id_carta</span>
+<span class="w">        </span><span class="k">WHERE</span><span class="w"> </span><span class="n">cp</span><span class="p">.</span><span class="n">id_partida</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">id_partida</span>
+<span class="w">          </span><span class="k">AND</span><span class="w"> </span><span class="n">cp</span><span class="p">.</span><span class="n">zona</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;equipado&#39;</span>
+<span class="w">          </span><span class="k">AND</span><span class="w"> </span><span class="n">ci</span><span class="p">.</span><span class="n">slot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v_slot</span>
+<span class="w">          </span><span class="k">AND</span><span class="w"> </span><span class="n">cp</span><span class="p">.</span><span class="n">id_carta</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">id_carta</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="n">v_conflito</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="n">v_ocupacao_dupla</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="n">RAISE</span><span class="w"> </span><span class="k">EXCEPTION</span><span class="w"> </span><span class="s1">&#39;❌ Slot &quot;%&quot;: já existe item equipado.&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">v_slot</span><span class="p">;</span>
+<span class="w">        </span><span class="k">END</span><span class="w"> </span><span class="k">IF</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">RETURN</span><span class="w"> </span><span class="k">NEW</span><span class="p">;</span>
+<span class="w">    </span><span class="k">END</span><span class="p">;</span>
+<span class="w">    </span><span class="err">$$</span><span class="w"> </span><span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpgsql</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">TRIGGER</span><span class="w"> </span><span class="n">trigger_validar_limites_equipados</span>
+<span class="w">    </span><span class="k">AFTER</span><span class="w"> </span><span class="k">UPDATE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">carta_partida</span>
+<span class="w">    </span><span class="k">FOR</span><span class="w"> </span><span class="k">EACH</span><span class="w"> </span><span class="k">ROW</span>
+<span class="w">    </span><span class="k">WHEN</span><span class="w"> </span><span class="p">(</span><span class="k">OLD</span><span class="p">.</span><span class="n">zona</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">zona</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">NEW</span><span class="p">.</span><span class="n">zona</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;equipado&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">EXECUTE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">validar_limite_slot_equipado</span><span class="p">();</span>
+</code></pre></div>
+
+</details>
+
+<h3 id="referencia-bibliografica">Referência Bibliográfica</h3>
+<blockquote>
+<p>[1] ELMASRI, Ramez; NAVATHE, Shamkant B. <em>Sistemas de banco de dados</em>. 6. ed. São Paulo: Pearson Addison Wesley, 2011.</p>
+</blockquote>
+<hr />
+<h3 id="versionamento">Versionamento</h3>
+<table>
+<thead>
+<tr>
+<th>Versão</th>
+<th>Data</th>
+<th>Modificação</th>
+<th>Autor(es)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.1</td>
+<td>06/07/2025</td>
+<td>Criação do Documento e triggers</td>
+<td>Mylena Mendonça</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td>06/07/2025</td>
+<td>Continuação do desenvolvimento</td>
+<td>Maria Clara Sena</td>
+</tr>
+<tr>
+<td>1.1</td>
+<td>07/07/2025</td>
+<td>Padronização e ajustes de formatação</td>
+<td>Breno Soares Fernandes</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Voltar para o topo
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

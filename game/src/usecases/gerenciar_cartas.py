@@ -135,6 +135,15 @@ def gerenciar_cartas(console, jogador_id):
                     CALL desequipar_carta_segura(%s, %s);
                 """, (id_partida, id_carta))
                 console.print("[bold green]🔄 Carta devolvida para a mão com sucesso![/bold green]")
+
+                # Mostrar todos os avisos gerados por RAISE NOTICE
+                if hasattr(cursor.connection, "notices"):
+                    for aviso in cursor.connection.notices:
+                        aviso = aviso.strip()
+                        if aviso:
+                            console.print(f"[blue]{aviso}[/blue]")
+                    cursor.connection.notices.clear()
+
                 nova_zona = None  # já foi tratada pela procedure
             except Exception as e:
                 msg = str(e).split("\n")[0]

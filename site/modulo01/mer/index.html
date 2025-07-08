@@ -223,6 +223,24 @@
   
 
       
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../modulo03/triggers/" class="md-tabs__link">
+          
+  
+  Módulo 3
+
+        </a>
+      </li>
+    
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -680,6 +698,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#progresso_reino" class="md-nav__link">
+    <span class="md-ellipsis">
+      Progresso_Reino
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mapa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mapa
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -865,6 +901,93 @@
   
   <span class="md-ellipsis">
     Data Query Language
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Módulo 3
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Módulo 3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modulo03/triggers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Triggers e Integridade
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modulo03/procedures/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Stored Procedures
   </span>
   
 
@@ -1212,6 +1335,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#progresso_reino" class="md-nav__link">
+    <span class="md-ellipsis">
+      Progresso_Reino
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mapa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mapa
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1445,6 +1586,20 @@
 <li><code>nivel_ganho</code>: Quantidade de níveis ganhos após o combate.</li>
 <li><code>data_ocorrido</code>: Data e hora em que o combate foi registrado.</li>
 </ul>
+<h3 id="progresso_reino"><strong>Progresso_Reino</strong></h3>
+<ul>
+<li><code>id_partida (PK / FK para Partida)</code>: Referência à partida em andamento (relacionado à tabela Partida).</li>
+<li><code>id_reino (PK, FK)</code>: Referência ao reino do mapa (relacionado à tabela Mapa).</li>
+</ul>
+<h3 id="mapa"><strong>Mapa</strong></h3>
+<ul>
+<li><code>nome (PK)</code>: Nome do mapa ou região (identificador único).</li>
+<li><code>descricao</code>: Texto descritivo sobre o mapa ou reino.</li>
+<li><code>id_reino</code>: Identificador do reino correspondente.</li>
+<li><code>nivel_min</code>: Nível mínimo necessário para acessar o mapa.</li>
+<li><code>nivel_max</code>: Nível máximo permitido no mapa.</li>
+<li><code>ordem</code>: Posição/sequência do mapa dentro do progresso do jogo.</li>
+</ul>
 <h2 id="historico-de-versao">Histórico de Versão</h2>
 <table>
 <thead>
@@ -1474,6 +1629,11 @@
 <td>16/06/2025</td>
 <td>Correções  do MER para a segunda entrega</td>
 <td><a href="https://github.com/mclarasena">Maria Clara</a>, <a href="https://github.com/MylenaTrindade">Mylena Mendonça</a></td>
+</tr>
+<tr>
+<td>07/07/2025</td>
+<td>Atualizações finais</td>
+<td><a href="https://github.com/MylenaTrindade">Mylena Mnedonça</a>, <a href="https://github.com/mclarasenaa">Maria Clara Sena</a>, <a href="https://github.com/luluaroeira">Ana Luiza</a></td>
 </tr>
 </tbody>
 </table>

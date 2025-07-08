@@ -58,7 +58,6 @@ nav:
   - Módulo 3:
     - Triggers e Integridade: "modulo03/triggers.md"
     - Stored Procedures: "modulo03/procedures.md"
-    - Constraints de Segurança: "modulo03/constraints.md"
     
 plugins:
    - glightbox

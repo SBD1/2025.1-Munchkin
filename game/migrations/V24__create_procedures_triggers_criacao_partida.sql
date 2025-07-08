@@ -55,8 +55,8 @@ BEGIN
     FROM carta 
     WHERE tipo_carta = 'tesouro' AND disponivel_para_virar = TRUE;
 
-    IF cartas_porta < 4 OR cartas_tesouro < 4 THEN
-        RAISE EXCEPTION 'Cartas insuficientes! Disponível: % porta, % tesouro (mínimo: 4 de cada)', 
+    IF cartas_porta < 7 OR cartas_tesouro < 7 THEN
+        RAISE EXCEPTION 'Cartas insuficientes! Disponível: % porta, % tesouro (mínimo: 7 de cada)', 
                         cartas_porta, cartas_tesouro;
     END IF;
 
@@ -76,7 +76,7 @@ BEGIN
         SELECT id_carta FROM carta
         WHERE tipo_carta = 'porta' AND disponivel_para_virar = TRUE
         ORDER BY RANDOM()
-        LIMIT 4
+        LIMIT 7
     ) LOOP
         INSERT INTO carta_partida (id_partida, id_carta, zona)
         VALUES (nova_partida_id, carta_record.id_carta, 'mao');
@@ -90,7 +90,7 @@ BEGIN
         SELECT id_carta FROM carta
         WHERE tipo_carta = 'tesouro' AND disponivel_para_virar = TRUE
         ORDER BY RANDOM()
-        LIMIT 4
+        LIMIT 7
     ) LOOP
         INSERT INTO carta_partida (id_partida, id_carta, zona)
         VALUES (nova_partida_id, carta_record.id_carta, 'mao');
@@ -100,7 +100,7 @@ BEGIN
     END LOOP;
 
     -- Verificar se distribuiu exatamente 8 cartas
-    IF contador_cartas != 8 THEN
+    IF contador_cartas != 14 THEN
         RAISE EXCEPTION 'Erro crítico na distribuição: esperado 8 cartas, distribuído %', contador_cartas;
     END IF;
 
@@ -198,12 +198,12 @@ BEGIN
       AND c.tipo_carta = 'tesouro';
     
     -- Validar regras de distribuição inicial
-    IF qtd_cartas < 8 THEN
-        RAISE EXCEPTION 'Partida % possui apenas % cartas na mão (mínimo: 8)!', NEW.id_partida, qtd_cartas;
+    IF qtd_cartas < 14 THEN
+        RAISE EXCEPTION 'Partida % possui apenas % cartas na mão (mínimo: 14)!', NEW.id_partida, qtd_cartas;
     END IF;
     
-    IF qtd_porta < 4 OR qtd_tesouro < 4 THEN
-        RAISE EXCEPTION 'Partida % possui distribuição inválida: % porta, % tesouro (mínimo: 4 de cada)!', 
+    IF qtd_porta < 7 OR qtd_tesouro < 7 THEN
+        RAISE EXCEPTION 'Partida % possui distribuição inválida: % porta, % tesouro (mínimo: 7 de cada)!', 
                         NEW.id_partida, qtd_porta, qtd_tesouro;
     END IF;
     
@@ -239,7 +239,7 @@ CREATE CONSTRAINT TRIGGER trigger_validar_integridade_partida
 -- =====================================================
 
 COMMENT ON FUNCTION iniciar_partida_segura(INTEGER) IS 
-'Function segura para iniciar partida. Retorna (id_partida, status). Distribui exatamente 8 cartas (4 porta + 4 tesouro) e garante integridade completa.';
+'Function segura para iniciar partida. Retorna (id_partida, status). Distribui exatamente 14 cartas (7 porta + 7 tesouro) e garante integridade completa.';
 
 COMMENT ON FUNCTION bloquear_insert_partida() IS 
 'Function de trigger que impede inserção direta na tabela partida, exceto quando chamada pela function autorizada';
