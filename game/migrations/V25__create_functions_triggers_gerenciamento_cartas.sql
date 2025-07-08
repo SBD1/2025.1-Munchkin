@@ -130,3 +130,256 @@ FOR EACH ROW
 WHEN (OLD.zona IS DISTINCT FROM NEW.zona AND NEW.zona = 'equipado')
 EXECUTE FUNCTION validar_limite_slot_equipado();
 
+-- ===============================================
+-- Procedure: equipar_carta_segura
+-- Projeto: Munchkin - Banco de Dados
+-- Objetivo: Equipar uma carta de forma segura, aplicando regras e poderes
+-- Data: 2025-07-07 (atualizado)
+-- ===============================================
+
+CREATE OR REPLACE PROCEDURE equipar_carta_segura(
+    p_id_partida INTEGER,
+    p_id_carta INTEGER
+)
+LANGUAGE plpgsql AS $$
+DECLARE
+    v_subtipo TEXT;
+    v_slot TEXT;
+    v_bonus_combate INTEGER;
+    v_limite_mao INTEGER;
+    v_ocupacao_dupla BOOLEAN;
+    v_tipo_alvo TEXT;
+    v_valor_alvo TEXT;
+    v_permitido BOOLEAN;
+    v_possui_alvo BOOLEAN;
+    v_conflito INTEGER;
+    restr RECORD;
+BEGIN
+    -- Obter subtipo da carta
+    SELECT subtipo INTO v_subtipo
+    FROM carta
+    WHERE id_carta = p_id_carta;
+
+    -- Impedir equipar monstro
+    IF v_subtipo = 'monstro' THEN
+        RAISE EXCEPTION '❌ Você não pode equipar cartas do tipo MONSTRO.';
+    END IF;
+
+    -- Impedir múltiplas raças
+    IF v_subtipo = 'raca' THEN
+        IF EXISTS (
+            SELECT 1
+            FROM carta_partida cp
+            JOIN carta c ON c.id_carta = cp.id_carta
+            WHERE cp.id_partida = p_id_partida
+              AND cp.zona = 'equipado'
+              AND c.subtipo = 'raca'
+        ) THEN
+            RAISE EXCEPTION '❌ Você já tem uma raça equipada. Desequipe-a antes de equipar outra.';
+        END IF;
+    END IF;
+
+    -- Impedir múltiplas classes
+    IF v_subtipo = 'classe' THEN
+        IF EXISTS (
+            SELECT 1
+            FROM carta_partida cp
+            JOIN carta c ON c.id_carta = cp.id_carta
+            WHERE cp.id_partida = p_id_partida
+              AND cp.zona = 'equipado'
+              AND c.subtipo = 'classe'
+        ) THEN
+            RAISE EXCEPTION '❌ Você já tem uma classe equipada. Desequipe-a antes de equipar outra.';
+        END IF;
+    END IF;
+
+    -- Caso a carta seja uma raça com poder de limite de mão
+    IF v_subtipo = 'raca' THEN
+        SELECT pl.limite_cartas_mao INTO v_limite_mao
+        FROM poder_raca pr
+        JOIN poder_limite_de_mao pl ON pr.id_poder_raca = pl.id_poder_raca
+        WHERE pr.id_carta = p_id_carta;
+
+        -- Se existir poder, atualiza o limite
+        IF v_limite_mao IS NOT NULL THEN
+            UPDATE partida
+            SET limite_mao_atual = v_limite_mao
+            WHERE id_partida = p_id_partida;
+
+            RAISE NOTICE '🧬 Limite de cartas na mão atualizado para % devido ao poder da raça.', v_limite_mao;
+        END IF;
+    END IF;
+
+    -- Caso item: verificar restrições e aplicar bônus
+    IF v_subtipo = 'item' THEN
+        -- Aplicar verificações de restrição
+        FOR restr IN
+            SELECT tipo_alvo, valor_alvo, permitido
+            FROM restricao_item
+            WHERE id_carta_item = p_id_carta
+        LOOP
+            v_tipo_alvo := restr.tipo_alvo;
+            v_valor_alvo := restr.valor_alvo;
+            v_permitido := restr.permitido;
+
+            IF v_tipo_alvo = 'classe' THEN
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM carta_partida cp
+                    JOIN carta_classe cc ON cc.id_carta = cp.id_carta
+                    WHERE cp.id_partida = p_id_partida AND cp.zona = 'equipado' AND cc.nome_classe = v_valor_alvo
+                ) INTO v_possui_alvo;
+
+            ELSIF v_tipo_alvo = 'raca' THEN
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM carta_partida cp
+                    JOIN carta_raca cr ON cr.id_carta = cp.id_carta
+                    WHERE cp.id_partida = p_id_partida AND cp.zona = 'equipado' AND cr.nome_raca = v_valor_alvo
+                ) INTO v_possui_alvo;
+            END IF;
+
+            IF v_permitido AND NOT v_possui_alvo THEN
+                RAISE EXCEPTION '❌ Este item só pode ser usado por %: %, e você não está com isso equipado.', v_tipo_alvo, v_valor_alvo;
+            ELSIF NOT v_permitido AND v_possui_alvo THEN
+                RAISE EXCEPTION '❌ Este item não pode ser usado por %: %, e você está com isso equipado.', v_tipo_alvo, v_valor_alvo;
+            END IF;
+        END LOOP;
+
+        -- Obter dados do item
+        SELECT slot, bonus_combate, ocupacao_dupla INTO v_slot, v_bonus_combate, v_ocupacao_dupla
+        FROM carta_item
+        WHERE id_carta = p_id_carta;
+
+        -- Validação de slot ocupado
+        IF v_slot != 'nenhum' THEN
+            IF v_slot = '2_maos' THEN
+                -- Verifica se já tem qualquer item nas mãos
+                SELECT COUNT(*) INTO v_conflito
+                FROM carta_partida cp
+                JOIN carta_item ci ON ci.id_carta = cp.id_carta
+                WHERE cp.id_partida = p_id_partida AND cp.zona = 'equipado'
+                AND ci.slot IN ('1_mao', '2_maos');
+
+                IF v_conflito > 0 THEN
+                    RAISE EXCEPTION '❌ Você já está usando as mãos. Remova os itens antes de equipar um que ocupa 2 mãos.';
+                END IF;
+
+            ELSIF v_slot = '1_mao' THEN
+                -- Verifica se já tem um item de 2_maos
+                SELECT COUNT(*) INTO v_conflito
+                FROM carta_partida cp
+                JOIN carta_item ci ON ci.id_carta = cp.id_carta
+                WHERE cp.id_partida = p_id_partida AND cp.zona = 'equipado'
+                AND ci.slot = '2_maos';
+
+                IF v_conflito > 0 THEN
+                    RAISE EXCEPTION '❌ Você já está usando um item que ocupa 2 mãos. Não pode equipar outro nas mãos.';
+                END IF;
+            ELSE
+                -- Verifica se já existe outro item no mesmo slot
+                SELECT COUNT(*) INTO v_conflito
+                FROM carta_partida cp
+                JOIN carta_item ci ON ci.id_carta = cp.id_carta
+                WHERE cp.id_partida = p_id_partida AND cp.zona = 'equipado'
+                AND ci.slot = v_slot;
+
+                IF v_conflito > 0 AND NOT v_ocupacao_dupla THEN
+                    RAISE EXCEPTION '❌ Você já tem um item equipado no slot "%".', v_slot;
+                END IF;
+            END IF;
+        END IF;
+
+        -- Aplica bônus de combate
+        UPDATE partida
+        SET nivel = nivel + v_bonus_combate
+        WHERE id_partida = p_id_partida;
+
+        RAISE NOTICE '🪖 Item equipado no slot "%". Bônus de combate +% aplicado.', v_slot, v_bonus_combate;
+    END IF;
+
+    -- Mover para a zona "equipado" com segurança
+    CALL mover_carta_zona_seguro(p_id_partida, p_id_carta, 'equipado');
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION '❌ Erro ao equipar carta %: %', p_id_carta, SQLERRM;
+END;
+$$;
+
+-- ===============================================
+-- Procedure: desequipar_carta_segura
+-- Projeto: Munchkin - Banco de Dados
+-- Objetivo: Desequipar uma carta com segurança
+-- Data: 2025-07-08
+-- ===============================================
+
+CREATE OR REPLACE PROCEDURE desequipar_carta_segura(
+    p_id_partida INTEGER,
+    p_id_carta INTEGER
+)
+LANGUAGE plpgsql AS $$
+DECLARE
+    v_subtipo TEXT;
+    v_nome TEXT;
+    v_bonus_combate INTEGER;
+    v_dependentes RECORD;
+BEGIN
+    -- Verificar se a carta está realmente equipada
+    IF NOT EXISTS (
+        SELECT 1
+        FROM carta_partida
+        WHERE id_partida = p_id_partida AND id_carta = p_id_carta AND zona = 'equipado'
+    ) THEN
+        RAISE EXCEPTION '❌ Esta carta não está equipada.';
+    END IF;
+
+    -- Obter subtipo e nome para mensagens
+    SELECT subtipo, nome INTO v_subtipo, v_nome
+    FROM carta
+    WHERE id_carta = p_id_carta;
+
+    -- Se for raça ou classe, verificar dependência de itens
+    IF v_subtipo IN ('raca', 'classe') THEN
+        FOR v_dependentes IN
+            SELECT ci.id_carta AS id_item, c.nome
+            FROM carta_partida cp
+            JOIN carta_item ci ON ci.id_carta = cp.id_carta
+            JOIN restricao_item ri ON ri.id_carta_item = ci.id_carta
+            JOIN carta c ON c.id_carta = ci.id_carta
+            WHERE cp.id_partida = p_id_partida
+              AND cp.zona = 'equipado'
+              AND ri.tipo_alvo = v_subtipo
+              AND ri.valor_alvo = v_nome
+              AND ri.permitido = true
+        LOOP
+            RAISE NOTICE '⚠️ O item "%" depende de sua % "%". Será automaticamente desequipado.', v_dependentes.nome, v_subtipo, v_nome;
+
+            -- Mover o item dependente para a mão
+            CALL mover_carta_zona_seguro(p_id_partida, v_dependentes.id_item, 'mao');
+        END LOOP;
+    END IF;
+
+    -- Se for item, remover bônus de combate
+    IF v_subtipo = 'item' THEN
+        SELECT bonus_combate INTO v_bonus_combate
+        FROM carta_item
+        WHERE id_carta = p_id_carta;
+
+        UPDATE partida
+        SET nivel = nivel - v_bonus_combate
+        WHERE id_partida = p_id_partida;
+
+        RAISE NOTICE '🪖 Item "%": bônus de combate -% removido.', v_nome, v_bonus_combate;
+    END IF;
+
+    -- Mover a carta para a mão
+    CALL mover_carta_zona_seguro(p_id_partida, p_id_carta, 'mao');
+
+    RAISE NOTICE '✅ Carta "%" foi movida de EQUIPADO para MÃO.', v_nome;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION '❌ Erro ao desequipar carta %: %', p_id_carta, SQLERRM;
+END;
+$$;

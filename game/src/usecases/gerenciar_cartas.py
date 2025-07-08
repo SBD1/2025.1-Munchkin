@@ -25,21 +25,28 @@ def gerenciar_cartas(console, jogador_id):
 
         id_partida = partida[0]
 
-        # Mostrar cartas na mão para selecionar
+        # Obter cartas em 'mao' e 'equipado'
         cursor.execute("""
-            SELECT c.id_carta, c.nome, c.tipo_carta, c.subtipo
+            SELECT c.id_carta, c.nome, c.tipo_carta, c.subtipo, cp.zona
             FROM carta_partida cp
             JOIN carta c ON c.id_carta = cp.id_carta
-            WHERE cp.id_partida = %s AND cp.zona = 'mao';
+            WHERE cp.id_partida = %s AND cp.zona IN ('mao', 'equipado')
+            ORDER BY cp.zona DESC; -- Mostra equipadas primeiro
         """, (id_partida,))
         cartas = cursor.fetchall()
 
         if not cartas:
-            console.print("[yellow]📭 Você não tem cartas na mão para gerenciar.[/yellow]")
+            console.print("[yellow]📭 Você não tem cartas para gerenciar.[/yellow]")
             return
 
-        console.print("\n[bold magenta]🛠️ Gerenciar Cartas da Mão:[/bold magenta]")
-        for i, (id_carta, nome, tipo, subtipo) in enumerate(cartas, start=1):
+        console.print("\n[bold magenta]🛠️ Gerenciar Cartas do Jogador:[/bold magenta]")
+
+        zona_atual = None
+        for i, (id_carta, nome, tipo, subtipo, zona) in enumerate(cartas, start=1):
+            if zona != zona_atual:
+                console.print(f"\n[bold yellow]🗂️ Cartas em: {zona.upper()}[/bold yellow]")
+                zona_atual = zona
+
             console.print(f"\n{i}. [bold]{nome}[/bold] [cyan]({tipo} - {subtipo})[/cyan]")
 
             detalhes = buscar_detalhes_por_subtipo(cursor, id_carta, subtipo)
@@ -81,10 +88,21 @@ def gerenciar_cartas(console, jogador_id):
 
         id_carta = carta_escolhida[0]
         subtipo = carta_escolhida[3]
+        zona_atual = carta_escolhida[4]
 
-        acoes = ["Equipar", "Voltar para a Mão", "Descartar"]
-        if subtipo == 'item':
-            acoes.append("Vender")
+        # Ações disponíveis baseadas na zona
+        if zona_atual == 'mao':
+            acoes = ["Equipar", "Descartar"]
+            if subtipo == 'item':
+                acoes.append("Vender")
+        elif zona_atual == 'equipado':
+            acoes = ["Voltar para a Mão"]
+        else:
+            acoes = []
+
+        if not acoes:
+            console.print("[red]Nenhuma ação disponível para esta carta.[/red]")
+            return
 
         console.print("\n[bold green]Escolha uma ação:[/bold green]")
         for i, acao in enumerate(acoes, start=1):
@@ -102,18 +120,33 @@ def gerenciar_cartas(console, jogador_id):
         acao = acoes[acao_escolhida - 1]
 
         if acao == "Equipar":
-            nova_zona = tratar_equipar(console, cursor, id_carta, subtipo, id_partida)
+            try:
+                cursor.execute("""
+                    CALL equipar_carta_segura(%s, %s);
+                """, (id_partida, id_carta))
+                console.print("[bold green]✅ Carta equipada com sucesso![/bold green]")
+            except Exception as e:
+                msg = str(e).split("\n")[0]
+                console.print(f"[bold red]❌ Erro ao equipar carta: {msg}[/bold red]")
 
-        elif acao in ("Voltar para a Mão"):
-            nova_zona = tratar_voltar(console, cursor, id_carta, subtipo, id_partida)
+        elif acao == "Voltar para a Mão":
+            try:
+                cursor.execute("""
+                    CALL desequipar_carta_segura(%s, %s);
+                """, (id_partida, id_carta))
+                console.print("[bold green]🔄 Carta devolvida para a mão com sucesso![/bold green]")
+                nova_zona = None  # já foi tratada pela procedure
+            except Exception as e:
+                msg = str(e).split("\n")[0]
+                console.print(f"[bold red]❌ Erro ao devolver carta para a mão: {msg}[/bold red]")
 
-        elif acoes[acao_escolhida - 1] == "Descartar":
+        elif acao == "Descartar":
             nova_zona = "descartada"
 
         elif acao == "Vender":
             nova_zona = tratar_venda(console, cursor, id_carta, subtipo, id_partida)
 
-        # Atualizar zona usando procedure segura
+        # Chama mover_carta_zona_seguro APENAS se for necessário
         if nova_zona:
             try:
                 cursor.execute("""
