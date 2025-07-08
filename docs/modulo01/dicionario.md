@@ -113,6 +113,12 @@ A seguir, cada entidade será documentada em uma tabela com suas respectivas car
 ### Tabela: **Combate**
 ![Tabela Combate](../assets/Combate.png)
 
+### Tabela: **ProgressoReino**
+![Tabela Combate](../assets/ProgressoReino.png)
+
+### Tabela: **Mapa**
+![Tabela Combate](../assets/Mapa.png)
+
 
 
 ## Histórico de Versão
