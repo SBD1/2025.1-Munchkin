@@ -234,21 +234,6 @@ CREATE CONSTRAINT TRIGGER trigger_validar_integridade_partida
     FOR EACH ROW
     EXECUTE FUNCTION validar_integridade_partida();
 
--- =====================================================
--- COMENTÁRIOS E DOCUMENTAÇÃO
--- =====================================================
-
-COMMENT ON FUNCTION iniciar_partida_segura(INTEGER) IS 
-'Function segura para iniciar partida. Retorna (id_partida, status). Distribui exatamente 14 cartas (7 porta + 7 tesouro) e garante integridade completa.';
-
-COMMENT ON FUNCTION bloquear_insert_partida() IS 
-'Function de trigger que impede inserção direta na tabela partida, exceto quando chamada pela function autorizada';
-
-COMMENT ON FUNCTION bloquear_insert_carta_partida() IS 
-'Function de trigger que impede inserção direta na tabela carta_partida, exceto quando chamada por functions autorizadas';
-
-COMMENT ON FUNCTION validar_integridade_partida() IS 
-'Function de trigger que valida se partidas possuem distribuição correta de cartas após criação';
 
 
 

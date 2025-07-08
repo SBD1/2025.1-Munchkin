@@ -131,10 +131,10 @@ WHEN (OLD.zona IS DISTINCT FROM NEW.zona AND NEW.zona = 'equipado')
 EXECUTE FUNCTION validar_limite_slot_equipado();
 
 -- ===============================================
--- Procedure: equipar_carta_segura
--- Projeto: Munchkin - Banco de Dados
--- Objetivo: Equipar uma carta de forma segura, aplicando regras e poderes
--- Data: 2025-07-07 (atualizado)
+--Procedure: equipar_carta_segura
+--Projeto: Munchkin - Banco de Dados
+--Objetivo: Equipar uma carta de forma segura, aplicando regras e poderes
+--Data: 2025-07-07 (atualizado)
 -- ===============================================
 
 CREATE OR REPLACE PROCEDURE equipar_carta_segura(
