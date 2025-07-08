@@ -42,6 +42,14 @@ As próximas seções detalham individualmente cada tabela e sua finalidade.
 
 **Fonte:** [Breno Fernandes](https://github.com/Brenofrds)
 
+## Modelo logico
+
+**Figura 3 - Modelo Lógico Versão 3.0**
+
+![Terceira versão do modelo logico](../assets/Lógico_3.0.png)
+
+**Fonte:** [Mylena Mendonça](https://github.com/MylenaTrindade)
+
 ## Bibliografia
 
 > Diagrama Entidade Relacionamento Stardew Valley. Disponível em: https://github.com/SBD1/2023.2-Grupo01-StardewValley/blob/main/docs/Entrega-01/DER_StardewValley_v1.0.md. Acesso em 26 de abril de 2025.
@@ -55,4 +63,5 @@ As próximas seções detalham individualmente cada tabela e sua finalidade.
 | Data       | Descrição                          | Autor                                                                 |
 |------------|------------------------------------|-----------------------------------------------------------------------|
 | 25/04/2025 | Criação do artefato                | [Breno Fernandes](https://github.com/Brenofrds)                      |
-| 02/05/2025 | Colaboração na construção do Modelo Logico   | [Breno Fernandes](https://github.com/Brenofrds), [Maria Clara Sena](https://github.com/mclarasena), [Ana Luiza](https://github.com/luluaroeira), [Mylena Mendonça](https://github.com/MylenaTrindade) |
+| 02/05/2025 | Colaboração na construção do Modelo Logico   | [Breno Fernandes](https://github.com/Brenofrds), [Maria Clara Sena](https://github.com/mclarasenaa), [Ana Luiza](https://github.com/luluaroeira), [Mylena Mendonça](https://github.com/MylenaTrindade) |
+| 07/07/2025 | Atualizações finais | [Mylena Mnedonça](https://github.com/MylenaTrindade), [Maria Clara Sena](https://github.com/mclarasenaa), [Ana Luiza](https://github.com/luluaroeira)

@@ -113,11 +113,11 @@ A seguir, cada entidade será documentada em uma tabela com suas respectivas car
 ### Tabela: **Combate**
 ![Tabela Combate](../assets/Combate.png)
 
-### Tabela: **ProgressoReino**
-![Tabela Combate](../assets/ProgressoReino.png)
+### Tabela: **Progresso_Reino**
+![Tabela ProgressoReino](../assets/ProgressoReino.jpeg)
 
 ### Tabela: **Mapa**
-![Tabela Combate](../assets/Mapa.png)
+![Tabela Mapa](../assets/Mapa.jpeg)
 
 
 
@@ -129,3 +129,4 @@ A seguir, cada entidade será documentada em uma tabela com suas respectivas car
 | 02/05/2025 | Colaboração na construção do dicionário de dados |[Breno Fernandes](https://github.com/Brenofrds),[Maria Clara Sena](https://github.com/mclarasenaa), [Ana Luiza](https://github.com/luluaroeira), [Mylena Mendonça](https://github.com/MylenaTrindade) |
 | 11/06/2025 | Correções  do dicionário                | [Maria Clara](https://github.com/mclarasenaa), [Mylena Mendonça](https://github.com/MylenaTrindade) |
 | 11/06/2025 | Adições no dicionário |[Maria Clara Sena](https://github.com/mclarasenaa) |
+| 07/07/2025 | Atualizações finais | [Mylena Mnedonça](https://github.com/MylenaTrindade), [Maria Clara Sena](https://github.com/mclarasenaa), [Ana Luiza](https://github.com/luluaroeira)

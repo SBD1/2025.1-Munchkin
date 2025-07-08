@@ -27,6 +27,12 @@ A Figura 1 a seguir exibe a versão inicial do Diagrama Entidade-Relacionamento,
 
 **Fonte:** [Breno Fernandes](https://github.com/Brenofrds)
 
+### Figura 3 - Terceira versão do DER
+
+![Terceira versão do DER](../assets/Conceitual_3.0.png)
+
+**Fonte:** [Mylena Mendonça](https://github.com/MylenaTrindade)
+
 
 ## Bibliografia
 
@@ -43,5 +49,6 @@ A Figura 1 a seguir exibe a versão inicial do Diagrama Entidade-Relacionamento,
 |------------|------------------------------------|-----------------------------------------------------------------------|
 | 25/04/2025 | Criação do artefato                | [Breno Fernandes](https://github.com/Brenofrds)                      |
 | 02/05/2025 | Colaboração na construção do DER   | [Breno Fernandes](https://github.com/Brenofrds), [Maria Clara Sena](https://github.com/mclarasena), [Ana Luiza](https://github.com/luluaroeira), [Mylena Mendonça](https://github.com/MylenaTrindade) |
+| 07/07/2025 | Atualizações finais | [Mylena Mnedonça](https://github.com/MylenaTrindade), [Maria Clara Sena](https://github.com/mclarasenaa), [Ana Luiza](https://github.com/luluaroeira)
 
 

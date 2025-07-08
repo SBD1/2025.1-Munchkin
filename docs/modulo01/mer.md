@@ -185,6 +185,17 @@ O Modelo Entidade-Relacionamento (MER) é uma descrição textual das entidades 
 - `nivel_ganho`: Quantidade de níveis ganhos após o combate.
 - `data_ocorrido`: Data e hora em que o combate foi registrado.
 
+### **Progresso_Reino**
+- `id_partida (PK / FK para Partida)`: Referência à partida em andamento (relacionado à tabela Partida).
+- `id_reino (PK, FK)`: Referência ao reino do mapa (relacionado à tabela Mapa).
+
+### **Mapa**
+- `nome (PK)`: Nome do mapa ou região (identificador único).
+- `descricao`: Texto descritivo sobre o mapa ou reino.
+- `id_reino`: Identificador do reino correspondente.
+- `nivel_min`: Nível mínimo necessário para acessar o mapa.
+- `nivel_max`: Nível máximo permitido no mapa.
+- `ordem`: Posição/sequência do mapa dentro do progresso do jogo.
 
 ## Histórico de Versão
 
@@ -194,3 +205,4 @@ O Modelo Entidade-Relacionamento (MER) é uma descrição textual das entidades 
 | 02/05/2025 | Colaboração na construção do MER   | [Breno Fernandes](https://github.com/Brenofrds), [Maria Clara Sena](https://github.com/mclarasena), [Ana Luiza](https://github.com/luluaroeira), [Mylena Mendonça](https://github.com/MylenaTrindade) |
 | 11/06/2025 | Correções  do MER                | [Maria Clara](https://github.com/mclarasena), [Mylena Mendonça](https://github.com/MylenaTrindade) 
 | 16/06/2025 | Correções  do MER para a segunda entrega              | [Maria Clara](https://github.com/mclarasena), [Mylena Mendonça](https://github.com/MylenaTrindade) 
+| 07/07/2025 | Atualizações finais | [Mylena Mnedonça](https://github.com/MylenaTrindade), [Maria Clara Sena](https://github.com/mclarasenaa), [Ana Luiza](https://github.com/luluaroeira)
