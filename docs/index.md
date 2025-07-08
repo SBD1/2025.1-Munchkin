@@ -33,12 +33,22 @@ A versão solo imaginada mantém os desafios estratégicos do jogo original, sim
 
   - [Data Query Language](./modulo02/dql.md)
 
+- Módulo 3:
+
+  - [Triggers](./modulo03/triggers.md)
+
+  - [Stored Procedures](./modulo03/procedures.md)
+
 
 ## Apresentações
 
   - [Módulo 1 (Vídeo no YouTube)](https://www.youtube.com/watch?v=1JWhqNgmiXc)
 
   - [Módulo 2 (Vídeo no YouTube)](https://youtu.be/l67PdaRC2Mk?si=N37tagg1CskSNL4d)
+
+  - [Módulo 3 parte 1 (Vídeo no YouTube)](https://youtu.be/eLXboHwlhiE?si=fL4YTR5sjbWApP81)
+  
+  - [Módulo 3 parte 2 (Vídeo no YouTube)](https://youtu.be/cNhqyCf4F24?si=9q15BGBkl54bB5g8)
 
 ## Membros do grupo
 
